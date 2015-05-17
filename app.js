@@ -3,6 +3,7 @@ var app = express();
 var path = require('path');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var port = process.env.PORT || 3000;
 
 // Everything in public will be accessible from '/'
 app.use(express.static(path.join(__dirname, 'public')));
@@ -18,6 +19,6 @@ io.on("connection", function(socket) {
   });
 });
 
-http.listen(3000, function() {
-  console.log("listening at 3000");
+http.listen(port, function() {
+  console.log("listening at " + port);
 });

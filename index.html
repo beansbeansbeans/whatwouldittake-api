@@ -1,11 +1,36 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>Prattle</title>
     <link rel="stylesheet" type="text/css" href="assets/css/styles.css">
   </head>
   <script src="/socket.io/socket.io.js"></script>
   <body>
-
+    <div class="visualization">
+      <div class="avatar"></div>
+      <div class="avatar"></div>
+      <div class="avatar"></div>
+      <div class="avatar"></div>
+      <div class="avatar"></div>
+    </div>
+    <div class="main">
+      <div class="header">
+        <div class="topic">Which job offer should I take?</div>
+        <div class="creator">Brian</div>
+      </div>
+      <div class="messages">
+        <div class="message">
+          <div class="meta"></div>
+          <div class="text">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab, porro.
+          </div>
+        </div>
+        <div class="message">
+          <div class="meta"></div>
+          <div class="text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugit explicabo, cupiditate est.</div>
+        </div>
+      </div>      
+      <div class="input"></div>
+    </div>
   </body>
 </html>
