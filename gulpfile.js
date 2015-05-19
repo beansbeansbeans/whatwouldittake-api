@@ -1,15 +1,4 @@
-var gulp = require('gulp');
-var gutil = require('gulp-util');
-var sass = require('gulp-sass');
+var requireDir = require('require-dir');
 
-gulp.task('default', ['watch']);
-
-gulp.task('sass', function() {
-  return gulp.src('source/scss/*.scss')
-    .pipe(sass())
-    .pipe(gulp.dest('public/assets/css'));
-});
-
-gulp.task('watch', function() {
-  return gulp.watch('source/scss/*.scss', ['sass']);
-});
+// Require all tasks in gulp/tasks, including subfolders
+requireDir('./tools/gulp/tasks', { recurse: true });
