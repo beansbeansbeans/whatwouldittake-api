@@ -23,15 +23,65 @@ exports.createRoom = function(req, res, client) {
     room = {
       key: roomKey,
       name: req.body.room_name,
-      online: 0
+      online: [{anonymous: true}]
     };
 
   collection.insert(room, function(err, record) {
     if(!err && record) {
-      console.log("CREATED RECORD");
       res.redirect("/" + roomKey);
     } else {
       res.sendStatus(500);
     }
   });
 };
+
+exports.getRoomInfo = function(req, res, client, fn) { 
+  client.collection('rooms').find({key: req.params.id}, function(err, record) {
+    if(!err && record.length) {
+      fn(record)
+    } else {
+      res.redirect('back');
+    }
+  });
+};
+
+exports.getUsersInRoom = function(req, res, client, room, fn) {
+  client.collection('rooms').find({key: req.params.id}, function(err, records) {
+    var chatters = [];
+
+    if(!err && records.length) {
+      records[0].online.forEach(function(chatter, index) {
+        chatters.push(chatter);
+      });
+
+      fn(chatters);
+    }
+  });
+};
+
+exports.getPublicRoomsInfo = function(client, fn) {
+  client.collection('rooms').find().toArray(function(err, records) {
+    var rooms = [];
+    if(records.length) {
+      records.forEach(function(room, index) {
+        rooms.push(room);
+      });
+
+      fn(rooms);
+    }
+  });
+};
+
+exports.enterRoom = function(req, res, room, users, rooms){
+  res.locals = {
+    room: room,
+    rooms: rooms,
+    users_list: users
+  };
+  res.render('room');
+};
+
+
+
+
+

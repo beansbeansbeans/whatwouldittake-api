@@ -17,4 +17,14 @@ function Routes (app) {
       utils.createRoom(req, res, client);
     });
   });
+
+  app.get('/:id', function(req, res) {
+    utils.getRoomInfo(req, res, client, function(room) {
+      utils.getUsersInRoom(req, res, client, room, function(users) {
+        utils.getPublicRoomsInfo(client, function(rooms) {
+          utils.enterRoom(req, res, room, users, rooms);
+        });
+      });
+    });
+  });
 }
