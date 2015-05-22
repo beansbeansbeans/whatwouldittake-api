@@ -7,10 +7,16 @@ function Routes (app) {
   var config = app.get('config');
   var client = app.get('mongoClient');
 
-  // Everything in public will be accessible from '/'
-  app.use(express.static(path.join(__dirname, 'public')));
-
   app.get('/', function(req, res, next) {
     res.render('index');
+  });
+
+  app.post('/create', function(req, res) {
+    console.log("RECEIVED CREATE ROOM REQUEST");
+    // utils.validRoomName(req, res, function(roomKey) {
+    //   utils.roomExists(req, res, client, function() {
+    //     utils.createRoom(req, res, client);
+    //   });
+    // });
   });
 }
