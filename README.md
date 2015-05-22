@@ -30,6 +30,12 @@ Boot:
 MEANINGFUL FIRST TASK
 
 - map out MVP data structure
-- create a MongoDB, connect on the client
-- add a client button that adds a room to the DB and joins it
+- create a MongoDB, connect
+- add a client button that adds a room to the DB and joins it (submit and creates room and redirects, another client that goes to the index sees the room, another client that goes to the room page can see the room contents)
 - delete the room if there are no connections to it (should probably in the socket disconnect handler)
+
+DATA STRUCTURE
+
+Collections:
+
+rooms

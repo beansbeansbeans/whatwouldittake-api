@@ -1,5 +1,6 @@
 var express = require('express');
 var path = require('path');
+var utils = require('../utils');
 
 module.exports = Routes;
 
@@ -12,11 +13,8 @@ function Routes (app) {
   });
 
   app.post('/create', function(req, res) {
-    console.log("RECEIVED CREATE ROOM REQUEST");
-    // utils.validRoomName(req, res, function(roomKey) {
-    //   utils.roomExists(req, res, client, function() {
-    //     utils.createRoom(req, res, client);
-    //   });
-    // });
+    utils.validRoomName(req, res, function(roomKey) {
+      utils.createRoom(req, res, client);
+    });
   });
 }
