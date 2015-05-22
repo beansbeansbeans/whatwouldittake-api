@@ -4,6 +4,7 @@ var path = require('path');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
+var db = require('./db');
 
 // Everything in public will be accessible from '/'
 app.use(express.static(path.join(__dirname, 'public')));
