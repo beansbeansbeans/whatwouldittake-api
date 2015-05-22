@@ -38,7 +38,7 @@ exports.createRoom = function(req, res, client) {
 exports.getRoomInfo = function(req, res, client, fn) { 
   client.collection('rooms').find({key: req.params.id}, function(err, record) {
     if(!err && record.length) {
-      fn(record)
+      fn(record[0])
     } else {
       res.redirect('back');
     }
