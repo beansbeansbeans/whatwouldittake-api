@@ -23,7 +23,7 @@ exports.createRoom = function(req, res, client) {
     room = {
       key: roomKey,
       name: req.body.room_name,
-      online: [{anonymous: true}]
+      online: []
     };
 
   collection.insert(room, function(err, record) {
@@ -72,10 +72,9 @@ exports.getPublicRoomsInfo = function(client, fn) {
   });
 };
 
-exports.enterRoom = function(req, res, room, users, rooms){
+exports.enterRoom = function(req, res, room, users){
   res.locals = {
     room: room,
-    rooms: rooms,
     users_list: users
   };
   res.render('room');
