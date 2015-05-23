@@ -10,9 +10,7 @@ function Routes (app) {
 
   app.get('/', function(req, res, next) {
     utils.getPublicRoomsInfo(client, function(rooms) {
-      res.locals = {
-        rooms: rooms
-      };
+      res.locals = { rooms: rooms };
 
       res.render('index');
     });

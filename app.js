@@ -1,5 +1,5 @@
 var express = require('express');
-var app = express();
+var app = exports.app = express();
 var path = require('path');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -9,13 +9,6 @@ require('./config')(app);
 
 require('./routes')(app);
 
-io.on("connection", function(socket) {
-  socket.on('chat message', function(data) {
-    console.log(data);
-    io.emit('chat message', data);
-  });
-});
-
-http.listen(port, function() {
-  console.log("listening at " + port);
+exports.server = require('http').createServer(app).listen(port, function() {
+  console.log('Prattle started on port %d', port);
 });
