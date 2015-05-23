@@ -8,6 +8,14 @@ function Sockets (app, server) {
   var client = app.get('mongoClient');
   var io = sio.listen(server);
 
+  var validateRoomExists = function(id, cb) {
+    client.collection('rooms').find({key: id}, function(err, records) {
+      if(!err && records.length) {
+        cb(records[0]);
+      }
+    });
+  };
+
   io.use(function(socket, next) {
     var handshakeData = socket.request;
 
@@ -23,18 +31,16 @@ function Sockets (app, server) {
     
     socket.join(roomID);
 
-    client.collection('rooms').find({key: roomID}, function(err, records) {
-      if(!err && records.length) {
-        client.collection('rooms').update({
-          key: roomID
-        }, {
-          $inc: { online: 1 }
-        });
+    validateRoomExists(roomID, function(record) {
+      client.collection('rooms').update({
+        key: roomID
+      }, {
+        $inc: { online: 1 }
+      });
 
-        io.sockets.in(roomID).emit('user update', {
-          count: records[0].online
-        });
-      }
+      io.sockets.in(roomID).emit('user update', {
+        count: record.online
+      });
     });
 
     socket.on('my msg', function(data) {
@@ -42,8 +48,7 @@ function Sockets (app, server) {
     });
 
     socket.on('disconnect', function() {
-      console.log("DISCONNECTED");
-      // remove from room.online - delete room if applicable
+
     });
   });
 }
