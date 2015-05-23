@@ -28,12 +28,11 @@ function Sockets (app, server) {
         client.collection('rooms').update({
           key: roomID
         }, {
-          $push: {
-            online: { anonymous: true }
-          }
-        })
+          $inc: { online: 1 }
+        });
+
         io.sockets.in(roomID).emit('user update', {
-          count: records[0].online.length
+          count: records[0].online
         });
       }
     });
