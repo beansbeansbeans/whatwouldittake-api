@@ -27,20 +27,31 @@ function Sockets (app, server) {
   });
 
   io.sockets.on("connection", function(socket) {
-    var roomID = socket.request.prattle.room;
+    var roomID = socket.request.prattle.room,
+      updateRoomOnline = function(record, amount) {
+        client.collection('rooms').update({
+          key: roomID
+        }, {
+          $inc: { online: amount }
+        }, function(err, count) {
+          var newCount;
+          if(!err) {
+            client.collection('rooms').find({key: roomID}, function(nestedError, records) {
+              if(!err && records.length) {
+                newCount = records[0].online;
+                io.sockets.in(roomID).emit('user update', {
+                  count: newCount
+                });
+              }
+            });
+          }
+        });
+      };
     
     socket.join(roomID);
 
     validateRoomExists(roomID, function(record) {
-      client.collection('rooms').update({
-        key: roomID
-      }, {
-        $inc: { online: 1 }
-      });
-
-      io.sockets.in(roomID).emit('user update', {
-        count: record.online
-      });
+      updateRoomOnline(record, 1);
     });
 
     socket.on('my msg', function(data) {
@@ -48,7 +59,9 @@ function Sockets (app, server) {
     });
 
     socket.on('disconnect', function() {
-
+      validateRoomExists(roomID, function(record) {
+        updateRoomOnline(record, -1);
+      });
     });
   });
 }
