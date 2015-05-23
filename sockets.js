@@ -39,9 +39,14 @@ function Sockets (app, server) {
             client.collection('rooms').find({key: roomID}, function(nestedError, records) {
               if(!err && records.length) {
                 newCount = records[0].online;
-                io.sockets.in(roomID).emit('user update', {
-                  count: newCount
-                });
+
+                if(newCount > 0) {
+                  io.sockets.in(roomID).emit('user update', {
+                    count: newCount
+                  });
+                } else {
+                  client.collection('rooms').remove({key: roomID});
+                }
               }
             });
           }
