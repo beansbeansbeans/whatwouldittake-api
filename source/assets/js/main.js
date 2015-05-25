@@ -1,7 +1,6 @@
 //Socket.io
 var socket = io.connect("", {
-  "connect timeout": 1000,
-  "room": 'testing'
+  "connect timeout": 1000
 });
 
 socket.on('user update', function(data) {

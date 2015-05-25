@@ -17,10 +17,12 @@ function Sockets (app, server) {
   };
 
   io.use(function(socket, next) {
-    var handshakeData = socket.request;
+    var handshakeData = socket.request,
+      roomIdRegExp = new RegExp(handshakeData.headers.host + '/(?:([^\/]+?))\/?$', 'g'),
+      roomMatch = roomIdRegExp.exec(handshakeData.headers.referer);
 
     handshakeData.prattle = {
-      room: /\/(?:([^\/]+?))\/?$/g.exec(handshakeData.headers.referer)[1]
+      room: roomMatch ? roomMatch[1] : "lobby"
     };
 
     next();
@@ -35,24 +37,27 @@ function Sockets (app, server) {
           $inc: { online: amount }
         }, function(err, count) {
           var newCount;
-          if(!err) {
-            client.collection('rooms').find({key: roomID}, function(nestedError, records) {
-              if(!err && records.length) {
-                newCount = records[0].online;
+          client.collection('rooms').find({key: roomID}, function(nestedError, records) {
+            newCount = records[0].online;
 
-                if(newCount > 0) {
-                  io.sockets.in(roomID).emit('user update', {
-                    count: newCount
+            if(newCount > 0) {
+              io.sockets.in(roomID).emit('user update', {
+                count: newCount
+              });
+            } else {
+              client.collection('rooms').remove({key: roomID}, function() {
+                client.collection('rooms').find().toArray(function(err, roomRecords) {
+
+                  io.sockets.emit('rooms update', {
+                    rooms: roomRecords
                   });
-                } else {
-                  client.collection('rooms').remove({key: roomID});
-                }
-              }
-            });
-          }
+                });
+              });
+            }
+          });
         });
       };
-    
+
     socket.join(roomID);
 
     validateRoomExists(roomID, function(record) {
