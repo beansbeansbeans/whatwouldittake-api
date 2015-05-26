@@ -1,0 +1,10 @@
+@import url(http://fonts.googleapis.com/css?family=Montserrat:400,700|Maven+Pro:400,700);
+h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+}
+
+html {
+  font-family: 'Maven Pro', sans-serif;
+  font-weight: 400;
+}

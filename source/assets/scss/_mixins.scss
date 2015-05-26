@@ -6,3 +6,13 @@
 @mixin square($size) {
   @include size($size, $size);
 }
+
+%header-font {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+}
+
+%body-font {
+  font-family: 'Maven Pro', sans-serif;
+  font-weight: 400;
+}
