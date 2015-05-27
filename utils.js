@@ -60,9 +60,7 @@ exports.getUsersInRoom = function(req, res, client, room, fn) {
 };
 
 exports.getPublicRoomsInfo = function(client, fn) {
-  client.find().toArray().then(function(docs) {
-    fn(docs);
-  });
+  client.find().toArray().then(fn);
 };
 
 exports.enterRoom = function(req, res, room){
