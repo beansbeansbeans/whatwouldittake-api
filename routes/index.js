@@ -26,7 +26,7 @@ function Routes (app) {
   app.get('/:id', function(req, res) {
     utils.getRoomInfo(req, res, roomsDB, function(room) {
       if(room) {
-        utils.enterRoom(req, res, room[0]);
+        utils.enterRoom(req, res, room);
       }
     });
   });

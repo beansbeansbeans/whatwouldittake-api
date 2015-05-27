@@ -39,7 +39,7 @@ exports.getPublicRoomsInfo = function(client, fn) {
   client.find().toArray().then(fn);
 };
 
-exports.enterRoom = function(req, res, room){
+exports.enterRoom = function(req, res, room) {
   res.locals = { room: room };
   res.render('room');
 };
