@@ -18,32 +18,33 @@ exports.validRoomName = function(req, res, fn) {
 };
 
 exports.createRoom = function(req, res, client) {
-  var collection = client.collection('rooms'),
-    roomKey = exports.genRoomKey(),
+  var roomKey = exports.genRoomKey(),
     room = {
       key: roomKey,
       name: req.body.room_name,
       online: 0
     };
 
-  collection.insert(room, function(err, record) {
-    if(!err && record) {
-      res.redirect("/" + roomKey);
-    } else {
-      res.sendStatus(500);
-    }
-  });
+  client.insert(room).then(function(record) {
+    res.redirect("/" + roomKey);
+  }).catch(console.log.bind(console));
 };
 
 exports.getRoomInfo = function(req, res, client, fn) { 
-  client.collection('rooms').find({key: req.params.id}, function(err, record) {
-    if(!err && record.length) {
-      fn(record[0])
-    } else {
-      res.redirect('back');
-    }
-  });
+  client.findOne({key: req.params.id}).then(fn)
+    .catch(console.log.bind(console));
 };
+
+exports.getPublicRoomsInfo = function(client, fn) {
+  client.find().toArray().then(fn);
+};
+
+exports.enterRoom = function(req, res, room){
+  res.locals = { room: room };
+  res.render('room');
+};
+
+// ON ICE
 
 exports.getUsersInRoom = function(req, res, client, room, fn) {
   client.collection('rooms').find({key: req.params.id}, function(err, records) {
@@ -58,17 +59,3 @@ exports.getUsersInRoom = function(req, res, client, room, fn) {
     }
   });
 };
-
-exports.getPublicRoomsInfo = function(client, fn) {
-  client.find().toArray().then(fn);
-};
-
-exports.enterRoom = function(req, res, room){
-  res.locals = { room: room };
-  res.render('room');
-};
-
-
-
-
-

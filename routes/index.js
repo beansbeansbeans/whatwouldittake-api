@@ -19,13 +19,15 @@ function Routes (app) {
 
   app.post('/create', function(req, res) {
     utils.validRoomName(req, res, function(roomKey) {
-      utils.createRoom(req, res, client);
+      utils.createRoom(req, res, roomsDB);
     });
   });
 
   app.get('/:id', function(req, res) {
-    utils.getRoomInfo(req, res, client, function(room) {
-      utils.enterRoom(req, res, room);
+    utils.getRoomInfo(req, res, roomsDB, function(room) {
+      if(room) {
+        utils.enterRoom(req, res, room[0]);
+      }
     });
   });
 }
