@@ -60,14 +60,8 @@ exports.getUsersInRoom = function(req, res, client, room, fn) {
 };
 
 exports.getPublicRoomsInfo = function(client, fn) {
-  var rooms = [];
-  client.collection('rooms').find().toArray(function(err, records) {
-    if(records.length) {
-      records.forEach(function(room, index) {
-        rooms.push(room);
-      });
-    }
-    fn(rooms);
+  client.find().toArray().then(function(docs) {
+    fn(docs);
   });
 };
 

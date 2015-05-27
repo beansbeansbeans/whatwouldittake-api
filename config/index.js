@@ -1,5 +1,6 @@
 var express = require('express');
 var mongojs = require('mongojs');
+var pmongo = require('promised-mongo');
 var path = require('path');
 var bodyParser  = require('body-parser');
 
@@ -12,7 +13,7 @@ function Config(app) {
 
   app.set('mongoURL', config.mongoURL);
 
-  var mongoClient = mongojs.connect(app.get('mongoURL'));
+  var mongoClient = pmongo(app.get('mongoURL'));
 
   app.set('mongoClient', mongoClient);
 

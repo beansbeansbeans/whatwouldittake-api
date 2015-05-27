@@ -7,9 +7,10 @@ module.exports = Routes;
 function Routes (app) {
   var config = app.get('config');
   var client = app.get('mongoClient');
+  var roomsDB = client.collection('rooms');
 
   app.get('/', function(req, res, next) {
-    utils.getPublicRoomsInfo(client, function(rooms) {
+    utils.getPublicRoomsInfo(roomsDB, function(rooms) {
       res.locals = { rooms: rooms };
 
       res.render('index');
