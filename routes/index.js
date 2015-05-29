@@ -10,11 +10,7 @@ function Routes (app) {
   var roomsDB = client.collection('rooms');
 
   app.get('/', function(req, res, next) {
-    utils.getPublicRoomsInfo(roomsDB, function(rooms) {
-      res.locals = { rooms: rooms };
-
-      res.render('index');
-    });
+    res.render('index');
   });
 
   app.post('/create', function(req, res) {
