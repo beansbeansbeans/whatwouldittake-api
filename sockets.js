@@ -34,7 +34,7 @@ function Sockets (app, server) {
         client.collection('rooms').update({
           key: roomID
         }, {
-          $inc: { online: amount }
+          $set: { online: amount }
         }, function(err, count) {
           var newCount;
           client.collection('rooms').find({key: roomID}, function(nestedError, records) {
@@ -61,7 +61,7 @@ function Sockets (app, server) {
     socket.join(roomID);
 
     validateRoomExists(roomID, function(record) {
-      updateRoomOnline(record, 1);
+      updateRoomOnline(record, Object.keys(io.nsps['/'].adapter.rooms[roomID]).length);
     });
 
     socket.on('my msg', function(data) {
@@ -69,8 +69,15 @@ function Sockets (app, server) {
     });
 
     socket.on('disconnect', function() {
+      var onlineCount = 0,
+        roomObj = io.nsps['/'].adapter.rooms[roomID];
+
+      if(roomObj) {
+        onlineCount = Object.keys(roomObj).length;
+      }
+
       validateRoomExists(roomID, function(record) {
-        updateRoomOnline(record, -1);
+        updateRoomOnline(record, roomObj);
       });
     });
   });
