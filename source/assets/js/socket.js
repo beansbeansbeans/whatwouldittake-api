@@ -13,4 +13,4 @@ module.exports = {
       console.info("established cxn");
     });
   }
-}
+};
