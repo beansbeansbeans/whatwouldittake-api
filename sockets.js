@@ -45,20 +45,24 @@ function Sockets (app, server) {
                 count: newCount
               });
             } else {
-              client.collection('rooms').remove({key: roomID}, function() {
-                client.collection('rooms').find().toArray(function(err, roomRecords) {
-
-                  io.sockets.emit('rooms update', {
-                    rooms: roomRecords
+              client.collection('rooms').remove({key: roomID})
+                .then(function(data) {
+                  client.collection('rooms').find().toArray().then(function(roomRecords) {
+                    io.sockets.in('lobby').emit('rooms update', roomRecords);
                   });
                 });
-              });
             }
           });
         });
       };
 
     socket.join(roomID);
+
+    if(roomID === "lobby") {
+      client.collection('rooms').find().toArray().then(function(records) {
+        io.sockets.connected[socket.id].emit('rooms update', records);
+      });
+    }
 
     validateRoomExists(roomID, function(record) {
       updateRoomOnline(record, Object.keys(io.nsps['/'].adapter.rooms[roomID]).length);
