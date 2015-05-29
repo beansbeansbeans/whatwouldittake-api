@@ -35,15 +35,12 @@ function Sockets (app, server) {
           key: roomID
         }, {
           $set: { online: amount }
-        }, function(err, count) {
-          var newCount;
-          client.collection('rooms').find({key: roomID}, function(nestedError, records) {
-            newCount = records[0].online;
+        }).then(function(data) {
+          client.collection('rooms').findOne({key: roomID}).then(function(record) {
+            newCount = record.online;
 
             if(newCount > 0) {
-              io.sockets.in(roomID).emit('user update', {
-                count: newCount
-              });
+              io.sockets.in(roomID).emit('user update', { count: newCount });
             } else {
               client.collection('rooms').remove({key: roomID})
                 .then(function(data) {
@@ -52,8 +49,8 @@ function Sockets (app, server) {
                   });
                 });
             }
-          });
-        });
+          })
+        })
       };
 
     socket.join(roomID);
