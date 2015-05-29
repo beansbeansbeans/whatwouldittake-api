@@ -78,7 +78,7 @@ function Sockets (app, server) {
       }
 
       validateRoomExists(roomID, function(record) {
-        updateRoomOnline(record, roomObj);
+        updateRoomOnline(record, onlineCount);
       });
     });
   });
