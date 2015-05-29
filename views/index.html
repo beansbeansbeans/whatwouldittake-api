@@ -10,11 +10,11 @@
     <div class="rooms"></div>
   </body>
   <script id="room_partial" type="text/template">
-    <div data-key={key} class="room">
+    <a href='/{key}' data-key={key} class="room">
       <div>{name}</div>
       <div>{key}</div>
       <div>{online}</div>
-    </div>
+    </a>
   </script>
   {{> tail}}
 </html>
