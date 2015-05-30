@@ -3,10 +3,14 @@ var sio = require('socket.io'),
 
 module.exports = Sockets;
 
-function Sockets (app, server) {
+function Sockets (app, server, ee) {
   var config = app.get('config');
   var client = app.get('mongoClient');
   var io = sio.listen(server);
+
+  ee.on("room created", function() {
+    console.log("A ROOM WAS CREATED!!!");
+  });
 
   var validateRoomExists = function(id, cb) {
     client.collection('rooms').find({key: id}, function(err, records) {
@@ -30,6 +34,9 @@ function Sockets (app, server) {
 
   io.sockets.on("connection", function(socket) {
     var roomID = socket.request.prattle.room,
+      getRoomsOnline = function() {
+        return client.collection('rooms').find().toArray();
+      },
       updateRoomOnline = function(record, amount) {
         client.collection('rooms').update({
           key: roomID
@@ -43,10 +50,9 @@ function Sockets (app, server) {
               io.sockets.in(roomID).emit('user update', { count: newCount });
             } else {
               client.collection('rooms').remove({key: roomID})
-                .then(function(data) {
-                  client.collection('rooms').find().toArray().then(function(roomRecords) {
-                    io.sockets.in('lobby').emit('rooms update', roomRecords);
-                  });
+                .then(getRoomsOnline)
+                .then(function(roomRecords) {
+                  io.sockets.in('lobby').emit('rooms update', roomRecords);
                 });
             }
           })
@@ -56,7 +62,7 @@ function Sockets (app, server) {
     socket.join(roomID);
 
     if(roomID === "lobby") {
-      client.collection('rooms').find().toArray().then(function(records) {
+      getRoomsOnline().then(function(records) {
         io.sockets.connected[socket.id].emit('rooms update', records);
       });
     }

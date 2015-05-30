@@ -17,7 +17,7 @@ exports.validRoomName = function(req, res, fn) {
   }
 };
 
-exports.createRoom = function(req, res, client) {
+exports.createRoom = function(req, res, client, ee) {
   var roomKey = exports.genRoomKey(),
     room = {
       key: roomKey,
@@ -27,6 +27,7 @@ exports.createRoom = function(req, res, client) {
 
   client.insert(room).then(function(record) {
     res.redirect("/" + roomKey);
+    ee.emit("room created");
   }).catch(console.log.bind(console));
 };
 

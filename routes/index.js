@@ -4,7 +4,7 @@ var utils = require('../utils');
 
 module.exports = Routes;
 
-function Routes (app) {
+function Routes (app, ee) {
   var config = app.get('config');
   var client = app.get('mongoClient');
   var roomsDB = client.collection('rooms');
@@ -15,7 +15,7 @@ function Routes (app) {
 
   app.post('/create', function(req, res) {
     utils.validRoomName(req, res, function(roomKey) {
-      utils.createRoom(req, res, roomsDB);
+      utils.createRoom(req, res, roomsDB, ee);
     });
   });
 
