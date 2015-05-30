@@ -7,9 +7,14 @@ function Sockets (app, server, ee) {
   var config = app.get('config');
   var client = app.get('mongoClient');
   var io = sio.listen(server);
+  var getRoomsOnline = function() {
+    return client.collection('rooms').find().toArray();
+  };
 
   ee.on("room created", function() {
-    console.log("A ROOM WAS CREATED!!!");
+    getRoomsOnline().then(function(records) {
+      io.sockets.in('lobby').emit('rooms update', records);
+    });
   });
 
   var validateRoomExists = function(id, cb) {
@@ -34,9 +39,6 @@ function Sockets (app, server, ee) {
 
   io.sockets.on("connection", function(socket) {
     var roomID = socket.request.prattle.room,
-      getRoomsOnline = function() {
-        return client.collection('rooms').find().toArray();
-      },
       updateRoomOnline = function(record, amount) {
         client.collection('rooms').update({
           key: roomID
