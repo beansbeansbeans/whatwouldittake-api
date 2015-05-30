@@ -4,8 +4,8 @@ $blockSize: 2em;
 // Play with these to see what you get
 $delay: .065s;
 $duration: .88s;
-$startingColor: #fdfdfd;
-$endingColor: #dadada;
+$startingColor: lighten($blue, 5%);
+$endingColor: $blue;
 
 // Calculate some values
 $blockMargin: $blockSize / 3;

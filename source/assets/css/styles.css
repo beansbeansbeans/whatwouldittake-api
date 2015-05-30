@@ -28,7 +28,7 @@ html {
   opacity: 0;
   width: 2em;
   height: 2em;
-  background: #fdfdfd;
+  background: #c9eaf0;
   -webkit-animation: show 0.88s step-end infinite alternate, pulse 0.88s linear infinite alternate;
   animation: show 0.88s step-end infinite alternate, pulse 0.88s linear infinite alternate;
 }
@@ -115,11 +115,11 @@ html {
 @-webkit-keyframes pulse {
   from,
   40% {
-    background: #fdfdfd;
+    background: #c9eaf0;
   }
 
   to {
-    background: #dadada;
+    background: #b5e2ea;
   }
 }
 @-webkit-keyframes show {
@@ -134,11 +134,11 @@ html {
 @keyframes pulse {
   from,
   40% {
-    background: #fdfdfd;
+    background: #c9eaf0;
   }
 
   to {
-    background: #dadada;
+    background: #b5e2ea;
   }
 }
 @keyframes show {
