@@ -9,4 +9,20 @@
       display: none;
     }
   }
+  
+  text-align: center;
+  h1 {
+    font-size: 5rem;
+  }
+
+  &[data-mode="empty"] {
+    h1 {
+    }
+  }
+
+  &[data-mode="occupied"] {
+    .empty-visible {
+      display: none;
+    }
+  }
 }

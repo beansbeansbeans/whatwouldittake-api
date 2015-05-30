@@ -5,6 +5,8 @@
     {{> loader}}
     <div class="content">
       <h1>Prattle</h1>
+      <div class="empty-visible">Looks like there's no one chatting right now.</div>
+      <div>Start a conversation.</div>
       <form action="/create" method="POST">
         <input type="text" name="room_name" placeholder="name your room">
         <input type="submit" value="submit">

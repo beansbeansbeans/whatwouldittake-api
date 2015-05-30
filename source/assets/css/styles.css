@@ -150,9 +150,22 @@ html {
     opacity: 1;
   }
 }
+[data-room="lobby"] {
+  text-align: center;
+}
 [data-room="lobby"].loading .content {
   display: none;
 }
 [data-room="lobby"]:not(.loading) .loader {
   display: none;
+}
+[data-room="lobby"] h1 {
+  font-size: 5rem;
+}
+[data-room="lobby"][data-mode="occupied"] .empty-visible {
+  display: none;
+}
+
+html {
+  color: #3d3d3d;
 }
