@@ -1,14 +1,16 @@
 <!doctype html>
 <html>
   {{> head}}
-  <body>
+  <body data-room="lobby" class="loading">
     {{> loader}}
-    <h1>Prattle</h1>
-    <form action="/create" method="POST">
-      <input type="text" name="room_name" placeholder="name your room">
-      <input type="submit" value="submit">
-    </form>
-    <div class="rooms"></div>
+    <div class="content">
+      <h1>Prattle</h1>
+      <form action="/create" method="POST">
+        <input type="text" name="room_name" placeholder="name your room">
+        <input type="submit" value="submit">
+      </form>
+      <div class="rooms"></div>
+    </div>
   </body>
   <script id="room_partial" type="text/template">
     <a href='/{key}' data-key={key} class="room">

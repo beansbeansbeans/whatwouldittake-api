@@ -1,0 +1,12 @@
+[data-room="lobby"] {
+  &.loading {
+    .content {
+      display: none;
+    }
+  }
+  &:not(.loading) {
+    .loader {
+      display: none;
+    }
+  }
+}

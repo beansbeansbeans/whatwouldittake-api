@@ -150,3 +150,9 @@ html {
     opacity: 1;
   }
 }
+[data-room="lobby"].loading .content {
+  display: none;
+}
+[data-room="lobby"]:not(.loading) .loader {
+  display: none;
+}
