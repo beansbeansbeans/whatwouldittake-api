@@ -74,7 +74,7 @@ function Sockets (app, server, ee) {
     });
 
     socket.on('my msg', function(data) {
-
+      io.sockets.in(roomID).emit('new msg', data);
     });
 
     socket.on('disconnect', function() {

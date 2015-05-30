@@ -2,8 +2,20 @@
 <html>
   {{> head}}
   <body>
-    <div class="room">here's your room. {{room.name}}</div>
+    here's your room. {{room.name}}
     <div class="room-count"></div>
+
+    <div class="room">
+      <div class="messages-list">
+      </div>
+      <div class="create-message-wrapper">
+        <textarea id="create-message-text" type="text"></textarea>
+        <div id="send-message-button" class="button">send</div>
+      </div>
+    </div>
   </body>
+  <script id="message_partial" type="text/template">
+    <div class="message">{contents}</div>
+  </script>
   {{> tail}}
 </html>
