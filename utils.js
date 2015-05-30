@@ -25,19 +25,19 @@ exports.createRoom = function(req, res, client, ee) {
       online: 0
     };
 
-  client.insert(room).then(function(record) {
+  return client.insert(room).then(function(record) {
     res.redirect("/" + roomKey);
     ee.emit("room created");
   }).catch(console.log.bind(console));
 };
 
 exports.getRoomInfo = function(req, res, client, fn) { 
-  client.findOne({key: req.params.id}).then(fn)
+  return client.findOne({key: req.params.id}).then(fn)
     .catch(console.log.bind(console));
 };
 
 exports.getPublicRoomsInfo = function(client, fn) {
-  client.find().toArray().then(fn);
+  return client.find().toArray().then(fn);
 };
 
 exports.enterRoom = function(req, res, room) {
@@ -48,7 +48,7 @@ exports.enterRoom = function(req, res, room) {
 // ON ICE
 
 exports.getUsersInRoom = function(req, res, client, room, fn) {
-  client.collection('rooms').find({key: req.params.id}, function(err, records) {
+  return client.collection('rooms').find({key: req.params.id}, function(err, records) {
     var chatters = [];
 
     if(!err && records.length) {
