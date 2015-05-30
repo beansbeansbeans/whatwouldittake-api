@@ -3,9 +3,9 @@ var sw = require('./socket');
 
 module.exports.initialize = function() {
   sw.socket.on('rooms update', function(data) {
-    document.querySelector('body').classList.remove('loading');
+    d.qs('body').classList.remove('loading');
 
-    document.querySelector('.rooms').innerHTML = data.reduce(function(prev, curr) {
+    d.qs('.rooms').innerHTML = data.reduce(function(prev, curr) {
       return prev + util.processTemplate(curr, 'room_partial');
     }, '');
   });

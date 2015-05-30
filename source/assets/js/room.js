@@ -3,6 +3,6 @@ var sw = require('./socket');
 
 module.exports.initialize = function() {
   sw.socket.on('user update', function(data) {
-    document.querySelector('.room-count').innerHTML = data.count;
+    d.qs('.room-count').innerHTML = data.count;
   });
 };
