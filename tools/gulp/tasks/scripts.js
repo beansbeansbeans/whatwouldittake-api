@@ -38,22 +38,16 @@ var options = {},
 function createBundle(options) {
   var bundler, rebundle;
 
+  bundler = browserify({
+    entries: options.input
+  }, {
+    cache: {},
+    packageCache: {},
+    fullconfig: options.watching
+  });
+
   if(options.watching) {
-    bundler = watchify(browserify({
-      entries: options.input
-    }, {
-      cache: {},
-      packageCache: {},
-      fullconfig: options.watching
-    }));
-  } else {
-    bundler = browserify({
-      entries: options.input
-    }, {
-      cache: {},
-      packageCache: {},
-      fullconfig: options.watching
-    });
+    bundler = watchify(bundler);
   }
 
   rebundle = function() {
