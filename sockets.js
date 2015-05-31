@@ -68,7 +68,7 @@ function Sockets (app, server, ee) {
         io.sockets.connected[socket.id].emit('rooms update', records);
       });
     } else {
-      client.collection('messages').find({ room: roomID }).toArray().then(function(messages) {
+      client.collection('messages').find({ room: roomID }).limit(50).toArray().then(function(messages) {
         io.sockets.connected[socket.id].emit('seed messages', messages);
       });
     }
