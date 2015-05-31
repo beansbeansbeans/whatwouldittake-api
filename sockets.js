@@ -40,10 +40,9 @@ function Sockets (app, server, ee) {
   io.sockets.on("connection", function(socket) {
     var roomID = socket.request.prattle.room,
       updateRoomOnline = function(record, amount) {
-        client.collection('rooms').update({
-          key: roomID
-        }, {
-          $set: { online: amount }
+        client.collection('rooms').update(
+          { key: roomID }, 
+          { $set: { online: amount }
         }).then(function(data) {
           client.collection('rooms').findOne({key: roomID}).then(function(record) {
             newCount = record.online;
@@ -66,6 +65,10 @@ function Sockets (app, server, ee) {
     if(roomID === "lobby") {
       getRoomsOnline().then(function(records) {
         io.sockets.connected[socket.id].emit('rooms update', records);
+      });
+    } else {
+      client.collection('messages').find({ room: roomID }).toArray().then(function(messages) {
+        io.sockets.connected[socket.id].emit('seed messages', messages);
       });
     }
 
