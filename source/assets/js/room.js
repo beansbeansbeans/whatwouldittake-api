@@ -1,29 +1,35 @@
 var util = require('./util');
 var sw = require('./socket');
 
+var getMsgHTML = function(msg) {
+  return util.processTemplate({ contents: msg}, 'message_partial');
+};
+
 module.exports.initialize = function() {
+  var msgList = d.qs('.messages-list');
+
   sw.socket.on('user update', function(data) {
     d.qs('.room-count').innerHTML = data.count;
   });
 
   sw.socket.on('new msg', function(msg) {
-    d.qs('.messages-list').innerHTML += util.processTemplate({ contents: msg}, 'message_partial');
+    msgList.innerHTML += getMsgHTML(msg);
   });
 
   sw.socket.on('seed messages', function(msgs) {
     if(msgs.length) {
       var html = "";
-      msgs.forEach(function(msg) {
-        html += util.processTemplate({ contents: msg.message}, 'message_partial');
+      msgs.forEach(function(item) {
+        html += getMsgHTML(item.message);
       });
-      d.qs('.messages-list').innerHTML += html;
+      msgList.innerHTML += html;
     }
   });
 
   d.gbID("send-message-button").addEventListener("click", function(e) {
-    var message = d.gbID("create-message-text").value;
+    var msg = d.gbID("create-message-text").value;
 
-    sw.socket.emit('my msg', message);
+    sw.socket.emit('my msg', msg);
 
     d.gbID("create-message-text").value = "";
   });
