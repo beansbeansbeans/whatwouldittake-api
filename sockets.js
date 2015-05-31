@@ -54,6 +54,7 @@ function Sockets (app, server, ee) {
                 .then(getRoomsOnline)
                 .then(function(roomRecords) {
                   io.sockets.in('lobby').emit('rooms update', roomRecords);
+                  client.collection('messages').remove({ room: roomID });
                 });
             }
           })
