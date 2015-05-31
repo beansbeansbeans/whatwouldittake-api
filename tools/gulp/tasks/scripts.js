@@ -57,6 +57,7 @@ function createBundle(options) {
   }
 
   rebundle = function() {
+    console.log("REBUNDLE");
     return bundler.bundle()
       .on('error', handleErrors)
       .pipe(source(options.output))

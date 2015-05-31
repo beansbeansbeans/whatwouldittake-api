@@ -40,7 +40,6 @@ module.exports = {
         '!' + dirs.sourceAssetsDir + 'js/bundle.js',  // ...except for bundled js,
         '!' + dirs.sourceAssetsDir + 'js/lib/**/*'    // and libraries
       ],
-      bundleSource: dirs.sourceAssetsDir + 'js/bundle.js',
       entryPoints: [
         {
           entry: dirs.sourceAssetsDir + 'js/main-lobby.js',
