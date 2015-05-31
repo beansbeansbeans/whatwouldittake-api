@@ -1,5 +1,6 @@
 var gulp = require('gulp');
 var gutil = require('gulp-util');
+var es = require('event-stream');
 var browserify = require('browserify');
 var browserifyHandlebars = require('browserify-handlebars');
 var handlebarsify = require('hbsfy');
@@ -16,12 +17,7 @@ var parseArgs = require('minimist')(process.argv.slice(2));
 var buildMode = (parseArgs['_'][0] === 'build') ? true : false;
 
 gulp.task('js-hint', function() {
-  // gutil.log(gutil.colors.yellow('[ JSHint ]'));
   var stream = gulp.src(config.sources.browserify.watchSource);
-
-  if(config.react) {
-    stream = stream.pipe(babel()).on('error', handleErrors); //transform any react files before linting
-  }
 
   stream.pipe(jshint({ globals: config.globals, browserify: true, newcap: false, devel: true }))
     .pipe(jshint.reporter('jshint-stylish'))
@@ -47,47 +43,51 @@ var options = {},
   browserify_instance, bundler = null;
 
 function doScripts(watch) {
-  if(bundler === null) {
-    options = {
-      cache: {},      // required by watchify
-      packageCache: {},  // required by watchify
-      fullconfig: watch,  // required by watchify
-      //
-      entries: [config.sources.browserify.entryPoint],
-      debug: watch
-    };
 
-    // Allow non-relative module paths for admin code
-    if (config.react) {
-      options.paths = [config.sourceAssetsDir + '/js'];
-    }
-
-    browserify_instance = browserify(config.sources.browserify.entryPoint, options);
-    if(watch) {
-      bundler = watchify(browserify_instance); // watchify instance wrapping a browserify instance
-      bundler.on('update', rebundle);
-    } else {
-      bundler = browserify_instance; // browserify instance
-    }
-  }
-
-  if(config.react) {
-    bundler = bundler.transform(babelify.configure({
-    }));
-  }
-
-  bundler = bundler.transform(handlebarsify);
-
-  function rebundle(ids) {
-    if(!buildMode && watch) gulp.start('js-hint');
-    if(ids && watch) gutil.log(gutil.colors.yellow('[ Browserify ] Rebundle: ', ids));
-    return bundler.bundle()
+  var tasks = config.sources.browserify.entryPoints.map(function(entry) {
+    return browserify({ entries: [entry.entry] })
+      .bundle()
       .on('error', function(err) {
         handleErrors.call(this, err);
       })
-      .pipe(source(config.targets.browserify.bundleFileName))
+      .pipe(source(entry.dest))
       .pipe(gulp.dest(config.targets.browserify.bundleDir))
       .pipe(gulp.dest(config.buildAssetsDir + '/js'));
-  }
-  return rebundle();
+  });
+
+  return es.merge.apply(null, tasks);
+
+  // if(bundler === null) {
+  //   options = {
+  //     cache: {},      // required by watchify
+  //     packageCache: {},  // required by watchify
+  //     fullconfig: watch,  // required by watchify
+  //     //
+  //     entries: [config.sources.browserify.entryPoint],
+  //     debug: watch
+  //   };
+
+  //   browserify_instance = browserify(config.sources.browserify.entryPoint, options);
+  //   if(watch) {
+  //     bundler = watchify(browserify_instance); // watchify instance wrapping a browserify instance
+  //     bundler.on('update', rebundle);
+  //   } else {
+  //     bundler = browserify_instance; // browserify instance
+  //   }
+  // }
+
+  // bundler = bundler.transform(handlebarsify);
+
+  // function rebundle(ids) {
+  //   if(!buildMode && watch) gulp.start('js-hint');
+  //   if(ids && watch) gutil.log(gutil.colors.yellow('[ Browserify ] Rebundle: ', ids));
+  //   return bundler.bundle()
+  //     .on('error', function(err) {
+  //       handleErrors.call(this, err);
+  //     })
+  //     .pipe(source(config.targets.browserify.bundleFileName))
+  //     .pipe(gulp.dest(config.targets.browserify.bundleDir))
+  //     .pipe(gulp.dest(config.buildAssetsDir + '/js'));
+  // }
+  // return rebundle();
 }

@@ -1,5 +1,5 @@
-var util = require('./util');
-var sw = require('./socket');
+var util = require('../util');
+var sw = require('../socket');
 
 var getMsgHTML = function(msg) {
   return util.processTemplate({ contents: msg}, 'message_partial');

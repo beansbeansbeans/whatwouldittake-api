@@ -41,7 +41,16 @@ module.exports = {
         '!' + dirs.sourceAssetsDir + 'js/lib/**/*'    // and libraries
       ],
       bundleSource: dirs.sourceAssetsDir + 'js/bundle.js',
-      entryPoint: dirs.sourceAssetsDir + 'js/main.js'
+      entryPoints: [
+        {
+          entry: dirs.sourceAssetsDir + 'js/main-lobby.js',
+          dest: 'bundle-lobby.js'
+        },
+        {
+          entry: dirs.sourceAssetsDir + 'js/main-room.js',
+          dest: 'bundle-room.js'
+        }
+      ]
     }
   },
   targets: {
@@ -56,7 +65,6 @@ module.exports = {
       bundleDir: dirs.buildAssetsDir + 'img/'
     },
     browserify: {
-      bundleFileName: 'bundle.js',
       bundleDir: dirs.sourceAssetsDir + 'js/'
     }
   }

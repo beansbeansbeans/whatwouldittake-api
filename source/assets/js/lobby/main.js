@@ -1,5 +1,5 @@
-var util = require('./util');
-var sw = require('./socket');
+var util = require('../util');
+var sw = require('../socket');
 
 module.exports.initialize = function() {
   sw.socket.on('rooms update', function(data) {
