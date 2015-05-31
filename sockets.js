@@ -75,6 +75,10 @@ function Sockets (app, server, ee) {
 
     socket.on('my msg', function(data) {
       io.sockets.in(roomID).emit('new msg', data);
+      client.collection('messages').insert({
+        message: data,
+        room: roomID
+      });
     });
 
     socket.on('disconnect', function() {
