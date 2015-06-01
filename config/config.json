@@ -1,3 +1,9 @@
 {
-  "mongoURL": "mongodb://annyuan:xrexworks7@proximus.modulusmongo.net:27017/Yju7huto"
+  "mongoURL": "mongodb://annyuan:xrexworks7@proximus.modulusmongo.net:27017/Yju7huto",
+  "auth": {
+    "facebook": {
+      "clientid": "390553027803781",
+      "clientsecret": "d00c19aa056442c730a83177699f32fb"
+    }
+  }
 }

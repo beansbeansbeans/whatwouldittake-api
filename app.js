@@ -10,6 +10,8 @@ var ee = new EventEmitter();
 
 require('./config')(app);
 
+require('./auth')(app);
+
 require('./routes')(app, ee);
 
 exports.server = require('http').createServer(app).listen(port, function() {
