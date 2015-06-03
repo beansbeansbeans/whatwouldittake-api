@@ -1,4 +1,4 @@
-var util = require('../util');
+var util = require('../shared/util');
 var sw = require('../socket');
 
 var getMsgHTML = function(msg) {

@@ -1,4 +1,4 @@
-var util = require('../util');
+var util = require('../shared/util');
 var sw = require('../socket');
 
 module.exports.initialize = function() {
