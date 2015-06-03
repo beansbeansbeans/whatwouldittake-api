@@ -1,6 +1,6 @@
 var sw = require('./socket');
 var room = require('./room/main');
-var util = require('./util');
+var util = require('./shared/util');
 
 util.initialize();
 sw.initialize();

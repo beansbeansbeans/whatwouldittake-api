@@ -55,7 +55,6 @@ function createBundle(options) {
     return bundler.bundle()
       .on('error', handleErrors)
       .pipe(source(options.output))
-      .pipe(gulp.dest(config.targets.browserify.bundleDir))
       .pipe(gulp.dest(config.buildAssetsDir + '/js'));
   };
 
