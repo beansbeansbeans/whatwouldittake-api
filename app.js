@@ -5,10 +5,12 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 var EventEmitter = require("events").EventEmitter;
+var session = require('express-session');
+var mongoStore = require('connect-mongo')(session);
 
 var ee = new EventEmitter();
 
-require('./config')(app);
+require('./config')(app, mongoStore);
 
 require('./auth')(app);
 

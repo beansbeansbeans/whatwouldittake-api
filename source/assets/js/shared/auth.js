@@ -30,7 +30,7 @@ function checkLoginState() {
 
 var initFBIntervalID = null,
   checkFBInitialized = function() {
-    if(typeof window.FB !== "undefined") {
+    if(window.FBInitialized === true) {
       FB.getLoginStatus(function(response) {
         statusChangeCallback(response);
       });

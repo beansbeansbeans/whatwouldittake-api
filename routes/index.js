@@ -26,4 +26,9 @@ function Routes (app, ee) {
       }
     });
   });
+
+  app.post('/sessions', function(req, res) {
+    console.log("HITTING SESSIONS ENDPOINT");
+    console.log(req.session);
+  });
 }

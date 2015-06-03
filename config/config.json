@@ -1,9 +1,15 @@
 {
   "mongoURL": "mongodb://annyuan:xrexworks7@proximus.modulusmongo.net:27017/Yju7huto",
   "auth": {
-    "facebook": {
+    "facebook-prod": {
       "clientid": "390553027803781",
-      "clientsecret": "d00c19aa056442c730a83177699f32fb"
+      "clientsecret": "d00c19aa056442c730a83177699f32fb",
+      "callbackURL": "http://prattle.cc/auth/facebook/callback"
+    },
+    "facebook-local": {
+      "clientid": "1574766452785700",
+      "clientsecret": "be7e94302905f5a09d6b3166df4da089",
+      "callbackURL": "http://localhost:3000/auth/facebook/callback"
     }
   }
 }
