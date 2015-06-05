@@ -4,11 +4,12 @@ function statusChangeCallback(response) {
   console.log('statusChangeCallback');
   console.log(response);
   if (response.status === 'connected') {
-    // Logged into your app and Facebook.
     FB.api('/me', function(response) {
-      console.log('Successful login for: ' + response.name);
+      d.qs("#auth-container").setAttribute("data-authenticated", true);
+      FB.api('/me/picture', function(result) {
+        d.qs("#auth-container .avatar").style.backgroundImage = "url(" + result.data.url + ")";
+      });
       api.post('/sessions', response, function(data) {
-        console.log("CALLBACK");
         console.log(data);
       });
     });
@@ -19,20 +20,14 @@ function statusChangeCallback(response) {
   }
 }
 
-// This function is called when someone finishes with the Login
-// Button.  See the onlogin handler attached to it in the sample
-// code below.
-function checkLoginState() {
-  FB.getLoginStatus(function(response) {
-    statusChangeCallback(response);
-  });
-}
-
 var initFBIntervalID = null,
   checkFBInitialized = function() {
     if(window.FBInitialized === true) {
       FB.getLoginStatus(function(response) {
         statusChangeCallback(response);
+      });
+      d.gbID("login_button").addEventListener("click", function() {
+        FB.login(statusChangeCallback);
       });
       window.clearInterval(initFBIntervalID);
     }

@@ -45,6 +45,21 @@ exports.enterRoom = function(req, res, room) {
   res.render('room');
 };
 
+exports.findOrCreateUser = function(req, client) {
+  return client.findOne({ facebookId: req.id }).then(function(user) {
+    if(user) {
+      return user;
+    } else {
+      var user = {
+        facebookId: req.id,
+        name: req.name
+      };
+
+      return client.insert(user);
+    }
+  });
+};
+
 // ON ICE
 
 exports.getUsersInRoom = function(req, res, client, room, fn) {

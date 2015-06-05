@@ -169,3 +169,15 @@ html {
 html {
   color: #3d3d3d;
 }
+
+#auth-container[data-authenticated="true"] #login_button {
+  display: none;
+}
+#auth-container[data-authenticated="false"] .avatar {
+  display: none;
+}
+#auth-container .avatar {
+  width: 50px;
+  height: 50px;
+  background-size: cover;
+}

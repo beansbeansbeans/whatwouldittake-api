@@ -1,6 +1,5 @@
 module.exports = {
   post: function(url, data, callback) {
-    console.log("API MODULE RECEIVED POST REQUEST");
     var request = new XMLHttpRequest();
     request.open('POST', url, true);
 
@@ -8,7 +7,6 @@ module.exports = {
     request.setRequestHeader("Accept", "application/json");
 
     request.onload = function() {
-      console.log("REQUEST LOAD");
       var data = {};
 
       if(request.responseText) {

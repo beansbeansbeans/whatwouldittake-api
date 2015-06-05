@@ -8,6 +8,7 @@ function Routes (app, ee) {
   var config = app.get('config');
   var client = app.get('mongoClient');
   var roomsDB = client.collection('rooms');
+  var usersDB = client.collection('users');
 
   app.get('/', function(req, res, next) {
     res.render('index');
@@ -28,7 +29,9 @@ function Routes (app, ee) {
   });
 
   app.post('/sessions', function(req, res) {
-    console.log("HITTING SESSIONS ENDPOINT");
-    console.log(req.session);
+    // todo: sessions...
+    utils.findOrCreateUser(req.body, usersDB).then(function(record) {
+      res.send(record);
+    });
   });
 }
