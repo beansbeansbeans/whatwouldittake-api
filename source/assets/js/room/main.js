@@ -1,5 +1,6 @@
 var util = require('../shared/util');
 var sw = require('../socket');
+var sharedStorage = require('../shared/sharedStorage');
 
 var getMsgHTML = function(msg) {
   return util.processTemplate({ contents: msg}, 'message_partial');
@@ -13,23 +14,31 @@ module.exports.initialize = function() {
   });
 
   sw.socket.on('new msg', function(msg) {
-    msgList.innerHTML += getMsgHTML(msg);
+    msgList.innerHTML += getMsgHTML(msg.msg);
   });
 
   sw.socket.on('seed messages', function(msgs) {
     if(msgs.length) {
       var html = "";
       msgs.forEach(function(item) {
-        html += getMsgHTML(item.message);
+        html += getMsgHTML(item.message.msg);
       });
       msgList.innerHTML += html;
     }
   });
 
   d.gbID("send-message-button").addEventListener("click", function(e) {
-    var msg = d.gbID("create-message-text").value;
+    var msg = d.gbID("create-message-text").value,
+      user = "anonymous";
 
-    sw.socket.emit('my msg', msg);
+    if(typeof sharedStorage.get("user") !== "undefined") {
+      user = sharedStorage.get("user");
+    }
+
+    sw.socket.emit('my msg', {
+      msg: msg,
+      user: user
+    });
 
     d.gbID("create-message-text").value = "";
   });

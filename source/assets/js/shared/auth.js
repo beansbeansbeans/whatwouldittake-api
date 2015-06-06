@@ -1,4 +1,5 @@
 var api = require('./api');
+var sharedStorage = require('./sharedStorage');
 
 function statusChangeCallback(response) {
   console.log('statusChangeCallback');
@@ -10,7 +11,7 @@ function statusChangeCallback(response) {
         d.qs("#auth-container .avatar").style.backgroundImage = "url(" + result.data.url + ")";
       });
       api.post('/sessions', response, function(data) {
-        console.log(data);
+        sharedStorage.put("user", data);
       });
     });
   } else if (response.status === 'not_authorized') {
