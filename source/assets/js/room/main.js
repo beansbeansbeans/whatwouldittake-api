@@ -1,5 +1,7 @@
 var util = require('../shared/util');
 var sw = require('../socket');
+var auth = require('../shared/auth');
+var messages = require('./messages');
 var sharedStorage = require('../shared/sharedStorage');
 
 var getMsgHTML = function(msg) {
@@ -9,7 +11,24 @@ var getMsgHTML = function(msg) {
   }, 'message_partial');
 };
 
+var sendMsg = function() {
+  var msg = d.gbID("create-message-text").value,
+    user = {name: "anonymous"};
+
+  if(typeof sharedStorage.get("user") !== "undefined") {
+    user = sharedStorage.get("user");
+  }
+
+  sw.socket.emit('my msg', {
+    msg: msg,
+    user: user
+  });
+
+  d.gbID("create-message-text").value = "";
+};
+
 module.exports.initialize = function() {
+
   var msgList = d.qs('.messages-list');
 
   sw.socket.on('user update', function(data) {
@@ -30,19 +49,5 @@ module.exports.initialize = function() {
     }
   });
 
-  d.gbID("send-message-button").addEventListener("click", function(e) {
-    var msg = d.gbID("create-message-text").value,
-      user = {name: "anonymous"};
-
-    if(typeof sharedStorage.get("user") !== "undefined") {
-      user = sharedStorage.get("user");
-    }
-
-    sw.socket.emit('my msg', {
-      msg: msg,
-      user: user
-    });
-
-    d.gbID("create-message-text").value = "";
-  });
+  d.gbID("send-message-button").addEventListener("click", sendMsg);
 };

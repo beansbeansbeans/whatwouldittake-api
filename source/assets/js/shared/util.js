@@ -10,5 +10,16 @@ module.exports = {
     d.qs = document.querySelector;
     d.qsa = document.querySelectorAll;
     d.gbID = document.getElementById;
+  },
+  extend: function(seed, props) {
+    var prop, obj;
+      obj = Object.create(seed);
+
+    for(prop in props) {
+      if(props.hasOwnProperty(prop)) {
+        obj[prop] = props[prop];
+      }
+    }
+    return obj;
   }
 };

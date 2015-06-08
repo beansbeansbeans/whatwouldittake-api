@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+var babelify = require('babelify');
 var gutil = require('gulp-util');
 var es = require('event-stream');
 var browserify = require('browserify');
@@ -44,7 +45,7 @@ function createBundle(options) {
     cache: {},
     packageCache: {},
     fullconfig: options.watching
-  });
+  }).transform(babelify);
 
   if(options.watching) {
     bundler = watchify(bundler);

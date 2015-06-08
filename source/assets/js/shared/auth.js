@@ -1,5 +1,6 @@
 var api = require('./api');
 var sharedStorage = require('./sharedStorage');
+var avatarCache = {};
 
 function statusChangeCallback(response) {
   console.log('statusChangeCallback');
@@ -37,5 +38,17 @@ var initFBIntervalID = null,
 module.exports = {
   initialize: function() {
     initFBIntervalID = setInterval(checkFBInitialized, 100);
+  },
+  getAvatar: function(id, callback) {
+    if(avatarCache[id]) {
+      callback(avatarCache[id]);
+    } else if(typeof FB !== "undefined") {
+      FB.api('/' + id + '/picture?type=normal', function(result) {
+        if(result) {
+          avatarCache[id] = result.data.url;
+          callback(result.data.url);
+        }
+      });
+    }
   }
 };
