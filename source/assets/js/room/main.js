@@ -38,8 +38,7 @@ module.exports.initialize = function() {
   var msgList = d.qs('.messages-list');
 
   sw.socket.on('user update', function(data) {
-    console.log(data);
-    d.qs('.room-count').innerHTML = data.count;
+    d.qs('.room-count').innerHTML = data.length;
   });
 
   sw.socket.on('new msg', function(msg) {

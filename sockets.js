@@ -42,6 +42,10 @@ function Sockets (app, server, ee) {
 
       if(session.prattle && session.prattle.user) {
         handshakeData.prattle.user = session.prattle.user;
+      } else {
+        handshakeData.prattle.user = {
+          id: Date.now() // TODO: Hash it
+        };
       }
 
       handshakeData.prattle.room = roomMatch ? roomMatch[1] : "lobby";
@@ -75,10 +79,6 @@ function Sockets (app, server, ee) {
         })
       };
 
-    console.log("ON CONNECTION");
-    console.log(user);
-    // OK HERE IS WHERE I CAN ADD USERS TO THE ONLINE PROPERTY OF ROOMS
-
     socket.join(roomID);
 
     if(roomID === "lobby") {
@@ -92,7 +92,15 @@ function Sockets (app, server, ee) {
     }
 
     validateRoomExists(roomID, function(record) {
-      updateRoomOnline(record, Object.keys(io.nsps['/'].adapter.rooms[roomID]).length);
+      client.collection('rooms').update(
+      { key: roomID },
+      {
+        '$push': { "online": user }
+      }).then(function(record) {
+        return client.collection('rooms').findOne({key: roomID})
+      }).then(function(record) {
+        io.sockets.in(roomID).emit('user update', record.online);
+      });
     });
 
     socket.on('my msg', function(data) {
