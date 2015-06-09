@@ -56,28 +56,7 @@ function Sockets (app, server, ee) {
 
   io.sockets.on("connection", function(socket) {
     var user = socket.request.prattle.user,
-      roomID = socket.request.prattle.room,
-      updateRoomOnline = function(record, amount) {
-        client.collection('rooms').update(
-          { key: roomID }, 
-          { $set: { online: amount }
-        }).then(function(data) {
-          client.collection('rooms').findOne({key: roomID}).then(function(record) {
-            newCount = record.online;
-
-            if(newCount > 0) {
-              io.sockets.in(roomID).emit('user update', { count: newCount });
-            } else {
-              client.collection('rooms').remove({key: roomID})
-                .then(getRoomsOnline)
-                .then(function(roomRecords) {
-                  io.sockets.in('lobby').emit('rooms update', roomRecords);
-                  client.collection('messages').remove({ room: roomID });
-                });
-            }
-          })
-        })
-      };
+      roomID = socket.request.prattle.room;
 
     socket.join(roomID);
 
@@ -97,15 +76,13 @@ function Sockets (app, server, ee) {
       {
         '$push': { "online": user }
       }).then(function(record) {
-        return client.collection('rooms').findOne({key: roomID})
+        return client.collection('rooms').findOne({key: roomID});
       }).then(function(record) {
         io.sockets.in(roomID).emit('user update', record.online);
       });
     });
 
     socket.on('my msg', function(data) {
-      console.log("MY MESSAGE RECEIVED");
-      console.log(user);
       io.sockets.in(roomID).emit('new msg', data);
       client.collection('messages').insert({
         message: data,
@@ -114,7 +91,6 @@ function Sockets (app, server, ee) {
     });
 
     socket.on('disconnect', function(data) {
-      console.log("DISCONNECT EVENT");
       var onlineCount = 0,
         roomObj = io.nsps['/'].adapter.rooms[roomID];
 
@@ -123,7 +99,13 @@ function Sockets (app, server, ee) {
       }
 
       validateRoomExists(roomID, function(record) {
-        updateRoomOnline(record, onlineCount);
+        client.collection('rooms').update(
+        { key: roomID },
+        {
+          '$pull': { "online": { id: user.id } }
+        }).then(function(record) {
+          return client.collection('rooms').findOne({key: roomID});
+        });
       });
     });
   });
