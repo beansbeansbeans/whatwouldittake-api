@@ -2,6 +2,7 @@ var util = require('../shared/util');
 var sw = require('../socket');
 var auth = require('../shared/auth');
 var messages = require('./messages');
+var chatters = require('./chatters');
 var sharedStorage = require('../shared/sharedStorage');
 
 var getMsgHTML = function(msg) {
@@ -11,17 +12,22 @@ var getMsgHTML = function(msg) {
   }, 'message_partial');
 };
 
-var sendMsg = function() {
-  var msg = d.gbID("create-message-text").value,
-    user = {name: "anonymous"};
+var getUser = function() {
+  var user = {name: "anonymous"};
 
   if(typeof sharedStorage.get("user") !== "undefined") {
     user = sharedStorage.get("user");
   }
 
+  return user;
+};
+
+var sendMsg = function() {
+  var msg = d.gbID("create-message-text").value;
+
   sw.socket.emit('my msg', {
     msg: msg,
-    user: user
+    user: getUser()
   });
 
   d.gbID("create-message-text").value = "";
@@ -32,6 +38,7 @@ module.exports.initialize = function() {
   var msgList = d.qs('.messages-list');
 
   sw.socket.on('user update', function(data) {
+    console.log(data);
     d.qs('.room-count').innerHTML = data.count;
   });
 

@@ -1,6 +1,7 @@
 var express = require('express');
 var path = require('path');
 var utils = require('../utils');
+var cookie = require('cookie');
 
 module.exports = Routes;
 
@@ -9,6 +10,7 @@ function Routes (app, ee) {
   var client = app.get('mongoClient');
   var roomsDB = client.collection('rooms');
   var usersDB = client.collection('users');
+  var sessionStore = app.get('sessionStore');
 
   app.get('/', function(req, res, next) {
     res.render('index');
@@ -29,8 +31,12 @@ function Routes (app, ee) {
   });
 
   app.post('/sessions', function(req, res) {
-    // todo: sessions...
     utils.findOrCreateUser(req.body, usersDB).then(function(record) {
+      if(!req.session.prattle) {
+        req.session.prattle = {};
+      }
+
+      req.session.prattle.user = record;
       res.send(record);
     });
   });

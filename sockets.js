@@ -1,5 +1,7 @@
 var sio = require('socket.io'),
-  fs = require('fs');
+  fs = require('fs'),
+  cookie = require('cookie'),
+  cookieParser = require('cookie-parser');
 
 module.exports = Sockets;
 
@@ -7,6 +9,7 @@ function Sockets (app, server, ee) {
   var config = app.get('config');
   var client = app.get('mongoClient');
   var io = sio.listen(server);
+  var sessionStore = app.get('sessionStore');
   var getRoomsOnline = function() {
     return client.collection('rooms').find().toArray();
   };
@@ -26,19 +29,30 @@ function Sockets (app, server, ee) {
   };
 
   io.use(function(socket, next) {
+
     var handshakeData = socket.request,
       roomIdRegExp = new RegExp(handshakeData.headers.host + '/(?:([^\/]+?))\/?$', 'g'),
-      roomMatch = roomIdRegExp.exec(handshakeData.headers.referer);
+      roomMatch = roomIdRegExp.exec(handshakeData.headers.referer),
+      sid = cookie.parse(handshakeData.headers.cookie)['connect.sid'].substring(2).split('.')[0]; // TODO FIGURE OUT WTF (hack to unsign cookie)
 
-    handshakeData.prattle = {
-      room: roomMatch ? roomMatch[1] : "lobby"
-    };
+    sessionStore.load(sid, function(err, session) {
+      if(!handshakeData.prattle) {
+        handshakeData.prattle = {};
+      }
 
-    next();
+      if(session.prattle && session.prattle.user) {
+        handshakeData.prattle.user = session.prattle.user;
+      }
+
+      handshakeData.prattle.room = roomMatch ? roomMatch[1] : "lobby";
+
+      next();
+    });
   });
 
   io.sockets.on("connection", function(socket) {
-    var roomID = socket.request.prattle.room,
+    var user = socket.request.prattle.user,
+      roomID = socket.request.prattle.room,
       updateRoomOnline = function(record, amount) {
         client.collection('rooms').update(
           { key: roomID }, 
@@ -61,6 +75,10 @@ function Sockets (app, server, ee) {
         })
       };
 
+    console.log("ON CONNECTION");
+    console.log(user);
+    // OK HERE IS WHERE I CAN ADD USERS TO THE ONLINE PROPERTY OF ROOMS
+
     socket.join(roomID);
 
     if(roomID === "lobby") {
@@ -78,6 +96,8 @@ function Sockets (app, server, ee) {
     });
 
     socket.on('my msg', function(data) {
+      console.log("MY MESSAGE RECEIVED");
+      console.log(user);
       io.sockets.in(roomID).emit('new msg', data);
       client.collection('messages').insert({
         message: data,
@@ -85,7 +105,8 @@ function Sockets (app, server, ee) {
       });
     });
 
-    socket.on('disconnect', function() {
+    socket.on('disconnect', function(data) {
+      console.log("DISCONNECT EVENT");
       var onlineCount = 0,
         roomObj = io.nsps['/'].adapter.rooms[roomID];
 

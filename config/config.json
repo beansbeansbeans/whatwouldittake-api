@@ -1,3 +1,6 @@
 {
-  "mongoURL": "mongodb://annyuan:xrexworks7@proximus.modulusmongo.net:27017/Yju7huto"
+  "mongoURL": "mongodb://annyuan:xrexworks7@proximus.modulusmongo.net:27017/Yju7huto",
+  "session" : {
+    "secret" : "yourbestsecret"
+  }
 }

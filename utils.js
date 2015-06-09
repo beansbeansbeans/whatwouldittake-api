@@ -22,7 +22,7 @@ exports.createRoom = function(req, res, client, ee) {
     room = {
       key: roomKey,
       name: req.body.room_name,
-      online: 0
+      online: []
     };
 
   return client.insert(room).then(function(record) {
