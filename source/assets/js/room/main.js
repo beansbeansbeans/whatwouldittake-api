@@ -58,7 +58,6 @@ module.exports.initialize = function() {
 
   sw.socket.on('user update', function(data) {
     chatters = Immutable.List(data);
-    console.log(chatters.toJS());
     var newTree = renderUserList();
     var patches = diff(tree, newTree);
     rootNode = patch(rootNode, patches);
