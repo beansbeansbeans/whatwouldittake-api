@@ -56,7 +56,13 @@ function Sockets (app, server, ee) {
 
   io.sockets.on("connection", function(socket) {
     var user = socket.request.prattle.user,
-      roomID = socket.request.prattle.room;
+      roomID = socket.request.prattle.room,
+      emitUsersOnline = function() {
+        client.collection('rooms').findOne({key: roomID})
+          .then(function(record) {
+            io.sockets.in(roomID).emit('user update', record.online);
+          });
+      };
 
     socket.join(roomID);
 
@@ -75,11 +81,7 @@ function Sockets (app, server, ee) {
       { key: roomID },
       {
         '$push': { "online": user }
-      }).then(function(record) {
-        return client.collection('rooms').findOne({key: roomID});
-      }).then(function(record) {
-        io.sockets.in(roomID).emit('user update', record.online);
-      });
+      }).then(emitUsersOnline);
     });
 
     socket.on('my msg', function(data) {
@@ -103,9 +105,7 @@ function Sockets (app, server, ee) {
         { key: roomID },
         {
           '$pull': { "online": { id: user.id } }
-        }).then(function(record) {
-          return client.collection('rooms').findOne({key: roomID});
-        });
+        }).then(emitUsersOnline);
       });
     });
   });
