@@ -42,7 +42,7 @@ module.exports.initialize = function() {
 
   var msgList = d.qs('.messages-list');
 
-  function renderUserList() {
+  function render() {
     return h('ul.users', {
       style: {
         textAlign: 'center'
@@ -52,17 +52,27 @@ module.exports.initialize = function() {
     }));
   }
 
-  var tree = renderUserList();
+  var tree = render();
   var rootNode = createElement(tree);
   document.body.appendChild(rootNode); 
 
   sw.socket.on('user update', function(data) {
-    chatters = Immutable.List(data);
-    var newTree = renderUserList();
+    chatters = chatters.merge(data);
+
+    // update tree
+    var newTree = render();
     var patches = diff(tree, newTree);
     rootNode = patch(rootNode, patches);
     tree = newTree;
-    d.qs('.room-count').innerHTML = data.length;
+
+    // update chatters with images
+    chatters.toJS().forEach(function(chatter, chatterIndex) {
+      if(chatter.facebookId && !chatter.url) {
+        auth.getAvatar(chatter.facebookId, function(result) {
+          chatters = chatters.update(chatterIndex, x => x.set('url', result));
+        });
+      }
+    });
   });
 
   sw.socket.on('new msg', function(msg) {
