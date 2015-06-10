@@ -9,6 +9,8 @@ var h = require('virtual-dom/h');
 var diff = require('virtual-dom/diff');
 var patch = require('virtual-dom/patch');
 var createElement = require('virtual-dom/create-element');
+var tree;
+var rootNode;
 
 var getMsgHTML = function(msg) {
   return util.processTemplate({ 
@@ -38,38 +40,41 @@ var sendMsg = function() {
   d.gbID("create-message-text").value = "";
 };
 
-module.exports.initialize = function() {
+var updateState = function() {
+  var newTree = render();
+  var patches = diff(tree, newTree);
+  rootNode = patch(rootNode, patches);
+  tree = newTree;
+};
 
-  var msgList = d.qs('.messages-list');
-
-  function render() {
-    return h('ul.users', {
+var render = function() {
+  return h('ul.users', {
+    style: {
+      textAlign: 'center'
+    }
+  }, chatters.toJS().map(function(chatter) {
+    return h('li.user', {
       style: {
-        textAlign: 'center'
+        backgroundImage: 'url(' + chatter.avatarURL + ')'
       }
-    }, chatters.toJS().map(function(chatter) {
-      return h('li.user', chatter.name);
-    }));
-  }
+    }, chatter.name);
+  }));
+};
 
-  var tree = render();
-  var rootNode = createElement(tree);
+module.exports.initialize = function() {
+  tree = render();
+  rootNode = createElement(tree);
   document.body.appendChild(rootNode); 
 
   sw.socket.on('user update', function(data) {
     chatters = chatters.merge(data);
+    updateState();
 
-    // update tree
-    var newTree = render();
-    var patches = diff(tree, newTree);
-    rootNode = patch(rootNode, patches);
-    tree = newTree;
-
-    // update chatters with images
     chatters.toJS().forEach(function(chatter, chatterIndex) {
-      if(chatter.facebookId && !chatter.url) {
+      if(chatter.facebookId && !chatter.avatarURL) {
         auth.getAvatar(chatter.facebookId, function(result) {
-          chatters = chatters.update(chatterIndex, x => x.set('url', result));
+          chatters = chatters.update(chatterIndex, x => x.set('avatarURL', result));
+          updateState();
         });
       }
     });
