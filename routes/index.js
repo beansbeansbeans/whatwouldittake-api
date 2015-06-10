@@ -12,6 +12,14 @@ function Routes (app, ee) {
   var usersDB = client.collection('users');
   var sessionStore = app.get('sessionStore');
 
+  app.use(function(req, res, next) {
+    if(req.url === "/undefined") {
+      res.end();
+    } else {
+      next();
+    }
+  });
+
   app.get('/', function(req, res, next) {
     res.render('index');
   });
