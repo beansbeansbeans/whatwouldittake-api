@@ -1,7 +1,6 @@
 var util = require('../shared/util');
 var sw = require('../socket');
 var auth = require('../shared/auth');
-var messages = require('./messages');
 var Immutable = require('immutable');
 var chatters = Immutable.List();
 var messages = Immutable.List();
@@ -26,10 +25,7 @@ var getUser = function() {
 var sendMsg = function() {
   var msg = d.gbID("create-message-text").value;
 
-  sw.socket.emit('my msg', {
-    msg: msg,
-    user: getUser()
-  });
+  sw.socket.emit('my msg', { msg: msg });
 
   d.gbID("create-message-text").value = "";
 };
@@ -55,7 +51,19 @@ var render = function() {
       }, chatter.name);
     })),
     h('ul.messages', messages.toJS().map(function(msg) {
-      return h('li.message', msg.message.msg);
+      var avatarURL, author = chatters.toJS().filter((val) => {
+        return val._id === msg.user._id;
+      })[0];
+
+      if(author) {
+        avatarURL = author.avatarURL;
+      }
+
+      return h('li.message', {
+        style: {
+          backgroundImage: 'url(' + avatarURL + ')'
+        }
+      }, msg.message.msg);
     }))]
   );
 };
@@ -66,7 +74,10 @@ module.exports.initialize = function() {
   document.body.appendChild(rootNode); 
 
   sw.socket.on('user update', function(data) {
-    chatters = chatters.merge(data);
+    chatters = chatters.merge(data.map((val) => {
+      val.online = true;
+      return val;
+    }));
     updateState();
 
     chatters.toJS().forEach(function(chatter, chatterIndex) {
