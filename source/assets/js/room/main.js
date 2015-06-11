@@ -4,6 +4,7 @@ var auth = require('../shared/auth');
 var messages = require('./messages');
 var Immutable = require('immutable');
 var chatters = Immutable.List();
+var messages = Immutable.List();
 var sharedStorage = require('../shared/sharedStorage');
 var h = require('virtual-dom/h');
 var diff = require('virtual-dom/diff');
@@ -11,13 +12,6 @@ var patch = require('virtual-dom/patch');
 var createElement = require('virtual-dom/create-element');
 var tree;
 var rootNode;
-
-var getMsgHTML = function(msg) {
-  return util.processTemplate({ 
-    contents: msg.msg,
-    user: msg.user.name
-  }, 'message_partial');
-};
 
 var getUser = function() {
   var user = {name: "anonymous"};
@@ -48,17 +42,22 @@ var updateState = function() {
 };
 
 var render = function() {
-  return h('ul.users', {
-    style: {
-      textAlign: 'center'
-    }
-  }, chatters.toJS().map(function(chatter) {
-    return h('li.user', {
+  return h('div.testing',
+    [h('ul.users', {
       style: {
-        backgroundImage: 'url(' + chatter.avatarURL + ')'
+        textAlign: 'center'
       }
-    }, chatter.name);
-  }));
+    }, chatters.toJS().map(function(chatter) {
+      return h('li.user', {
+        style: {
+          backgroundImage: 'url(' + chatter.avatarURL + ')'
+        }
+      }, chatter.name);
+    })),
+    h('ul.messages', messages.toJS().map(function(msg) {
+      return h('li.message', msg.message.msg);
+    }))]
+  );
 };
 
 module.exports.initialize = function() {
@@ -81,16 +80,14 @@ module.exports.initialize = function() {
   });
 
   sw.socket.on('new msg', function(msg) {
-    msgList.innerHTML += getMsgHTML(msg);
+    messages = messages.push(msg);
+    updateState();
   });
 
   sw.socket.on('seed messages', function(msgs) {
     if(msgs.length) {
-      var html = "";
-      msgs.forEach(function(item) {
-        html += getMsgHTML(item.message);
-      });
-      msgList.innerHTML += html;
+      messages = messages.merge(msgs);
+      updateState();
     }
   });
 

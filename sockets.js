@@ -43,10 +43,7 @@ function Sockets (app, server, ee) {
       if(session.prattle && session.prattle.user) {
         handshakeData.prattle.user = session.prattle.user;
       } else {
-        handshakeData.prattle.user = {
-          name: "Anonymous",
-          _id: Date.now() // TODO: Hash it
-        };
+        handshakeData.prattle.user = { name: "Anonymous" };
       }
 
       handshakeData.prattle.user.sid = sid;
@@ -88,10 +85,11 @@ function Sockets (app, server, ee) {
     });
 
     socket.on('my msg', function(data) {
-      io.sockets.in(roomID).emit('new msg', data);
       client.collection('messages').insert({
         message: data,
         room: roomID
+      }).then(function(record) {
+        io.sockets.in(roomID).emit('new msg', record);
       });
     });
 
