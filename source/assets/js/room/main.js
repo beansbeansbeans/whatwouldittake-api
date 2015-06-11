@@ -55,15 +55,18 @@ var render = function() {
         return val._id === msg.user._id;
       })[0];
 
-      if(author) {
-        avatarURL = author.avatarURL;
-      }
+      if(author) { avatarURL = author.avatarURL; }
 
-      return h('li.message', {
-        style: {
-          backgroundImage: 'url(' + avatarURL + ')'
-        }
-      }, msg.message.msg);
+      return h('li.message', 
+        [h('div.avatar', {
+          style: {
+            width: '40px',
+            height: '40px',
+            backgroundImage: 'url(' + avatarURL + ')'
+          }
+        }),
+        h('div.contents', msg.message.msg)
+      ]);
     }))]
   );
 };
