@@ -49,6 +49,8 @@ function Sockets (app, server, ee) {
         };
       }
 
+      handshakeData.prattle.user.sid = sid;
+
       handshakeData.prattle.room = roomMatch ? roomMatch[1] : "lobby";
 
       next();
@@ -81,7 +83,7 @@ function Sockets (app, server, ee) {
       client.collection('rooms').update(
       { key: roomID },
       {
-        '$push': { "online": user }
+        '$addToSet': { "online": user }
       }).then(emitUsersOnline);
     });
 
