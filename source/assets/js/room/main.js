@@ -43,14 +43,14 @@ var render = function() {
       style: {
         textAlign: 'center'
       }
-    }, chatters.toJS().map(function(chatter) {
+    }, chatters.toJS().map((chatter) => {
       return h('li.user', {
         style: {
           backgroundImage: 'url(' + chatter.avatarURL + ')'
         }
       }, chatter.name);
     })),
-    h('ul.messages', messages.toJS().map(function(msg) {
+    h('ul.messages', messages.toJS().map((msg) => {
       var avatarURL, author = chatters.toJS().filter((val) => {
         return val._id === msg.user._id;
       })[0];
@@ -83,7 +83,7 @@ module.exports.initialize = function() {
     }));
     updateState();
 
-    chatters.toJS().forEach(function(chatter, chatterIndex) {
+    chatters.toJS().forEach((chatter, chatterIndex) => {
       if(chatter.facebookId && !chatter.avatarURL) {
         auth.getAvatar(chatter.facebookId, function(result) {
           chatters = chatters.update(chatterIndex, x => x.set('avatarURL', result));
