@@ -43,7 +43,10 @@ function Sockets (app, server, ee) {
       if(session.prattle && session.prattle.user) {
         handshakeData.prattle.user = session.prattle.user;
       } else {
-        handshakeData.prattle.user = { name: "Anonymous" };
+        handshakeData.prattle.user = { 
+          _id: Date.now(),
+          name: "Anonymous" 
+        };
       }
 
       handshakeData.prattle.user.sid = sid;

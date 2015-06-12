@@ -64,7 +64,24 @@ var render = () => {
 module.exports.initialize = () => {
   tree = render();
   rootNode = createElement(tree);
-  document.body.appendChild(rootNode); 
+  document.body.appendChild(rootNode);
+
+  var gotSeedMessages, gotSeedChatters, authors;
+
+  var postSeedHook = _.once(() => {
+    var offlineAuthors = _.uniq(chatters.toJS().concat(authors), val => val._id)
+      .filter(val => val.online !== true);
+
+    offlineAuthors.forEach((val) => {
+      chatters = chatters.push(val);
+    });
+
+    updateState();
+  }); 
+
+  var preload = () => {
+    if(gotSeedChatters && gotSeedMessages) { postSeedHook(); }
+  };
 
   sw.socket.on('user update', (data) => {
     chatters = Immutable.fromJS(data.map((val, index) => {
@@ -81,6 +98,9 @@ module.exports.initialize = () => {
     }));
 
     updateState();
+
+    gotSeedChatters = true;
+    preload();
   });
 
   sw.socket.on('new msg', (msg) => {
@@ -90,9 +110,14 @@ module.exports.initialize = () => {
 
   sw.socket.on('seed messages', (msgs) => {
     if(msgs.length) {
-      messages = messages.merge(msgs);
+      messages = Immutable.fromJS(msgs);
       updateState();
     }
+
+    authors = _.uniq(msgs.map(val => val.user), val => val._id);
+
+    gotSeedMessages = true;
+    preload();
   });
 
   d.gbID("send-message-button").addEventListener("click", sendMsg);
