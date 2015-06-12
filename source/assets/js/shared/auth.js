@@ -41,7 +41,9 @@ module.exports = {
   },
   getAvatar: function(id, callback) {
     if(avatarCache[id]) {
-      callback(avatarCache[id]);
+      setTimeout(function() {
+        callback(avatarCache[id]);
+      }, 0);
     } else if(typeof FB !== "undefined") {
       FB.api('/' + id + '/picture?type=normal', function(result) {
         if(result) {

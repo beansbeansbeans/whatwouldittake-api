@@ -12,16 +12,6 @@ var createElement = require('virtual-dom/create-element');
 var tree;
 var rootNode;
 
-var getUser = () => {
-  var user = {name: "anonymous"};
-
-  if(typeof sharedStorage.get("user") !== "undefined") {
-    user = sharedStorage.get("user");
-  }
-
-  return user;
-};
-
 var sendMsg = () => {
   var msg = d.gbID("create-message-text").value;
 
@@ -77,21 +67,20 @@ module.exports.initialize = () => {
   document.body.appendChild(rootNode); 
 
   sw.socket.on('user update', (data) => {
-    chatters = Immutable.fromJS(data.map((val) => {
+    chatters = Immutable.fromJS(data.map((val, index) => {
       val.online = true;
+
+      if(val.facebookId) {
+        auth.getAvatar(val.facebookId, (result) => {
+          chatters = chatters.update(index, x => x.set('avatarURL', result));
+          updateState();
+        });
+      }
+
       return val;
     }));
 
     updateState();
-
-    chatters.toJS().forEach((chatter, chatterIndex) => {
-      if(chatter.facebookId && !chatter.avatarURL) {
-        auth.getAvatar(chatter.facebookId, (result) => {
-          chatters = chatters.update(chatterIndex, x => x.set('avatarURL', result));
-          updateState();
-        });
-      }
-    });
   });
 
   sw.socket.on('new msg', (msg) => {
