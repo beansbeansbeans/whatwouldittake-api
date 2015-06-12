@@ -71,12 +71,12 @@ var render = () => {
   );
 };
 
-module.exports.initialize = function() {
+module.exports.initialize = () => {
   tree = render();
   rootNode = createElement(tree);
   document.body.appendChild(rootNode); 
 
-  sw.socket.on('user update', function(data) {
+  sw.socket.on('user update', (data) => {
     chatters = chatters.merge(data.map((val) => {
       val.online = true;
       return val;
@@ -85,7 +85,7 @@ module.exports.initialize = function() {
 
     chatters.toJS().forEach((chatter, chatterIndex) => {
       if(chatter.facebookId && !chatter.avatarURL) {
-        auth.getAvatar(chatter.facebookId, function(result) {
+        auth.getAvatar(chatter.facebookId, (result) => {
           chatters = chatters.update(chatterIndex, x => x.set('avatarURL', result));
           updateState();
         });
@@ -93,12 +93,12 @@ module.exports.initialize = function() {
     });
   });
 
-  sw.socket.on('new msg', function(msg) {
+  sw.socket.on('new msg', (msg) => {
     messages = messages.push(msg);
     updateState();
   });
 
-  sw.socket.on('seed messages', function(msgs) {
+  sw.socket.on('seed messages', (msgs) => {
     if(msgs.length) {
       messages = messages.merge(msgs);
       updateState();
