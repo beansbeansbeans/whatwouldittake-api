@@ -33,12 +33,12 @@ var render = () => {
       style: {
         textAlign: 'center'
       }
-    }, chatters.toJS().map((chatter) => {
+    }, chatters.toJS().filter(val => val.online === true ).map((val) => {
       return h('li.user', {
         style: {
-          backgroundImage: 'url(' + chatter.avatarURL + ')'
+          backgroundImage: 'url(' + val.avatarURL + ')'
         }
-      }, chatter.name);
+      }, val.name);
     })),
     h('ul.messages', messages.toJS().map((msg) => {
       var avatarURL, author = chatters.toJS().filter((val) => {
