@@ -77,10 +77,11 @@ module.exports.initialize = () => {
   document.body.appendChild(rootNode); 
 
   sw.socket.on('user update', (data) => {
-    chatters = chatters.merge(data.map((val) => {
+    chatters = Immutable.fromJS(data.map((val) => {
       val.online = true;
       return val;
     }));
+
     updateState();
 
     chatters.toJS().forEach((chatter, chatterIndex) => {

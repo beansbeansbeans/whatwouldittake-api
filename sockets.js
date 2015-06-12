@@ -74,15 +74,15 @@ function Sockets (app, server, ee) {
       client.collection('messages').find({ room: roomID }).limit(50).toArray().then(function(messages) {
         io.sockets.connected[socket.id].emit('seed messages', messages);
       });
+  
+      validateRoomExists(roomID, function(record) {
+        client.collection('rooms').update(
+        { key: roomID },
+        {
+          '$addToSet': { "online": user }
+        }).then(emitUsersOnline);
+      });
     }
-
-    validateRoomExists(roomID, function(record) {
-      client.collection('rooms').update(
-      { key: roomID },
-      {
-        '$addToSet': { "online": user }
-      }).then(emitUsersOnline);
-    });
 
     socket.on('my msg', function(data) {
       client.collection('messages').insert({
@@ -95,18 +95,11 @@ function Sockets (app, server, ee) {
     });
 
     socket.on('disconnect', function(data) {
-      var onlineCount = 0,
-        roomObj = io.nsps['/'].adapter.rooms[roomID];
-
-      if(roomObj) {
-        onlineCount = Object.keys(roomObj).length;
-      }
-
       validateRoomExists(roomID, function(record) {
         client.collection('rooms').update(
         { key: roomID },
         {
-          '$pull': { "online": { id: user.id } }
+          '$pull': { "online": { sid: user.sid } }
         }).then(emitUsersOnline);
       });
     });
