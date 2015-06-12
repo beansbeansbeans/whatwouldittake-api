@@ -12,7 +12,7 @@ var createElement = require('virtual-dom/create-element');
 var tree;
 var rootNode;
 
-var getUser = function() {
+var getUser = () => {
   var user = {name: "anonymous"};
 
   if(typeof sharedStorage.get("user") !== "undefined") {
@@ -22,7 +22,7 @@ var getUser = function() {
   return user;
 };
 
-var sendMsg = function() {
+var sendMsg = () => {
   var msg = d.gbID("create-message-text").value;
 
   sw.socket.emit('my msg', { msg: msg });
@@ -30,14 +30,14 @@ var sendMsg = function() {
   d.gbID("create-message-text").value = "";
 };
 
-var updateState = function() {
+var updateState = () => {
   var newTree = render();
   var patches = diff(tree, newTree);
   rootNode = patch(rootNode, patches);
   tree = newTree;
 };
 
-var render = function() {
+var render = () => {
   return h('div.testing',
     [h('ul.users', {
       style: {
