@@ -1,9 +1,8 @@
 var util = require('../shared/util');
 var sw = require('../socket');
 var auth = require('../shared/auth');
-var Immutable = require('immutable');
-var chatters = Immutable.List();
-var messages = Immutable.List();
+var chatters = [];
+var messages = [];
 var sharedStorage = require('../shared/sharedStorage');
 var h = require('virtual-dom/h');
 var diff = require('virtual-dom/diff');
@@ -20,6 +19,21 @@ var sendMsg = () => {
   d.gbID("create-message-text").value = "";
 };
 
+var authenticated = (val) => {
+  return val.facebookId;
+};
+
+var getAvatar = (val) => {
+  auth.getAvatar(val.facebookId, (result) => {
+    var match = _.findWhere(chatters, {_id: val._id});
+
+    if(match) {
+      val.avatarURL = result;
+      updateState();
+    }
+  });
+};
+
 var updateState = () => {
   var newTree = render();
   var patches = diff(tree, newTree);
@@ -33,15 +47,15 @@ var render = () => {
       style: {
         textAlign: 'center'
       }
-    }, chatters.toJS().filter(val => val.online === true ).map((val) => {
+    }, chatters.filter(val => val.online === true ).map((val) => {
       return h('li.user', {
         style: {
           backgroundImage: 'url(' + val.avatarURL + ')'
         }
       }, val.name);
     })),
-    h('ul.messages', messages.toJS().map((msg) => {
-      var avatarURL, author = chatters.toJS().filter((val) => {
+    h('ul.messages', messages.map((msg) => {
+      var avatarURL, author = chatters.filter((val) => {
         return val._id === msg.user._id;
       })[0];
 
@@ -69,12 +83,12 @@ module.exports.initialize = () => {
   var gotSeedMessages, gotSeedChatters, authors;
 
   var postSeedHook = _.once(() => {
-    var offlineAuthors = _.uniq(chatters.toJS().concat(authors), val => val._id)
+    var offlineAuthors = _.uniq(chatters.concat(authors), val => val._id)
       .filter(val => val.online !== true);
 
-    offlineAuthors.forEach((val) => {
-      chatters = chatters.push(val);
-    });
+    chatters = chatters.concat(offlineAuthors);
+
+    chatters.filter(authenticated).forEach(getAvatar);
 
     updateState();
   }); 
@@ -84,18 +98,17 @@ module.exports.initialize = () => {
   };
 
   sw.socket.on('user update', (data) => {
-    chatters = Immutable.fromJS(data.map((val, index) => {
-      val.online = true;
+    chatters = _.uniq(chatters.concat(data), false, x => x._id)
+      .map((val, index) => {
+        if(_.findWhere(data, {_id: val._id})) {
+          val.online = true;
+        } else {
+          val.online = false;
+        }
+        return val;
+      });
 
-      if(val.facebookId) {
-        auth.getAvatar(val.facebookId, (result) => {
-          chatters = chatters.update(index, x => x.set('avatarURL', result));
-          updateState();
-        });
-      }
-
-      return val;
-    }));
+    chatters.filter(authenticated).forEach(getAvatar);
 
     updateState();
 
@@ -104,13 +117,13 @@ module.exports.initialize = () => {
   });
 
   sw.socket.on('new msg', (msg) => {
-    messages = messages.push(msg);
+    messages.push(msg);
     updateState();
   });
 
   sw.socket.on('seed messages', (msgs) => {
     if(msgs.length) {
-      messages = Immutable.fromJS(msgs);
+      messages = msgs;
       updateState();
     }
 
