@@ -1,13 +1,13 @@
 var util = require('../shared/util');
 var sw = require('../socket');
 var auth = require('../shared/auth');
-var chatters = [];
-var messages = [];
 var sharedStorage = require('../shared/sharedStorage');
 var h = require('virtual-dom/h');
 var diff = require('virtual-dom/diff');
 var patch = require('virtual-dom/patch');
 var createElement = require('virtual-dom/create-element');
+var chatters = [];
+var messages = [];
 var tree;
 var rootNode;
 
@@ -19,15 +19,11 @@ var sendMsg = () => {
   d.gbID("create-message-text").value = "";
 };
 
-var authenticated = (val) => {
-  return val.facebookId;
-};
+var authenticated = x => x.facebookId;
 
 var getAvatar = (val) => {
   auth.getAvatar(val.facebookId, (result) => {
-    var match = _.findWhere(chatters, {_id: val._id});
-
-    if(match) {
+    if(_.findWhere(chatters, {_id: val._id})) {
       val.avatarURL = result;
       updateState();
     }
@@ -55,9 +51,7 @@ var render = () => {
       }, val.name);
     })),
     h('ul.messages', messages.map((msg) => {
-      var avatarURL, author = chatters.filter((val) => {
-        return val._id === msg.user._id;
-      })[0];
+      var avatarURL, author = chatters.filter(x => x._id === msg.user._id)[0];
 
       if(author) { avatarURL = author.avatarURL; }
 
