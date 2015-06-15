@@ -1,6 +1,7 @@
 var util = require('../shared/util');
 var sw = require('../socket');
 var auth = require('../shared/auth');
+var mediator = require('../shared/mediator');
 var sharedStorage = require('../shared/sharedStorage');
 var h = require('virtual-dom/h');
 var diff = require('virtual-dom/diff');
@@ -38,8 +39,21 @@ var updateState = () => {
 };
 
 var render = () => {
+  var anonymousNamer;
+
+  if(!sharedStorage.get('user')) {
+    anonymousNamer = h('div#create-name', [
+        h('div.instruction', 'give yourself a name'),
+        h('input', {
+          type: "text",
+          placeholder: "e.g. sprinkles"
+        })
+      ]);
+  }
+
   return h('div.testing',
-    [h('ul.users', {
+    [anonymousNamer,
+    h('ul.users', {
       style: {
         textAlign: 'center'
       }
@@ -73,6 +87,8 @@ module.exports.initialize = () => {
   tree = render();
   rootNode = createElement(tree);
   document.body.appendChild(rootNode);
+
+  mediator.subscribe("AUTH_STATUS_CHANGE", updateState);
 
   var gotSeedMessages, gotSeedChatters, authors;
 

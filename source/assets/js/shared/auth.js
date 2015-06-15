@@ -1,4 +1,5 @@
 var api = require('./api');
+var mediator = require('./mediator');
 var sharedStorage = require('./sharedStorage');
 var avatarCache = {};
 
@@ -13,6 +14,7 @@ function statusChangeCallback(response) {
       });
       api.post('/sessions', response, function(data) {
         sharedStorage.put("user", data);
+        mediator.publish("AUTH_STATUS_CHANGE");
       });
     });
   } else if (response.status === 'not_authorized') {
@@ -20,6 +22,7 @@ function statusChangeCallback(response) {
   } else {
     console.log("The person is not logged into Facebook, so we're not sure if they are logged into this app or not.");
   }
+
 }
 
 var initFBIntervalID = null,
