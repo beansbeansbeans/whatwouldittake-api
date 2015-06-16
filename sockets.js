@@ -97,6 +97,14 @@ function Sockets (app, server, ee) {
       });
     });
 
+    socket.on('change name', function(data) {
+      client.collection('rooms').update(
+        { key: roomID, "online._id": user._id },
+        {
+          '$set': { "online.$.name": data }
+        }).then(emitUsersOnline);
+    });
+
     socket.on('disconnect', function(data) {
       validateRoomExists(roomID, function(record) {
         client.collection('rooms').update(

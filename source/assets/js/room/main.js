@@ -20,6 +20,10 @@ var sendMsg = () => {
   d.gbID("create-message-text").value = "";
 };
 
+var changeAnonymousName = () => {
+  sw.socket.emit('change name', d.qs('#create-name input').value);
+};
+
 var authenticated = x => x.facebookId;
 
 var getAvatar = (val) => {
@@ -47,7 +51,8 @@ var render = () => {
         h('input', {
           type: "text",
           placeholder: "e.g. sprinkles"
-        })
+        }),
+        h('button', 'change name')
       ]);
   }
 
@@ -108,7 +113,7 @@ module.exports.initialize = () => {
   };
 
   sw.socket.on('user update', (data) => {
-    chatters = _.uniq(chatters.concat(data), false, x => x._id)
+    chatters = _.uniq(data.concat(chatters), false, x => x._id)
       .map((val, index) => {
         if(_.findWhere(data, {_id: val._id})) {
           val.online = true;
@@ -144,4 +149,5 @@ module.exports.initialize = () => {
   });
 
   d.gbID("send-message-button").addEventListener("click", sendMsg);
+  d.qs("#create-name button").addEventListener("click", changeAnonymousName);
 };
