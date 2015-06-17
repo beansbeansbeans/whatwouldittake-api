@@ -1,0 +1,7 @@
+.grid {
+  .square {
+    @include square(100px);
+    border: solid 1px red;
+    display: inline-block;
+  }
+}

@@ -166,6 +166,13 @@ html {
   display: none;
 }
 
+.grid .square {
+  width: 100px;
+  height: 100px;
+  border: solid 1px red;
+  display: inline-block;
+}
+
 html {
   color: #3d3d3d;
 }
