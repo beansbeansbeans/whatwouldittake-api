@@ -3,6 +3,7 @@ var sw = require('../socket');
 var auth = require('../shared/auth');
 var mediator = require('../shared/mediator');
 var sharedStorage = require('../shared/sharedStorage');
+var gridHelpers = require('./gridHelpers');
 var h = require('virtual-dom/h');
 var diff = require('virtual-dom/diff');
 var patch = require('virtual-dom/patch');
@@ -26,6 +27,8 @@ var changeAnonymousName = () => {
 
 var authenticated = x => x.facebookId;
 
+var online = x => x.online;
+
 var getAvatar = (val) => {
   auth.getAvatar(val.facebookId, (result) => {
     if(_.findWhere(chatters, {_id: val._id})) {
@@ -43,7 +46,12 @@ var updateState = () => {
 };
 
 var render = () => {
-  var anonymousNamer;
+  var anonymousNamer, squares = [];
+
+  var gridCount = gridHelpers.getGridCount();
+  for(var i=0; i<gridCount; i++) {
+    squares.push(h('div.square'));
+  }
 
   if(!sharedStorage.get('user')) {
     anonymousNamer = h('div#create-name', [
@@ -56,7 +64,7 @@ var render = () => {
       ]);
   }
 
-  return h('div.testing',
+  return h('div',
     [anonymousNamer,
     h('ul.users', {
       style: {
@@ -84,14 +92,15 @@ var render = () => {
         }),
         h('div.contents', msg.message.msg)
       ]);
-    }))]
+    })),
+    h('div.grid', squares)]
   );
 };
 
 module.exports.initialize = () => {
   tree = render();
   rootNode = createElement(tree);
-  document.body.appendChild(rootNode);
+  d.qs('.room').appendChild(rootNode);
 
   mediator.subscribe("AUTH_STATUS_CHANGE", updateState);
 
@@ -122,6 +131,8 @@ module.exports.initialize = () => {
         }
         return val;
       });
+
+    gridHelpers.updateChattersCount(chatters.filter(online).length);
 
     chatters.filter(authenticated).forEach(getAvatar);
 

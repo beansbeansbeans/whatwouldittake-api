@@ -2,11 +2,9 @@
 <html>
   {{> head}}
   <body>
-    {{> auth}}
-    here's your room. {{room.name}}
     <div class="room">
-      <div class="messages-list">
-      </div>
+      {{> auth}}
+      here's your room. {{room.name}}
       <div class="create-message-wrapper">
         <textarea id="create-message-text" type="text"></textarea>
         <div id="send-message-button" class="button">send</div>
