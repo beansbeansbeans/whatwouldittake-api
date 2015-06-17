@@ -44,7 +44,7 @@ function Sockets (app, server, ee) {
         handshakeData.prattle.user = session.prattle.user;
       } else {
         handshakeData.prattle.user = { 
-          _id: Date.now(),
+          _id: sid,
           name: "Anonymous" 
         };
       }
