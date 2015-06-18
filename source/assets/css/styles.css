@@ -173,6 +173,12 @@ html {
   display: inline-block;
 }
 
+svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
 html {
   color: #3d3d3d;
 }

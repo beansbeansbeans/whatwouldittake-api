@@ -1,14 +1,33 @@
+var grid;
 var gridCount;
 var windowWidth = window.innerWidth;
 var windowHeight = window.innerHeight;
 
 var updateGrid = (chatterCount) => {
   if(!gridCount) { gridCount = 0; }
-  
+
+  var oldGridCount = gridCount;
   gridCount = Math.max(10, Math.ceil(2 * chatterCount));
+
+  if(oldGridCount !== gridCount) {
+    render();
+  }
 };
 
-module.exports = {
+var render = () => {
+  if(!grid) { return; }
+  console.log("RENDERING");
+  console.log(helpers.getGridOrientation());
+};
+
+var helpers = {
+  initialize() {
+    var container = d3.select(".svg-container");
+    grid = container.append("svg")
+      .attr("width", windowWidth).attr("height", windowHeight);
+
+    render();
+  },
   updateChattersCount(data) {
     if(!gridCount 
       || data > gridCount
@@ -36,7 +55,7 @@ module.exports = {
         across++;
         down = this.getDownFromAcross(across);
       }
-      down++;
+      down++; // extra buffer... why not
     } else {
       while( across / down > widthOverHeight) {
         across--;
@@ -51,3 +70,5 @@ module.exports = {
     };
   }
 };
+
+module.exports = helpers;

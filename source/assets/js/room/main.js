@@ -46,12 +46,7 @@ var updateState = () => {
 };
 
 var render = () => {
-  var anonymousNamer, squares = [];
-
-  var gridCount = gridHelpers.getGridCount();
-  for(var i=0; i<gridCount; i++) {
-    squares.push(h('div.square'));
-  }
+  var anonymousNamer;
 
   if(!sharedStorage.get('user')) {
     anonymousNamer = h('div#create-name', [
@@ -92,8 +87,7 @@ var render = () => {
         }),
         h('div.contents', msg.message.msg)
       ]);
-    })),
-    h('div.grid', squares)]
+    }))]
   );
 };
 
@@ -111,10 +105,11 @@ module.exports.initialize = () => {
       .filter(val => val.online !== true);
 
     chatters = chatters.concat(offlineAuthors);
-
     chatters.filter(authenticated).forEach(getAvatar);
 
     updateState();
+
+    gridHelpers.initialize();
   }); 
 
   var preload = () => {
