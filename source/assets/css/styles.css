@@ -178,6 +178,10 @@ svg {
   left: 0;
   top: 0;
 }
+svg rect {
+  fill: none;
+  stroke: red;
+}
 
 html {
   color: #3d3d3d;

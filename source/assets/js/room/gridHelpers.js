@@ -16,8 +16,31 @@ var updateGrid = (chatterCount) => {
 
 var render = () => {
   if(!grid) { return; }
-  console.log("RENDERING");
-  console.log(helpers.getGridOrientation());
+
+  var size = helpers.getSquareSize();
+  var {across, down} = helpers.getGridOrientation();
+  var data = new Array(across * down);
+  var squares = grid.selectAll("rect").data(data);
+
+  squares.enter().append("rect");
+
+  squares.attr("width", Math.sqrt(size)).attr("height", Math.sqrt(size))
+    .attr("x", function(d, i) {
+      return i * 100;
+    })
+    .attr("y", function(d, i) {
+      return i * 100;
+    });
+
+  // so the next step here is to arrange the squares in some regimented fashion
+  // start at the center
+  // them arrange them in pinwheels starting at right-hand position until you fill the screen
+  // no that doesn't work because the screen's not always a square
+  // 
+  // could go the spontaneous route... could actually look kind of cool
+  // no...
+
+  squares.exit().remove();
 };
 
 var helpers = {
