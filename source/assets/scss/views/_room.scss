@@ -1,8 +1,12 @@
-.grid {
+.squares-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
   .square {
-    @include square(100px);
+    position: absolute;
     border: solid 1px red;
-    display: inline-block;
   }
 }
 

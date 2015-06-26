@@ -166,11 +166,16 @@ html {
   display: none;
 }
 
-.grid .square {
-  width: 100px;
-  height: 100px;
+.squares-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+.squares-container .square {
+  position: absolute;
   border: solid 1px red;
-  display: inline-block;
 }
 
 svg {

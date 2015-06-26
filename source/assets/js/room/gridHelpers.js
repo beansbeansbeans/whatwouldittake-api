@@ -15,6 +15,8 @@ var updateGridCount = (chatterCount) => {
 };
 
 var render = () => {
+  if(!grid) { return; }
+
   var squareSize = Math.floor(Math.sqrt(helpers.getSquareArea())),
     gridEdges = {
       right: windowWidth / 2 + squareSize / 2,
@@ -85,12 +87,17 @@ var render = () => {
 
   makeRound();
 
+  coordinates.forEach((x) => {
+    var square = document.createElement("div");
+    square.classList.add("square");
+    square.setAttribute("style", "width:" + squareSize + "px;height:" + squareSize + "px;top:" + x.top + "px;left:" + x.left + "px");
+    grid.appendChild(square);
+  });
 };
 
 var helpers = {
   initialize() {
     grid = d.qs(".squares-container");
-
     render();
   },
   updateChattersCount(data) {
@@ -100,12 +107,8 @@ var helpers = {
       updateGridCount(data);
     }
   },
-  getGridCount() {
-    return gridCount;
-  },
-  getSquareArea() {
-    return Math.round(windowWidth * windowHeight / gridCount);
-  }
+  getGridCount: () => gridCount,
+  getSquareArea: () => Math.round(windowWidth * windowHeight / gridCount)
 };
 
 module.exports = helpers;
