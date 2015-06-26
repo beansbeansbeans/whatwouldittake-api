@@ -9,9 +9,7 @@ var updateGridCount = (chatterCount) => {
 
   gridCount = Math.max(10, Math.ceil(2 * chatterCount));
 
-  if(oldGridCount !== gridCount) {
-    render();
-  }
+  if(oldGridCount !== gridCount) { render(); }
 };
 
 var render = () => {
@@ -19,6 +17,8 @@ var render = () => {
 
   var squareSize = Math.floor(Math.sqrt(helpers.getSquareArea())),
     gridEdges = {
+      top: windowHeight / 2 - squareSize / 2,
+      left: windowWidth / 2 - squareSize / 2,
       right: windowWidth / 2 + squareSize / 2,
       bottom: windowHeight / 2 + squareSize / 2
     };
@@ -28,53 +28,51 @@ var render = () => {
     top: windowHeight / 2 - squareSize / 2
   }];
   
-  var makeRound = () => {
+  var makeRound = () => {    
     var newGridEdges = {};
 
     if(gridEdges.right < windowWidth) {
-      [
-        {
-          left: gridEdges.right,
-          top: gridEdges.bottom - squareSize
-        }, 
-        {
-          left: gridEdges.right - 2 * squareSize,
-          top: gridEdges.bottom - squareSize
-        }
-      ].forEach(x => coordinates.push(x));
+      var topStart = gridEdges.top;
+
+      while(topStart < gridEdges.bottom) {
+        [
+          {
+            top: topStart,
+            left: gridEdges.right
+          },
+          {
+            top: topStart,
+            left: gridEdges.left - squareSize
+          }
+        ].forEach(x => coordinates.push(x));
+
+        topStart += squareSize;
+      }
 
       newGridEdges.right = gridEdges.right + squareSize;
+      newGridEdges.left = gridEdges.left - squareSize;
     }
 
     if(gridEdges.bottom < windowHeight) {
-      [
-        {
-          left: gridEdges.right,
-          top: gridEdges.bottom
-        },
-        {
-          left: gridEdges.right - squareSize,
-          top: gridEdges.bottom
-        },
-        {
-          left: gridEdges.right - 2 * squareSize,
-          top: gridEdges.bottom
-        },
-        {
-          left: gridEdges.right,
-          top: gridEdges.bottom - 2 * squareSize
-        },
-        {
-          left: gridEdges.right - squareSize,
-          top: gridEdges.bottom - 2 * squareSize
-        },
-        {
-          left: gridEdges.right - 2 * squareSize,
-          top: gridEdges.bottom - 2 * squareSize
-        }
-      ].forEach(x => coordinates.push(x));
+      var leftStart = gridEdges.left - squareSize;
+
+      while(leftStart <= gridEdges.right) {
+        [
+          {
+            left: leftStart,
+            top: gridEdges.top - squareSize
+          },
+          {
+            left: leftStart,
+            top: gridEdges.bottom
+          }
+        ].forEach(x => coordinates.push(x));
+
+        leftStart += squareSize;
+      }
 
       newGridEdges.bottom = gridEdges.bottom + squareSize;
+      newGridEdges.top = gridEdges.top - squareSize;
     }
 
     newGridEdges = _.defaults(newGridEdges, gridEdges);
