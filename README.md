@@ -1,42 +1,39 @@
-NOTES
+Maybe - SETTING ASIDE WINDOW DIMENSIONS CHANGE HANDLING FOR NOW. 
 
-Data structure:
+Assuming that there is always a square in the exact center IS a simplifying assumption. 
 
-sockets:for:*
-rooms:*:online
-rooms:*:info => online => [online_users_count]
-socketio:sockets
-sockets:for:[userKey]:at:[room_id] => [socket.id]
-socketio:sockets => [socket.id]
-rooms:[room_id]:online => userKey
-users:[userKey]:status' => 'available'|'away'
+When the grid becomes too small/large given the # of chatters, we can nudge the assumed square size until window area / square size is an appropriate #. 
 
+Then given that assumption, we can calculate the array of coordinates that the squares should be arranged in. 
 
-Boot:
-- create a server
-- clean the database (init.js)
-- *when a user connects*
-- retrieve session data for the user that's loggin in (sockets.js) - set the user.balloons property of the headers for retrieval later
-- assign engine.io instance a RedisStore (sockets.js)
-- has the user's socket join the socket room (which matches a chat room) identified from their handshake data
-- emit to that room a message that the user has joined, passing in the new user's data
-- subscribe socket to 'my msg' (any messages from that user in particular which are emitted on the client), sort of adds it to the log, then emits it to all sockets subscribed to that room
-- subscribes to status change updates from that user (ditto from above)
-- subscribes to chat history requests and handles them by emitting logs to the client
-- subscribes to disconnection event by removing/decrementing database values as appropriate, and emitting a user leave event to the client
+Rects are either occupied or unoccupied. But each grid space is rendered as a rect.
 
+=== STEP ONE ===
 
+MAPPING BETWEEN DATA (GRID COORDINATES) AND RECTS
 
-MEANINGFUL FIRST TASK
+Indices, forming concentric circles (approximately), are assigned to the grid coordinates. A rect is rendered at each index (the rect keeps track of which index it was rendered to).
 
-- map out MVP data structure
-- DONE - create a MongoDB, connect
-- DONE - add a client button that adds a room to the DB and joins it (submit and creates room and redirects, another client that goes to the index sees the room, another client that goes to the room page can see the room contents)
-- DONE - delete the room if there are no connections to it (should probably in the socket disconnect handler)
-- enter a room if you click on it from the homepage
+When the grid coordinates change, the indices are reconstructed, forming concentric circles again. The rects on the screen are transformed according to the new coordinates that their assigned index points to. Rect nodes are recycled. 
+- For any coordinates that don't have rects, new rects are created.
+- For any rects that no longer have coordinates, they are removed from the DOM.
 
-DATA STRUCTURE
+=== STEP TWO ===
 
-Collections:
+Given an array of chatters, we create associations between chatter objects and rect + index pairs. These associations are randomly created (CHECK THIS - DON'T THINK IT WILL WORK), so the chatters will be scattered across the UI. But the association persists through the lifetime of the chatter. 
 
-rooms
+Every time there's an update to the chatters, we create a fresh batch of associations.
+
+As chatters leave, their indices are released into a pool of unused indices. New chatters get index assignments randomly from this pool. 
+
+The chatter -> index associations are reflected in the DOM by classes and data-id (pointing to user id) attributes. 
+
+=== THE RENDER LOOP ===
+
+CHATTERS UPDATE - GRID MUST INCREASE BY 100
+(1) Create the array of grid coordinates
+(2) Create the array of chatters with assigned indices
+(3) Remove any DOM rects that no longer have associated grid coordinates
+(4) Transform any DOM rects with associated grid coordinates to their new positions
+(5) Create DOM rects for any grid coordinates that yet don't correspond to DOM rects. 
+(6) Create chatter -> index associations for all chatters that don't yet have one - then add attributes to the corresponding DOM rects to reflect these associations (data-id, data-index, data-occupied, etc.).
