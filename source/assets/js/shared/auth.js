@@ -1,7 +1,6 @@
 var api = require('./api');
 var mediator = require('./mediator');
 var sharedStorage = require('./sharedStorage');
-var avatarCache = {};
 
 function statusChangeCallback(response) {
   console.log('statusChangeCallback');
@@ -36,7 +35,11 @@ var initFBIntervalID = null,
       });
       window.clearInterval(initFBIntervalID);
     }
-  };
+  },
+  avatarCache = {},
+  waitingForFBToBeDefined = false,
+  waitingForFBToBeDefinedIntervalID = null,
+  avatarFetchQueue = [];
 
 module.exports = {
   initialize: function() {
@@ -44,16 +47,39 @@ module.exports = {
   },
   getAvatar: function(id, callback) {
     if(avatarCache[id]) {
-      setTimeout(function() {
-        callback(avatarCache[id]);
-      }, 0);
-    } else if(typeof FB !== "undefined") {
-      FB.api('/' + id + '/picture?type=normal', function(result) {
-        if(result) {
-          avatarCache[id] = result.data.url;
-          callback(result.data.url);
+      _.defer(() => { callback(avatarCache[id]); });
+    } else {
+      if(typeof FB !== "undefined") {
+        FB.api('/' + id + '/picture?type=normal', function(result) {
+          if(result) {
+            avatarCache[id] = result.data.url;
+            callback(result.data.url);
+          }
+        });
+      } else {
+        avatarFetchQueue.push({
+          id: id,
+          callback: callback
+        });
+
+        if(!waitingForFBToBeDefined) {
+          waitingForFBToBeDefinedIntervalID = setInterval(() => {
+            if(typeof FB !== "undefined") {
+              clearInterval(waitingForFBToBeDefinedIntervalID);
+
+              avatarFetchQueue.forEach((data) => {
+                FB.api('/' + data.id + '/picture?type=normal', function(result) {
+                  if(result) {
+                    avatarCache[data.id] = result.data.url;
+                    data.callback(result.data.url);
+                  }
+                });
+              });
+            }
+          }, 100);
+          waitingForFBToBeDefined = true;
         }
-      });
+      }
     }
   }
 };
