@@ -46,7 +46,8 @@ var updateState = () => {
 };
 
 var render = () => {
-  var anonymousNamer;
+  var anonymousNamer, 
+    squareSize = gridHelpers.getSquareSize();
 
   if(!sharedStorage.get('user')) {
     anonymousNamer = h('div#create-name', [
@@ -87,6 +88,16 @@ var render = () => {
         }),
         h('div.contents', msg.message.msg)
       ]);
+    })),
+    h('div.squares-container', gridHelpers.getCoordinates().map((square) => {
+      return h('div.square', {
+        style: {
+          width: squareSize + "px",
+          height: squareSize + "px",
+          top: square.top + "px",
+          left: square.left + "px"
+        }
+      })
     }))]
   );
 };

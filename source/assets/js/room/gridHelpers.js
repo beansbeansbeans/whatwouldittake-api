@@ -1,6 +1,6 @@
-var grid;
 var gridCount = 0;
 var coordinates = [];
+var mediator = require('../shared/mediator');
 var windowWidth = window.innerWidth;
 var windowHeight = window.innerHeight;
 
@@ -9,13 +9,11 @@ var updateGridCount = (chatterCount) => {
 
   gridCount = Math.max(10, Math.ceil(2 * chatterCount));
 
-  if(oldGridCount !== gridCount) { render(); }
+  if(oldGridCount !== gridCount) { calculateCoordinates(); }
 };
 
-var render = () => {
-  if(!grid) { return; }
-
-  var squareSize = Math.floor(Math.sqrt(helpers.getSquareArea())),
+var calculateCoordinates = () => {
+  var squareSize = helpers.getSquareSize(),
     gridEdges = {
       top: windowHeight / 2 - squareSize / 2,
       left: windowWidth / 2 - squareSize / 2,
@@ -84,20 +82,10 @@ var render = () => {
   };
 
   makeRound();
-
-  coordinates.forEach((x) => {
-    var square = document.createElement("div");
-    square.classList.add("square");
-    square.setAttribute("style", "width:" + squareSize + "px;height:" + squareSize + "px;top:" + x.top + "px;left:" + x.left + "px");
-    grid.appendChild(square);
-  });
 };
 
 var helpers = {
-  initialize() {
-    grid = d.qs(".squares-container");
-    render();
-  },
+  initialize() {},
   updateChattersCount(data) {
     if(!gridCount 
       || data > 0.75 * gridCount
@@ -105,7 +93,9 @@ var helpers = {
       updateGridCount(data);
     }
   },
+  getCoordinates: () => coordinates,
   getGridCount: () => gridCount,
+  getSquareSize: () => Math.floor(Math.sqrt(helpers.getSquareArea())),
   getSquareArea: () => Math.round(windowWidth * windowHeight / gridCount)
 };
 
