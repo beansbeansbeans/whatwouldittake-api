@@ -36,6 +36,14 @@ var initFBIntervalID = null,
       window.clearInterval(initFBIntervalID);
     }
   },
+  getFBAvatar = (id, cb) => {
+    FB.api('/' + id + '/picture?type=normal', function(result) {
+      if(result) {
+        avatarCache[id] = result.data.url;
+        cb(result.data.url);
+      }
+    });
+  },
   avatarCache = {},
   waitingForFBToBeDefined = false,
   waitingForFBToBeDefinedIntervalID = null,
@@ -49,13 +57,8 @@ module.exports = {
     if(avatarCache[id]) {
       _.defer(() => { callback(avatarCache[id]); });
     } else {
-      if(typeof FB !== "undefined") {
-        FB.api('/' + id + '/picture?type=normal', function(result) {
-          if(result) {
-            avatarCache[id] = result.data.url;
-            callback(result.data.url);
-          }
-        });
+      if(typeof FB !== "undefined") { 
+        getFBAvatar(id, callback);
       } else {
         avatarFetchQueue.push({
           id: id,
@@ -66,14 +69,8 @@ module.exports = {
           waitingForFBToBeDefinedIntervalID = setInterval(() => {
             if(typeof FB !== "undefined") {
               clearInterval(waitingForFBToBeDefinedIntervalID);
-
               avatarFetchQueue.forEach((data) => {
-                FB.api('/' + data.id + '/picture?type=normal', function(result) {
-                  if(result) {
-                    avatarCache[data.id] = result.data.url;
-                    data.callback(result.data.url);
-                  }
-                });
+                getFBAvatar(data.id, data.callback);
               });
             }
           }, 100);
