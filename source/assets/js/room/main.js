@@ -46,16 +46,10 @@ var updateState = () => {
   tree = newTree;
 };
 
-var render = () => {
-  var anonymousNamer, 
-    squareSize = gridHelpers.getSquareSize(),
-    coordinates = gridHelpers.getCoordinates(),
-    onlineChatters = chatters.filter(val => val.online === true );
-
+var coordinateAssigner = (coordinates, refresh) => {
   var usedIndexes = [];
-
-  if(coordinates.length !== lastCoordinatesSize) {
-    onlineChatters.forEach((x) => {
+  return (x) => {
+    if(refresh || typeof x.coordinateID === "undefined") {
       var index = 0;
 
       while(usedIndexes.indexOf(index) !== -1) {
@@ -63,25 +57,27 @@ var render = () => {
       }
 
       usedIndexes.push(index);
-
       x.coordinateID = index;
-    });
-  } else if(onlineChatters.filter(x => typeof x.coordinateID === "undefined").length) {
-    onlineChatters.forEach((x) => {
-      if(typeof x.coordinateID === "undefined") {
-        var index = 0;
+    } else {
+      usedIndexes.push(x.coordinateID);
+    }
+  }
+};
 
-        while(usedIndexes.indexOf(index) !== -1) {
-          index = Math.round(Math.random() * coordinates.length);
-        }
+var lacksCoordinate = x => typeof x.coordinateID === "undefined";
 
-        usedIndexes.push(index);
+var render = () => {
+  var anonymousNamer, 
+    squareSize = gridHelpers.getSquareSize(),
+    coordinates = gridHelpers.getCoordinates(),
+    onlineChatters = chatters.filter(val => val.online === true ),
+    assigner = coordinateAssigner(coordinates);
 
-        x.coordinateID = index;
-      } else {
-        usedIndexes.push(x.coordinateID);
-      }
-    });
+  if(coordinates.length !== lastCoordinatesSize) {
+    assigner = coordinateAssigner(coordinates, true);
+    onlineChatters.forEach(assigner);
+  } else if(onlineChatters.filter(lacksCoordinate).length) {
+    onlineChatters.forEach(assigner);
   }
 
   lastCoordinatesSize = coordinates.length;
