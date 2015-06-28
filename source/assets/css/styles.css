@@ -183,6 +183,13 @@ html {
   transition: all 250ms;
 }
 
+.users {
+  margin-bottom: 90px;
+}
+.users:before {
+  content: "Currently chatting:";
+}
+
 svg {
   position: absolute;
   left: 0;

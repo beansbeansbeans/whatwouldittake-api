@@ -12,6 +12,13 @@
   pointer-events: none;
 }
 
+.users {
+  &:before {
+    content: "Currently chatting:";
+  }
+  margin-bottom: 90px;
+}
+
 svg {
   position: absolute;
   left: 0;
