@@ -52,9 +52,15 @@ var calculateCoordinates = () => {
     }
 
     if(gridEdges.bottom < windowHeight) {
-      var leftStart = gridEdges.left - squareSize;
+      var leftStart = gridEdges.left,
+        rightEnd = gridEdges.right - squareSize;
 
-      while(leftStart <= gridEdges.right) {
+      if(newGridEdges.right) { // there was horizontal change
+        leftStart = gridEdges.left - squareSize;
+        rightEnd = gridEdges.right;
+      }
+
+      while(leftStart <= rightEnd) {
         [
           {
             left: leftStart,
