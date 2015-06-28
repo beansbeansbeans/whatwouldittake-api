@@ -8,6 +8,7 @@ var h = require('virtual-dom/h');
 var diff = require('virtual-dom/diff');
 var patch = require('virtual-dom/patch');
 var createElement = require('virtual-dom/create-element');
+var lastCoordinatesSize = 0;
 var chatters = [];
 var messages = [];
 var tree;
@@ -47,15 +48,48 @@ var updateState = () => {
 
 var render = () => {
   var anonymousNamer, 
-    squareSize = gridHelpers.getSquareSize();
+    squareSize = gridHelpers.getSquareSize(),
+    coordinates = gridHelpers.getCoordinates(),
+    onlineChatters = chatters.filter(val => val.online === true );
+
+  var usedIndexes = [];
+
+  if(coordinates.length !== lastCoordinatesSize) {
+    onlineChatters.forEach((x) => {
+      var index = 0;
+
+      while(usedIndexes.indexOf(index) !== -1) {
+        index = Math.round(Math.random() * coordinates.length);
+      }
+
+      usedIndexes.push(index);
+
+      x.coordinateID = index;
+    });
+  } else if(onlineChatters.filter(x => typeof x.coordinateID === "undefined").length) {
+    onlineChatters.forEach((x) => {
+      if(typeof x.coordinateID === "undefined") {
+        var index = 0;
+
+        while(usedIndexes.indexOf(index) !== -1) {
+          index = Math.round(Math.random() * coordinates.length);
+        }
+
+        usedIndexes.push(index);
+
+        x.coordinateID = index;
+      } else {
+        usedIndexes.push(x.coordinateID);
+      }
+    });
+  }
+
+  lastCoordinatesSize = coordinates.length;
 
   if(!sharedStorage.get('user')) {
     anonymousNamer = h('div#create-name', [
         h('div.instruction', 'give yourself a name'),
-        h('input', {
-          type: "text",
-          placeholder: "e.g. sprinkles"
-        }),
+        h('input', { type: "text" }),
         h('button', 'change name')
       ]);
   }
@@ -66,7 +100,7 @@ var render = () => {
       style: {
         textAlign: 'center'
       }
-    }, chatters.filter(val => val.online === true ).map((val) => {
+    }, onlineChatters.map((val) => {
       return h('li.user', {
         style: {
           backgroundImage: 'url(' + val.avatarURL + ')'
@@ -89,15 +123,29 @@ var render = () => {
         h('div.contents', msg.message.msg)
       ]);
     })),
-    h('div.squares-container', gridHelpers.getCoordinates().map((square) => {
-      return h('div.square', {
+    h('div.squares-container', gridHelpers.getCoordinates().map((square, index) => {
+      var associatedChatter = _.findWhere(onlineChatters, {coordinateID: index});
+      var attributes = {
         style: {
           width: squareSize + "px",
           height: squareSize + "px",
           top: square.top + "px",
           left: square.left + "px"
         }
-      })
+      },
+      contents;
+
+      if(associatedChatter) {
+        attributes.dataset = {
+          associatedChatterId: associatedChatter._id
+        }
+        attributes.key = associatedChatter._id;
+        contents = associatedChatter._id;
+      } else {
+        attributes.key = index;
+      }
+
+      return h('div.square', attributes, contents)
     }))]
   );
 };
@@ -166,5 +214,5 @@ module.exports.initialize = () => {
   });
 
   d.gbID("send-message-button").addEventListener("click", sendMsg);
-  d.qs("#create-name button").addEventListener("click", changeAnonymousName);
+  d.qs("#create-name button").addEventListener("click", changeAnonymousName);  
 };
