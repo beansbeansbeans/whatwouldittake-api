@@ -8,16 +8,6 @@ Then given that assumption, we can calculate the array of coordinates that the s
 
 Rects are either occupied or unoccupied. But each grid space is rendered as a rect.
 
-=== STEP ONE ===
-
-MAPPING BETWEEN DATA (GRID COORDINATES) AND RECTS
-
-Indices, forming concentric circles (approximately), are assigned to the grid coordinates. A rect is rendered at each index (the rect keeps track of which index it was rendered to).
-
-When the grid coordinates change, the indices are reconstructed, forming concentric circles again. The rects on the screen are transformed according to the new coordinates that their assigned index points to. Rect nodes are recycled. 
-- For any coordinates that don't have rects, new rects are created.
-- For any rects that no longer have coordinates, they are removed from the DOM.
-
 === STEP TWO ===
 
 Given an array of chatters, we create associations between chatter objects and rect + index pairs. These associations are randomly created (CHECK THIS - DON'T THINK IT WILL WORK), so the chatters will be scattered across the UI. But the association persists through the lifetime of the chatter. 

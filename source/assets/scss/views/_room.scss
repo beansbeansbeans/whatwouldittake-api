@@ -7,6 +7,7 @@
   .square {
     position: absolute;
     border: solid 1px red;
+    @include transition(all 250ms);
   }
   pointer-events: none;
 }

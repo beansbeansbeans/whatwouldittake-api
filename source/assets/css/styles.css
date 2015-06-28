@@ -177,6 +177,10 @@ html {
 .squares-container .square {
   position: absolute;
   border: solid 1px red;
+  -moz-transition: all 250ms;
+  -o-transition: all 250ms;
+  -webkit-transition: all 250ms;
+  transition: all 250ms;
 }
 
 svg {
