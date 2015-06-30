@@ -14,6 +14,11 @@ var messages = [];
 var tree;
 var rootNode;
 
+var resizeHandler = () => {
+  gridHelpers.updateFrame();
+  updateState();
+};
+
 var sendMsg = () => {
   var msg = d.gbID("create-message-text").value;
 
@@ -150,6 +155,8 @@ module.exports.initialize = () => {
   tree = render();
   rootNode = createElement(tree);
   d.qs('.room').appendChild(rootNode);
+
+  window.addEventListener("resize", _.debounce(resizeHandler, 300));
 
   mediator.subscribe("AUTH_STATUS_CHANGE", updateState);
 

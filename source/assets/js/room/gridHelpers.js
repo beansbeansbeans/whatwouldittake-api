@@ -99,6 +99,11 @@ var helpers = {
       updateGridCount(data);
     }
   },
+  updateFrame: () => {
+    windowWidth = window.innerWidth;
+    windowHeight = window.innerHeight;
+    calculateCoordinates();
+  },
   getCoordinates: () => coordinates,
   getGridCount: () => gridCount,
   getSquareSize: () => Math.floor(Math.sqrt(helpers.getSquareArea())),
