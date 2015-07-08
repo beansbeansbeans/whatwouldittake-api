@@ -1,4 +1,5 @@
 var gridCount = 0;
+var minGridCount = 20;
 var coordinates = [];
 var mediator = require('../shared/mediator');
 var windowWidth = window.innerWidth;
@@ -7,7 +8,7 @@ var windowHeight = window.innerHeight;
 var updateGridCount = (chatterCount) => {
   var oldGridCount = gridCount;
 
-  gridCount = Math.max(10, Math.ceil(2 * chatterCount));
+  gridCount = Math.max(minGridCount, Math.ceil(2 * chatterCount));
 
   if(oldGridCount !== gridCount) { calculateCoordinates(); }
 };
