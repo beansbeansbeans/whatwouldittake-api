@@ -172,13 +172,15 @@ html {
   right: 0;
   left: 0;
   bottom: 0;
-  background-image: radial-gradient(#0000ff 0%, #0000ff 5px, rgba(0, 0, 0, 0) 5px);
-  background-position: 0 0;
+  -moz-transition: background-image 200ms;
+  -o-transition: background-image 200ms;
+  -webkit-transition: background-image 200ms;
+  transition: background-image 200ms;
+  background-image: radial-gradient(rgba(87, 101, 101, 0.2) 0px, rgba(87, 101, 101, 0.2) 1px, rgba(0, 0, 0, 0) 1px);
   pointer-events: none;
 }
 .squares-container .square {
   position: absolute;
-  border: solid 1px red;
   -moz-transition: all 250ms;
   -o-transition: all 250ms;
   -webkit-transition: all 250ms;

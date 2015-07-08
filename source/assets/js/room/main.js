@@ -76,7 +76,9 @@ var render = () => {
     squareSize = gridHelpers.getSquareSize(),
     coordinates = gridHelpers.getCoordinates(),
     onlineChatters = chatters.filter(val => val.online === true ),
-    assigner = coordinateAssigner(coordinates);
+    assigner = coordinateAssigner(coordinates),
+    minTop = Math.min.apply(Math, _.pluck(coordinates, 'top')) - squareSize / 2,
+    minLeft = Math.min.apply(Math, _.pluck(coordinates, 'left')) - squareSize / 2;
 
   if(coordinates.length !== lastCoordinatesSize) {
     assigner = coordinateAssigner(coordinates, true);
@@ -126,10 +128,11 @@ var render = () => {
     })),
     h('div.squares-container', {
         style: {
-          backgroundSize: squareSize + "px " + squareSize + "px"
+          backgroundSize: squareSize + "px " + squareSize + "px",
+          backgroundPosition: minLeft + 'px ' + minTop + "px"
         }
       },
-      gridHelpers.getCoordinates().map((square, index) => {
+      coordinates.map((square, index) => {
       var associatedChatter = _.findWhere(onlineChatters, {coordinateID: index});
       var attributes = {
         style: {
