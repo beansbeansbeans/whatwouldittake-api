@@ -172,6 +172,8 @@ html {
   right: 0;
   left: 0;
   bottom: 0;
+  background-image: radial-gradient(#0000ff 0%, #0000ff 5px, rgba(0, 0, 0, 0) 5px);
+  background-position: 0 0;
   pointer-events: none;
 }
 .squares-container .square {

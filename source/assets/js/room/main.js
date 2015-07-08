@@ -124,7 +124,12 @@ var render = () => {
         h('div.contents', msg.message.msg)
       ]);
     })),
-    h('div.squares-container', gridHelpers.getCoordinates().map((square, index) => {
+    h('div.squares-container', {
+        style: {
+          backgroundSize: squareSize + "px " + squareSize + "px"
+        }
+      },
+      gridHelpers.getCoordinates().map((square, index) => {
       var associatedChatter = _.findWhere(onlineChatters, {coordinateID: index});
       var attributes = {
         style: {

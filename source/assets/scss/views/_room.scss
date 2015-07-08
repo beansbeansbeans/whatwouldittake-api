@@ -4,6 +4,10 @@
   right: 0;
   left: 0;
   bottom: 0;
+
+  background-image: radial-gradient(blue 0, blue 5px, transparent 5px);
+  background-position: 0 0;
+
   .square {
     position: absolute;
     border: solid 1px red;
