@@ -1,3 +1,9 @@
+We could generate a random mapping of square indices at the initialization stage. Then the assignments would be deterministic per session. 
+
+Beyond that though, the problem is that we need to persist the squares by user key, not by index, because indices will change while users will not. 
+
+======
+
 Maybe - SETTING ASIDE WINDOW DIMENSIONS CHANGE HANDLING FOR NOW. 
 
 Assuming that there is always a square in the exact center IS a simplifying assumption. 

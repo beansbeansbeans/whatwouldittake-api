@@ -8,9 +8,9 @@ var h = require('virtual-dom/h');
 var diff = require('virtual-dom/diff');
 var patch = require('virtual-dom/patch');
 var createElement = require('virtual-dom/create-element');
-var lastCoordinatesSize = 0;
 var chatters = [];
 var messages = [];
+var usedSquareIndices = [];
 var tree;
 var rootNode;
 
@@ -51,23 +51,15 @@ var updateState = () => {
   tree = newTree;
 };
 
-var coordinateAssigner = (coordinates, refresh) => {
-  var usedIndexes = [];
-  return (x) => {
-    if(refresh || typeof x.coordinateID === "undefined") {
-      var index = 0;
-
-      while(usedIndexes.indexOf(index) !== -1) {
-        index = Math.round(Math.random() * coordinates.length);
-      }
-
-      usedIndexes.push(index);
-      x.coordinateID = index;
-    } else {
-      usedIndexes.push(x.coordinateID);
-    }
+var assignSquareIndex = (x) => {
+  var index = 0, 
+    coordinates = gridHelpers.getCoordinates();
+  while(usedSquareIndices.indexOf(index) !== -1) {
+    index = Math.round(Math.random() * coordinates.length);
   }
-};
+  usedSquareIndices.push(index);
+  x.coordinateID = index;
+}
 
 var lacksCoordinate = x => typeof x.coordinateID === "undefined";
 
@@ -75,26 +67,16 @@ var render = () => {
   var anonymousNamer, 
     squareSize = gridHelpers.getSquareSize(),
     coordinates = gridHelpers.getCoordinates(),
-    onlineChatters = chatters.filter(val => val.online === true ),
-    assigner = coordinateAssigner(coordinates),
+    onlineChatters = chatters.filter(online),
     minTop = Math.min.apply(Math, _.pluck(coordinates, 'top')) - squareSize / 2,
     minLeft = Math.min.apply(Math, _.pluck(coordinates, 'left')) - squareSize / 2;
 
-  if(coordinates.length !== lastCoordinatesSize) {
-    assigner = coordinateAssigner(coordinates, true);
-    onlineChatters.forEach(assigner);
-  } else if(onlineChatters.filter(lacksCoordinate).length) {
-    onlineChatters.forEach(assigner);
-  }
-
-  lastCoordinatesSize = coordinates.length;
-
   if(!sharedStorage.get('user')) {
     anonymousNamer = h('div#create-name', [
-        h('div.instruction', 'give yourself a name'),
-        h('input', { type: "text" }),
-        h('button', 'change name')
-      ]);
+      h('div.instruction', 'give yourself a name'),
+      h('input', { type: "text" }),
+      h('button', 'change name')
+    ]);
   }
 
   return h('div',
@@ -196,6 +178,8 @@ module.exports.initialize = () => {
       });
 
     gridHelpers.updateChattersCount(chatters.filter(online).length);
+
+    chatters.filter(online).forEach(assignSquareIndex);
 
     chatters.filter(authenticated).forEach(getAvatar);
 
