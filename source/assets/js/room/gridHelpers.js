@@ -11,10 +11,10 @@ var updateGridCount = (chatterCount) => {
 
   gridCount = Math.max(minGridCount, Math.ceil(2 * chatterCount));
 
-  if(oldGridCount !== gridCount) { calculateCoordinates(); }
+  if(oldGridCount !== gridCount) { updateCoordinatesAndIndices(); }
 };
 
-var calculateCoordinates = () => {
+var updateCoordinatesAndIndices = () => {
   var squareSize = helpers.getSquareSize(),
     gridEdges = {
       top: windowHeight / 2 - squareSize / 2,
@@ -91,6 +91,7 @@ var calculateCoordinates = () => {
 
   makeRound();
 
+  indices = [];
   for(var i=0; i<coordinates.length; i++) { indices.push(i); }
   var random = indices.map(Math.random);
   indices = indices.sort((a, b) => random[indices.indexOf(a)] - random[indices.indexOf(b)]);
@@ -108,7 +109,7 @@ var helpers = {
   updateFrame: () => {
     windowWidth = window.innerWidth;
     windowHeight = window.innerHeight;
-    calculateCoordinates();
+    updateCoordinatesAndIndices();
   },
   getIndices: () => indices,
   getCoordinates: () => coordinates,
