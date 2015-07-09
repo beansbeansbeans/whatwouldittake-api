@@ -12,6 +12,13 @@
   .square {
     position: absolute;
     @include transition(all 250ms);
+    opacity: 0;
+    @include transform(scale(0.1));
+    background: red;
+    &[data-occupied="true"] {
+      @include transform(scale(1));
+      opacity: 1;
+    }
   }
   pointer-events: none;
 }

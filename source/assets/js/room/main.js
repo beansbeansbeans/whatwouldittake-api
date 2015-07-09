@@ -127,12 +127,12 @@ var render = () => {
       ]);
     })),
     h('div.squares-container', {
-        style: {
-          backgroundSize: squareSize + "px " + squareSize + "px",
-          backgroundPosition: minLeft + 'px ' + minTop + "px"
-        }
-      },
-      coordinates.map((square, index) => {
+      style: {
+        backgroundSize: squareSize + "px " + squareSize + "px",
+        backgroundPosition: minLeft + 'px ' + minTop + "px"
+      }
+    },
+    coordinates.map((square, index) => {
       var associatedChatter = _.findWhere(onlineChatters, {coordinateID: index});
       var attributes = {
         style: {
@@ -140,18 +140,16 @@ var render = () => {
           height: squareSize + "px",
           top: square.top + "px",
           left: square.left + "px"
-        }
+        },
+        dataset: { occupied: false },
+        key: index
       },
       contents;
 
       if(associatedChatter) {
-        attributes.dataset = {
-          associatedChatterId: associatedChatter._id
-        }
-        attributes.key = associatedChatter._id;
+        attributes.dataset.occupied = true;
+        attributes.dataset.associatedChatterId = associatedChatter._id;
         contents = associatedChatter._id;
-      } else {
-        attributes.key = index;
       }
 
       return h('div.square', attributes, contents)
