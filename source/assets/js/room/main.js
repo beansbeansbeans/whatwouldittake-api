@@ -10,7 +10,6 @@ var patch = require('virtual-dom/patch');
 var createElement = require('virtual-dom/create-element');
 var chatters = [];
 var messages = [];
-var usedSquareIndices = [];
 var tree;
 var rootNode;
 
@@ -50,18 +49,6 @@ var updateState = () => {
   rootNode = patch(rootNode, patches);
   tree = newTree;
 };
-
-var assignSquareIndex = (x) => {
-  var index = 0, 
-    coordinates = gridHelpers.getCoordinates();
-  while(usedSquareIndices.indexOf(index) !== -1) {
-    index = Math.round(Math.random() * coordinates.length);
-  }
-  usedSquareIndices.push(index);
-  x.coordinateID = index;
-}
-
-var lacksCoordinate = x => typeof x.coordinateID === "undefined";
 
 var render = () => {
   var anonymousNamer, 
@@ -177,11 +164,11 @@ module.exports.initialize = () => {
         return val;
       });
 
+    chatters.filter(authenticated).forEach(getAvatar);
+
     gridHelpers.updateChattersCount(chatters.filter(online).length);
 
-    chatters.filter(online).forEach(assignSquareIndex);
-
-    chatters.filter(authenticated).forEach(getAvatar);
+    chatters.filter(online).forEach((x, i) => { x.coordinateID = gridHelpers.getIndices()[i] });
 
     updateState();
 

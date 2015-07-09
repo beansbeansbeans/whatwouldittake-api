@@ -2,6 +2,14 @@ We could generate a random mapping of square indices at the initialization stage
 
 Beyond that though, the problem is that we need to persist the squares by user key, not by index, because indices will change while users will not. 
 
+SO I THINK the first step is getting the squares to visually persist. NEXT step is getting them to only move when the square coordinates change. 
+
+----
+
+so why would it kind of work with square indexes? it's sort of because the pool has to be consistent maybe? if the pool changes, then everything is re-rendered it seems. so my pool of keys has to be carefully managed. 
+- even as coordinates resize, the pool must be predictable. 
+- 
+
 ======
 
 Maybe - SETTING ASIDE WINDOW DIMENSIONS CHANGE HANDLING FOR NOW. 

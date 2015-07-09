@@ -1,6 +1,7 @@
 var gridCount = 0;
 var minGridCount = 20;
 var coordinates = [];
+var indices = [];
 var mediator = require('../shared/mediator');
 var windowWidth = window.innerWidth;
 var windowHeight = window.innerHeight;
@@ -89,6 +90,10 @@ var calculateCoordinates = () => {
   };
 
   makeRound();
+
+  for(var i=0; i<coordinates.length; i++) { indices.push(i); }
+  var random = indices.map(Math.random);
+  indices = indices.sort((a, b) => random[indices.indexOf(a)] - random[indices.indexOf(b)]);
 };
 
 var helpers = {
@@ -105,6 +110,7 @@ var helpers = {
     windowHeight = window.innerHeight;
     calculateCoordinates();
   },
+  getIndices: () => indices,
   getCoordinates: () => coordinates,
   getGridCount: () => gridCount,
   getSquareSize: () => Math.floor(Math.sqrt(helpers.getSquareArea())),
