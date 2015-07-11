@@ -31,7 +31,7 @@ var updateCoordinatesAndIndices = () => {
   var makeRound = () => {    
     var newGridEdges = {};
 
-    if(gridEdges.right < windowWidth) {
+    if((gridEdges.right + squareSize) < windowWidth) {
       var topStart = gridEdges.top;
 
       while(topStart < gridEdges.bottom) {
@@ -53,7 +53,7 @@ var updateCoordinatesAndIndices = () => {
       newGridEdges.left = gridEdges.left - squareSize;
     }
 
-    if(gridEdges.bottom < windowHeight) {
+    if((gridEdges.bottom + squareSize) < windowHeight) {
       var leftStart = gridEdges.left,
         rightEnd = gridEdges.right - squareSize;
 
