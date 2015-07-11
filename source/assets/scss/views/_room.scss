@@ -1,3 +1,16 @@
+#logo {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  @include square(25px);
+  line-height: 25px;
+  text-align: center;
+  @extend %header-font;
+  color: $black;
+  border: solid 2px $black;
+  text-decoration: none;
+}
+
 .squares-container {
   $gradient-color: rgba($gray, 0.2);
   position: fixed;
@@ -28,14 +41,4 @@
     content: "Currently chatting:";
   }
   margin-bottom: 90px;
-}
-
-svg {
-  position: absolute;
-  left: 0;
-  top: 0;
-  rect {
-    fill: none;
-    stroke: red;
-  }
 }

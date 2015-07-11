@@ -1,5 +1,5 @@
 @import url(http://fonts.googleapis.com/css?family=Montserrat:400,700|Maven+Pro:400,700);
-h1 {
+#logo, h1 {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   text-transform: uppercase;
@@ -166,6 +166,19 @@ html {
   display: none;
 }
 
+#logo {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: 25px;
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+  color: #3d3d3d;
+  border: solid 2px #3d3d3d;
+  text-decoration: none;
+}
+
 .squares-container {
   position: fixed;
   top: 0;
@@ -205,16 +218,6 @@ html {
 }
 .users:before {
   content: "Currently chatting:";
-}
-
-svg {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-svg rect {
-  fill: none;
-  stroke: red;
 }
 
 html {
