@@ -151,8 +151,6 @@ var render = () => {
       return h('li.message', 
         [h('div.avatar', {
           style: {
-            width: '40px',
-            height: '40px',
             backgroundImage: 'url(' + avatarURL + ')'
           }
         }),

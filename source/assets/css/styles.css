@@ -255,10 +255,36 @@ html {
 #virtual-dom-container .create-message-wrapper #send-message-button {
   margin-left: 10px;
 }
-
-.messages {
-  position: relative;
+#virtual-dom-container .messages {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  position: absolute;
   z-index: 1;
+  overflow-y: scroll;
+  width: 100%;
+}
+#virtual-dom-container .messages .message {
+  width: 100%;
+  margin-bottom: 20px;
+}
+#virtual-dom-container .messages .message .avatar, #virtual-dom-container .messages .message .contents, #virtual-dom-container .messages .message .attribution * {
+  display: inline-block;
+  vertical-align: top;
+}
+#virtual-dom-container .messages .message .avatar {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}
+#virtual-dom-container .messages .message .contents {
+  width: calc(100% - 36px);
+}
+#virtual-dom-container .messages .message .attribution .creator, #virtual-dom-container .messages .message .attribution .createdAt {
+  font-size: 12px;
+}
+#virtual-dom-container .messages .message .attribution .creator {
+  margin-right: 5px;
 }
 
 .squares-container {

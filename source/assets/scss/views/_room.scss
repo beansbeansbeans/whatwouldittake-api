@@ -79,13 +79,38 @@
       margin-left: 10px;
     }
   }
-}
-
-
-
-.messages {
-  position: relative;
-  z-index: 1;
+  .messages {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: absolute;
+    z-index: 1;
+    overflow-y: scroll;
+    width: 100%;
+    .message {
+      width: 100%;
+      margin-bottom: 20px;
+      .avatar, .contents, .attribution * {
+        display: inline-block;
+        vertical-align: top;
+      }
+      .avatar {
+        @include square(30px);
+        margin-right: 5px;
+      }
+      .contents {
+        width: calc(100% - 36px);
+      }
+      .attribution {
+        .creator, .createdAt {
+          font-size: 12px;
+        }
+        .creator {
+          margin-right: 5px;
+        }
+      }
+    }
+  }
 }
 
 .squares-container {
