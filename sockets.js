@@ -99,6 +99,7 @@ function Sockets (app, server, ee) {
     });
 
     socket.on('change name', function(data) {
+      user.name = data;
       client.collection('rooms').update(
         { key: roomID, "online._id": user._id },
         {
