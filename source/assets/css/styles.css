@@ -192,6 +192,11 @@ html {
   height: 40px;
 }
 
+#current-user .avatar {
+  width: 40px;
+  height: 40px;
+}
+
 .messages {
   position: relative;
   z-index: 1;
@@ -221,7 +226,7 @@ html {
   -ms-transform: scale(0.1);
   -webkit-transform: scale(0.1);
   transform: scale(0.1);
-  background: red;
+  border: solid 2px red;
 }
 .squares-container .square[data-occupied="true"] {
   -moz-transform: scale(1);

@@ -53,19 +53,34 @@ var updateState = () => {
 };
 
 var render = () => {
-  var anonymousNamer,
-    creator, 
+  var anonymousNamer, creator,
+    currentUser, currentUserObj = sharedStorage.get('user'),
     squareSize = gridHelpers.getSquareSize(),
     coordinates = gridHelpers.getCoordinates(),
     onlineChatters = chatters.filter(online),
     minTop = Math.min.apply(Math, _.pluck(coordinates, 'top')) - squareSize / 2,
     minLeft = Math.min.apply(Math, _.pluck(coordinates, 'left')) - squareSize / 2;
 
-  if(!sharedStorage.get('user')) {
+  if(!currentUserObj) {
     anonymousNamer = h('div#create-name', [
-      h('div.instruction', 'give yourself a name'),
-      h('input', { type: "text" }),
-      h('button', 'change name')
+      h('div.info', [
+        h('span', "You're chatting as anonymous."),
+        h('button#login_button', 'Login with Facebook'),
+        h('span', ' or'),
+        h('div#name_change_launcher', ' change your name')
+      ]),
+      h('div.modal', [
+        h('input', { type: "text" }),
+        h('button', 'change name')
+      ])
+    ]);
+  } else {
+    currentUser = h('div#current-user', [
+      h('div.avatar', {
+        style: {
+          backgroundImage: 'url(' + currentUserObj.avatarURL + ')'
+        }
+      })
     ]);
   }
 
@@ -128,7 +143,6 @@ var render = () => {
         h('div.onlineCount', onlineChatters.length + ' chatting now')
       ])
     ]),
-    anonymousNamer,
     h('ul.messages', messages.map((msg) => {
       var avatarURL, author = chatters.filter(x => x._id === msg.user._id)[0];
 
@@ -150,7 +164,9 @@ var render = () => {
           h('div.text', msg.message.msg)
         ])
       ]);
-    }))]
+    })),
+    anonymousNamer,
+    currentUser]
   );
 };
 
@@ -162,6 +178,14 @@ module.exports.initialize = () => {
   window.addEventListener("resize", _.debounce(resizeHandler, 300));
 
   mediator.subscribe("AUTH_STATUS_CHANGE", updateState);
+  mediator.subscribe("AUTH_SESSION_POSTED", (data) => {
+    auth.getAvatar(data.facebookId, (result) => {
+      var sharedStorageUser = sharedStorage.get("user");
+      sharedStorageUser.avatarURL = result;
+      sharedStorage.put("user", sharedStorageUser);
+      updateState();
+    });
+  });
 
   api.get('/rooms' + window.location.pathname.substring('/rooms'.length) + '/json', (err, data) => {
     room = data.data;

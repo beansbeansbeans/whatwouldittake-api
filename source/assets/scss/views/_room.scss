@@ -23,6 +23,12 @@
   }
 }
 
+#current-user {
+  .avatar {
+    @include square(40px);
+  }
+}
+
 .messages {
   position: relative;
   z-index: 1;
@@ -44,7 +50,7 @@
     @include transition(all 250ms);
     opacity: 0;
     @include transform(scale(0.1));
-    background: red;
+    border: solid 2px red;
     &[data-occupied="true"] {
       @include transform(scale(1));
       opacity: 1;

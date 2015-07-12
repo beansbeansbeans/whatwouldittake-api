@@ -7,21 +7,19 @@ function statusChangeCallback(response) {
   console.log(response);
   if (response.status === 'connected') {
     FB.api('/me', function(response) {
-      d.qs("#auth-container").setAttribute("data-authenticated", true);
-      FB.api('/me/picture', function(result) {
-        d.qs("#auth-container .avatar").style.backgroundImage = "url(" + result.data.url + ")";
-      });
       api.post('/sessions', response, function(data) {
         sharedStorage.put("user", data);
-        mediator.publish("AUTH_STATUS_CHANGE");
+        mediator.publish("AUTH_SESSION_POSTED", data);
       });
     });
-  } else if (response.status === 'not_authorized') {
-    console.log("The person is logged into Facebook, but not your app.");
   } else {
-    console.log("The person is not logged into Facebook, so we're not sure if they are logged into this app or not.");
+    sharedStorage.delete("user");
+    if (response.status === 'not_authorized') {
+    } else {
+    }    
   }
 
+  mediator.publish("AUTH_STATUS_CHANGE", response.status);
 }
 
 var initFBIntervalID = null,
