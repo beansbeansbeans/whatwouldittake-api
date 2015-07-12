@@ -27,11 +27,11 @@ exports.createRoom = function(req, res, client, ee) {
     };
 
   if(req.session.prattle) {
-    room.creatorID = req.session.prattle.user._id;
+    room.creator = req.session.prattle.user;
   }
 
   return client.insert(room).then(function(record) {
-    res.redirect("/" + roomKey);
+    res.redirect("/rooms/" + roomKey);
     ee.emit("room created");
   }).catch(console.log.bind(console));
 };

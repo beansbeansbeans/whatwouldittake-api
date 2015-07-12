@@ -9,6 +9,7 @@ var h = require('virtual-dom/h');
 var diff = require('virtual-dom/diff');
 var patch = require('virtual-dom/patch');
 var createElement = require('virtual-dom/create-element');
+var room = {};
 var chatters = [];
 var messages = [];
 var tree;
@@ -52,7 +53,8 @@ var updateState = () => {
 };
 
 var render = () => {
-  var anonymousNamer, 
+  var anonymousNamer,
+    creator, 
     squareSize = gridHelpers.getSquareSize(),
     coordinates = gridHelpers.getCoordinates(),
     onlineChatters = chatters.filter(online),
@@ -67,8 +69,27 @@ var render = () => {
     ]);
   }
 
+  if(room.creator) {
+    var userCreator = 
+    creator = h('div.creator', [
+      h('div.avatar'),
+      h('span', 'created by '),
+      h('div.creator-name')
+    ]);
+  } else {
+    creator = h('div.creator', 'Created anonymously ');
+  }
+
   return h('div',
-    [anonymousNamer,
+    [h('div#room-info', [
+      h('div.name', room.name),
+      h('div.attribution', [
+        creator,
+        h('div.time-created', 'on ' + moment(room.createdAt).format('MM/D')),
+        h('div.onlineCount', onlineChatters.length + ' chatting now')
+      ])
+    ]),
+    anonymousNamer,
     h('ul.users', {
       style: {
         textAlign: 'center'
@@ -137,6 +158,8 @@ module.exports.initialize = () => {
   mediator.subscribe("AUTH_STATUS_CHANGE", updateState);
 
   api.get('/rooms' + window.location.pathname.substring('/rooms'.length) + '/json', (err, data) => {
+    room = data.data;
+    updateState();
     console.log("GOT ROOMS INFO BACK");
     console.log(data);
   });
