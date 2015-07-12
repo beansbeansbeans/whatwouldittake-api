@@ -70,11 +70,14 @@ var render = () => {
   }
 
   if(room.creator) {
-    var userCreator = 
     creator = h('div.creator', [
-      h('div.avatar'),
+      h('div.avatar', { 
+        style: {
+          backgroundImage: 'url(' + room.creator.avatarURL + ')'
+        }
+      }),
       h('span', 'created by '),
-      h('div.creator-name')
+      h('div.creator-name', room.creator.name)
     ]);
   } else {
     creator = h('div.creator', 'Created anonymously ');
@@ -160,8 +163,13 @@ module.exports.initialize = () => {
   api.get('/rooms' + window.location.pathname.substring('/rooms'.length) + '/json', (err, data) => {
     room = data.data;
     updateState();
-    console.log("GOT ROOMS INFO BACK");
-    console.log(data);
+
+    if(room.creator) {
+      auth.getAvatar(room.creator.facebookId, (result) => {
+        room.creator.avatarURL = result;
+        updateState();
+      });
+    }
   });
 
   var gotSeedMessages, gotSeedChatters, authors;

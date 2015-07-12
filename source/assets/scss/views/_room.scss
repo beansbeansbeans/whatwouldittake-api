@@ -11,6 +11,12 @@
   text-decoration: none;
 }
 
+#room-info {
+  .avatar {
+    @include square(40px);
+  }
+}
+
 .squares-container {
   $gradient-color: rgba($gray, 0.2);
   position: fixed;
