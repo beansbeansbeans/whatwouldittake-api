@@ -30,12 +30,15 @@ function Routes (app, ee) {
     });
   });
 
-  app.get('/:id', function(req, res) {
-    utils.getRoomInfo(req, res, roomsDB, function(room) {
-      if(room) {
-        utils.enterRoom(req, res, room);
-      }
-    });
+  app.get('/rooms/:id/:format?', function(req, res) {
+    if (req.params.format) { 
+      utils.getRoomInfo(req, res, roomsDB, function(room) {
+        res.json(room);
+      });
+    }
+    else {
+      res.render('room');
+    }
   });
 
   app.post('/sessions', function(req, res) {

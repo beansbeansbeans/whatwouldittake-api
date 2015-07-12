@@ -45,11 +45,6 @@ exports.getPublicRoomsInfo = function(client, fn) {
   return client.find().toArray().then(fn);
 };
 
-exports.enterRoom = function(req, res, room) {
-  res.locals = { room: room };
-  res.render('room');
-};
-
 exports.findOrCreateUser = function(req, client) {
   return client.findOne({ facebookId: req.id }).then(function(user) {
     if(user) {

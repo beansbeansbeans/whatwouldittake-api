@@ -1,5 +1,33 @@
 module.exports = {
-  post: function(url, data, callback) {
+  get(url, callback) {
+    var request = new XMLHttpRequest();
+    request.open('GET', url, true);
+
+    request.setRequestHeader("Accept", "application/json");
+    if(this.token) {
+      request.setRequestHeader("x-auth", this.token);
+    }
+
+    request.onload = function() {
+      var result = {}, data;
+      if (request.status == 200) {
+        data = JSON.parse(request.responseText);
+      } else {
+        data = {};
+      }
+
+      result.responseCode = request.status;
+      result.data = data;
+      if(callback) {
+        callback(null, result);
+      }
+    };
+
+    request.onerror = () => {};
+
+    request.send();
+  },
+  post(url, data, callback) {
     var request = new XMLHttpRequest();
     request.open('POST', url, true);
 

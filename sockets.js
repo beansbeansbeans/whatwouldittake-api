@@ -31,7 +31,7 @@ function Sockets (app, server, ee) {
   io.use(function(socket, next) {
 
     var handshakeData = socket.request,
-      roomIdRegExp = new RegExp(handshakeData.headers.host + '/(?:([^\/]+?))\/?$', 'g'),
+      roomIdRegExp = new RegExp(handshakeData.headers.host + '/rooms/(?:([^\/]+?))\/?$', 'g'),
       roomMatch = roomIdRegExp.exec(handshakeData.headers.referer),
       sid = cookie.parse(handshakeData.headers.cookie)['connect.sid'].substring(2).split('.')[0]; // TODO FIGURE OUT WTF (hack to unsign cookie)
 

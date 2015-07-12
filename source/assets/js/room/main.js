@@ -1,4 +1,5 @@
 var util = require('../shared/util');
+var api = require('../shared/api');
 var sw = require('../socket');
 var auth = require('../shared/auth');
 var mediator = require('../shared/mediator');
@@ -134,6 +135,11 @@ module.exports.initialize = () => {
   window.addEventListener("resize", _.debounce(resizeHandler, 300));
 
   mediator.subscribe("AUTH_STATUS_CHANGE", updateState);
+
+  api.get('/rooms' + window.location.pathname.substring('/rooms'.length) + '/json', (err, data) => {
+    console.log("GOT ROOMS INFO BACK");
+    console.log(data);
+  });
 
   var gotSeedMessages, gotSeedChatters, authors;
 
