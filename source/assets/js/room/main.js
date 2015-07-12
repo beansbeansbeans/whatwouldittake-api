@@ -143,7 +143,14 @@ var render = () => {
         h('div.onlineCount', onlineChatters.length + ' chatting now')
       ])
     ]),
-    h('ul.messages', messages.map((msg) => {
+    h('ul.messages', messages.sort((a, b) => {
+      if(a.createdAt < b.createdAt) {
+        return -1;
+      } else if(a.createdAt > b.createdAt) {
+        return 1;
+      }
+      return 0;
+    }).map((msg) => {
       var avatarURL, author = chatters.filter(x => x._id === msg.user._id)[0];
 
       if(author) { avatarURL = author.avatarURL; }
@@ -259,6 +266,11 @@ module.exports.initialize = () => {
     preload();
   });
 
-  d.gbID("send-message-button").addEventListener("click", sendMsg);
-  d.qs("#create-name button").addEventListener("click", changeAnonymousName);  
+  window.addEventListener("click", (e) => {
+    if(e.target.getAttribute("id") === "send-message-button") {
+      sendMsg();
+    } else if(e.target.getAttribute("id") === "create-name") {
+      changeAnonymousName();
+    }
+  });
 };
