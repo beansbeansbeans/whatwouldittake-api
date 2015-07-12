@@ -1,5 +1,5 @@
 @import url(http://fonts.googleapis.com/css?family=Montserrat:400,700|Maven+Pro:400,700);
-#logo, h1 {
+#logo, #virtual-dom-container #room-info .name, h1 {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   text-transform: uppercase;
@@ -179,13 +179,61 @@ html {
   text-decoration: none;
 }
 
-#room-info {
+#virtual-dom-container {
+  position: fixed;
+  top: 50px;
+  bottom: 40px;
+  width: 80vw;
+  left: 50%;
+  margin-left: -40vw;
+}
+#virtual-dom-container #room-info {
   position: relative;
   z-index: 1;
+  padding-bottom: 10px;
+  border-bottom: solid 2px #3d3d3d;
+  font-size: 13px;
 }
-#room-info .avatar {
-  width: 40px;
-  height: 40px;
+#virtual-dom-container #room-info .name {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+#virtual-dom-container #room-info .creator, #virtual-dom-container #room-info .createdAt, #virtual-dom-container #room-info .onlineCount {
+  display: inline-block;
+  vertical-align: middle;
+}
+#virtual-dom-container #room-info .creator * {
+  display: inline-block;
+  vertical-align: middle;
+}
+#virtual-dom-container #room-info .creator span, #virtual-dom-container #room-info .creator .creator-name {
+  margin-right: 5px;
+}
+#virtual-dom-container #room-info .creator span {
+  margin-left: 10px;
+}
+#virtual-dom-container #room-info .avatar {
+  width: 30px;
+  height: 30px;
+}
+#virtual-dom-container #room-info .onlineCount {
+  position: relative;
+  margin-left: 20px;
+}
+#virtual-dom-container #room-info .onlineCount:before {
+  content: "";
+  position: absolute;
+  display: block;
+  background-color: gainsboro;
+  width: 5px;
+  height: 5px;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+}
+#virtual-dom-container #room-info .onlineCount:before {
+  left: -12px;
+  top: 6px;
 }
 
 #current-user .avatar {
@@ -238,6 +286,10 @@ html {
 
 html {
   color: #3d3d3d;
+}
+
+body {
+  margin: 0;
 }
 
 .avatar {

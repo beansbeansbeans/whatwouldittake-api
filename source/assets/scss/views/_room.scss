@@ -11,13 +11,55 @@
   text-decoration: none;
 }
 
-#room-info {
-  position: relative;
-  z-index: 1;
-  .avatar {
-    @include square(40px);
+#virtual-dom-container {
+  position: fixed;
+  top: 50px;
+  bottom: 40px;
+  width: 80vw;
+  left: 50%;
+  margin-left: -40vw;
+  #room-info {
+    position: relative;
+    z-index: 1;
+    padding-bottom: 10px;
+    border-bottom: solid 2px $black;
+    font-size: 13px;
+    .name {
+      @extend %header-font;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .creator, .createdAt, .onlineCount {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .creator {
+      * {
+        display: inline-block;
+        vertical-align: middle;
+      }
+      span, .creator-name {
+        margin-right: 5px;
+      }
+      span {
+        margin-left: 10px;
+      }
+    }
+    .avatar {
+      @include square(30px);
+    }
+    .onlineCount {
+      position: relative;
+      margin-left: 20px;
+      @include delimitingCircle(darken(whitesmoke, 10%), 5px);
+      &:before {
+        left: -12px;
+        top: 6px;
+      }
+    }
   }
 }
+
 
 #current-user {
   .avatar {

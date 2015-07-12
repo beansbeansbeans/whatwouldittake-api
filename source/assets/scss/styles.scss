@@ -12,6 +12,10 @@ html {
   color: $black;
 }
 
+body {
+  margin: 0;
+}
+
 h1 {
   @extend %header-font;
 }
