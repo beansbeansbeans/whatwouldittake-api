@@ -183,9 +183,18 @@ html {
   text-decoration: none;
 }
 
+#room-info {
+  position: relative;
+  z-index: 1;
+}
 #room-info .avatar {
   width: 40px;
   height: 40px;
+}
+
+.messages {
+  position: relative;
+  z-index: 1;
 }
 
 .squares-container {
@@ -224,13 +233,6 @@ html {
 .squares-container .square[data-occupied="true"] .avatar {
   width: 30px;
   height: 30px;
-}
-
-.users {
-  margin-bottom: 90px;
-}
-.users:before {
-  content: "Currently chatting:";
 }
 
 html {

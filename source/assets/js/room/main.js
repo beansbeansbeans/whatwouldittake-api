@@ -129,17 +129,6 @@ var render = () => {
       ])
     ]),
     anonymousNamer,
-    h('ul.users', {
-      style: {
-        textAlign: 'center'
-      }
-    }, onlineChatters.map((val) => {
-      return h('li.user', {
-        style: {
-          backgroundImage: 'url(' + val.avatarURL + ')'
-        }
-      }, val.name);
-    })),
     h('ul.messages', messages.map((msg) => {
       var avatarURL, author = chatters.filter(x => x._id === msg.user._id)[0];
 

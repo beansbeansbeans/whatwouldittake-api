@@ -16,9 +16,16 @@
 }
 
 #room-info {
+  position: relative;
+  z-index: 1;
   .avatar {
     @include square(40px);
   }
+}
+
+.messages {
+  position: relative;
+  z-index: 1;
 }
 
 .squares-container {
@@ -47,11 +54,4 @@
     }
   }
   pointer-events: none;
-}
-
-.users {
-  &:before {
-    content: "Currently chatting:";
-  }
-  margin-bottom: 90px;
 }
