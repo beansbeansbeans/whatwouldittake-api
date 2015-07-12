@@ -84,7 +84,35 @@ var render = () => {
   }
 
   return h('div',
-    [h('div#room-info', [
+    [h('div.squares-container', {
+      style: {
+        backgroundSize: squareSize + "px " + squareSize + "px",
+        backgroundPosition: minLeft + 'px ' + minTop + "px"
+      }
+    },
+    coordinates.map((square, index) => {
+      var associatedChatter = _.findWhere(onlineChatters, {coordinateID: index});
+      var attributes = {
+        style: {
+          width: squareSize + "px",
+          height: squareSize + "px",
+          top: square.top + "px",
+          left: square.left + "px"
+        },
+        dataset: { occupied: false },
+        key: index
+      },
+      contents;
+
+      if(associatedChatter) {
+        attributes.dataset.occupied = true;
+        attributes.dataset.associatedChatterId = associatedChatter._id;
+        contents = associatedChatter._id;
+      }
+
+      return h('div.square', attributes, contents)
+    })),
+    h('div#room-info', [
       h('div.name', room.name),
       h('div.attribution', [
         creator,
@@ -119,34 +147,6 @@ var render = () => {
         }),
         h('div.contents', msg.message.msg)
       ]);
-    })),
-    h('div.squares-container', {
-      style: {
-        backgroundSize: squareSize + "px " + squareSize + "px",
-        backgroundPosition: minLeft + 'px ' + minTop + "px"
-      }
-    },
-    coordinates.map((square, index) => {
-      var associatedChatter = _.findWhere(onlineChatters, {coordinateID: index});
-      var attributes = {
-        style: {
-          width: squareSize + "px",
-          height: squareSize + "px",
-          top: square.top + "px",
-          left: square.left + "px"
-        },
-        dataset: { occupied: false },
-        key: index
-      },
-      contents;
-
-      if(associatedChatter) {
-        attributes.dataset.occupied = true;
-        attributes.dataset.associatedChatterId = associatedChatter._id;
-        contents = associatedChatter._id;
-      }
-
-      return h('div.square', attributes, contents)
     }))]
   );
 };
