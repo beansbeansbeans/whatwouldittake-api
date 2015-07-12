@@ -10,12 +10,16 @@ var diff = require('virtual-dom/diff');
 var patch = require('virtual-dom/patch');
 var createElement = require('virtual-dom/create-element');
 var room = {};
+var dimensions = {};
 var chatters = [];
 var messages = [];
 var tree;
 var rootNode;
 
 var resizeHandler = () => {
+  dimensions.containerHeight = d.gbID("virtual-dom-container").offsetHeight;
+  dimensions.roomInfoHeight = d.gbID('room-info').offsetHeight;
+  dimensions.createMessageHeight = d.qs('.create-message-wrapper').offsetHeight;
   gridHelpers.updateFrame();
   updateState();
 };
@@ -45,11 +49,14 @@ var getAvatar = (val) => {
   });
 };
 
+var postRenderHook = _.once(resizeHandler);
+
 var updateState = () => {
   var newTree = render();
   var patches = diff(tree, newTree);
   rootNode = patch(rootNode, patches);
   tree = newTree;
+  postRenderHook();
 };
 
 var render = () => {
@@ -143,7 +150,11 @@ var render = () => {
         h('div.onlineCount', onlineChatters.length + ' chatting now')
       ])
     ]),
-    h('ul.messages', messages.sort((a, b) => {
+    h('ul.messages', {
+      style: {
+        height: (dimensions.containerHeight - (dimensions.roomInfoHeight + dimensions.createMessageHeight)) + "px"
+      }
+    } , messages.sort((a, b) => {
       if(a.createdAt < b.createdAt) {
         return -1;
       } else if(a.createdAt > b.createdAt) {
@@ -198,12 +209,12 @@ module.exports.initialize = () => {
 
   api.get('/rooms' + window.location.pathname.substring('/rooms'.length) + '/json', (err, data) => {
     room = data.data;
-    updateState();
+    resizeHandler();
 
     if(room.creator) {
       auth.getAvatar(room.creator.facebookId, (result) => {
         room.creator.avatarURL = result;
-        updateState();
+        resizeHandler();
       });
     }
   });
