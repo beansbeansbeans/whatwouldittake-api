@@ -91,7 +91,8 @@ function Sockets (app, server, ee) {
       client.collection('messages').insert({
         message: data,
         user: user,
-        room: roomID
+        room: roomID,
+        createdAt: Date.now()
       }).then(function(record) {
         io.sockets.in(roomID).emit('new msg', record);
       });

@@ -116,7 +116,7 @@ var render = () => {
       h('div.name', room.name),
       h('div.attribution', [
         creator,
-        h('div.time-created', 'on ' + moment(room.createdAt).format('MM/D')),
+        h('div.createdAt', 'on ' + moment(room.createdAt).format('MM/D')),
         h('div.onlineCount', onlineChatters.length + ' chatting now')
       ])
     ]),
@@ -145,7 +145,13 @@ var render = () => {
             backgroundImage: 'url(' + avatarURL + ')'
           }
         }),
-        h('div.contents', msg.message.msg)
+        h('div.contents', [
+          h('div.attribution', [
+            h('div.creator', msg.user.name),
+            h('div.createdAt', moment(msg.createdAt).format('MMM/DD'))
+          ]),
+          h('div.text', msg.message.msg)
+        ])
       ]);
     }))]
   );
