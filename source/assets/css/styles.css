@@ -166,10 +166,6 @@ html {
   display: none;
 }
 
-.avatar {
-  background-size: cover;
-}
-
 #logo {
   position: fixed;
   top: 10px;
@@ -242,6 +238,10 @@ html {
 
 html {
   color: #3d3d3d;
+}
+
+.avatar {
+  background-size: cover;
 }
 
 #auth-container[data-authenticated="true"] #login_button {

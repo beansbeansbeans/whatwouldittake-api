@@ -98,7 +98,7 @@ var render = () => {
     creator = h('div.creator', 'Created anonymously ');
   }
 
-  return h('div',
+  return h('div.room',
     [h('div.squares-container', {
       style: {
         backgroundSize: squareSize + "px " + squareSize + "px",
@@ -177,7 +177,7 @@ var render = () => {
 module.exports.initialize = () => {
   tree = render();
   rootNode = createElement(tree);
-  d.qs('.room').appendChild(rootNode);
+  d.gbID('virtual-dom-container').appendChild(rootNode);
 
   window.addEventListener("resize", _.debounce(resizeHandler, 300));
 

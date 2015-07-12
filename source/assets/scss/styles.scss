@@ -16,6 +16,10 @@ h1 {
   @extend %header-font;
 }
 
+.avatar {
+  background-size: cover;
+}
+
 #auth-container {
   &[data-authenticated="true"] {
     #login_button {
