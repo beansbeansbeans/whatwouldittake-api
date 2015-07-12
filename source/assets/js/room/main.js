@@ -181,12 +181,12 @@ var render = () => {
         ])
       ]);
     })),
-    anonymousNamer,
     h('div.create-message-wrapper', [
       currentUser,
       h('textarea#create-message-text', { type: "text" }),
       h('div#send-message-button.button', 'send')
-    ])]
+    ]),
+    anonymousNamer]
   );
 };
 

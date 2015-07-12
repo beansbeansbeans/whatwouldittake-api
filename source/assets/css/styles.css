@@ -286,6 +286,17 @@ html {
 #virtual-dom-container .messages .message .attribution .creator {
   margin-right: 5px;
 }
+#virtual-dom-container #create-name {
+  position: absolute;
+  top: 100%;
+}
+#virtual-dom-container #create-name #name_change_launcher {
+  display: inline-block;
+  margin-left: 5px;
+}
+#virtual-dom-container #create-name .modal {
+  display: none;
+}
 
 .squares-container {
   position: fixed;

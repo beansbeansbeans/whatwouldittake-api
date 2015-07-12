@@ -111,6 +111,17 @@
       }
     }
   }
+  #create-name {
+    position: absolute;
+    top: 100%;
+    #name_change_launcher {
+      display: inline-block;
+      margin-left: 5px;
+    }
+    .modal {
+      display: none;
+    }
+  }
 }
 
 .squares-container {
