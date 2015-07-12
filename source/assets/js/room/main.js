@@ -166,7 +166,11 @@ var render = () => {
       ]);
     })),
     anonymousNamer,
-    currentUser]
+    h('div.create-message-wrapper', [
+      currentUser,
+      h('textarea#create-message-text', { type: "text" }),
+      h('div#send-message-button.button', 'send')
+    ])]
   );
 };
 
