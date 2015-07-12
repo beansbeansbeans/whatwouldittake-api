@@ -58,14 +58,30 @@
       }
     }
   }
-}
-
-
-#current-user {
-  .avatar {
-    @include square(40px);
+  .create-message-wrapper {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    #current-user, #create-message-text, #send-message-button {
+      display: inline-block;
+    }
+    #current-user {
+      .avatar {
+        @include square(30px);
+        margin-right: 5px;
+      }
+    }
+    #create-message-text {
+      width: calc(100% - 100px);
+    }
+    #send-message-button {
+      margin-left: 10px;
+    }
   }
 }
+
+
 
 .messages {
   position: relative;
