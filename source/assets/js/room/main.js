@@ -108,6 +108,14 @@ var render = () => {
         attributes.dataset.occupied = true;
         attributes.dataset.associatedChatterId = associatedChatter._id;
         contents = associatedChatter._id;
+        contents = h('div.attribution', [
+          h('div.username', associatedChatter.name),
+          h('div.avatar', {
+            style: {
+              backgroundImage: 'url(' + associatedChatter.avatarURL + ')'
+            }
+          })
+        ]);
       }
 
       return h('div.square', attributes, contents)

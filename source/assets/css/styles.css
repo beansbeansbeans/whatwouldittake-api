@@ -166,6 +166,10 @@ html {
   display: none;
 }
 
+.avatar {
+  background-size: cover;
+}
+
 #logo {
   position: fixed;
   top: 10px;
@@ -216,6 +220,10 @@ html {
   -webkit-transform: scale(1);
   transform: scale(1);
   opacity: 1;
+}
+.squares-container .square[data-occupied="true"] .avatar {
+  width: 30px;
+  height: 30px;
 }
 
 .users {
