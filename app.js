@@ -10,6 +10,8 @@ var mongoStore = require('connect-mongo')(session);
 
 var ee = new EventEmitter();
 
+var killRoomTimers = {};
+
 require('./config')(app, mongoStore);
 
 require('./auth')(app);
@@ -25,3 +27,20 @@ require('./sockets')(app, exports.server, ee);
 process.on('uncaughtException', function(err){
   console.log('Exception: ' + err.stack);
 });
+
+ee.on("room online update", function(data) {
+  if(!data.count) {
+    killRoomTimers[data.key] = setTimeout(function() {
+      app.get('mongoClient').collection('rooms').remove({key: data.key}, 1);
+      delete killRoomTimers[data.key];
+      ee.emit("room deleted");
+    }, 1000 * 60 * 30); // kill in 30 min - 
+  } else {
+    if(killRoomTimers[data.key]) {
+      clearTimeout(killRoomTimers[data.key]);
+      delete killRoomTimers[data.key];
+    }
+  }
+});
+
+

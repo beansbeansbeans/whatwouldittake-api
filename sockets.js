@@ -13,12 +13,14 @@ function Sockets (app, server, ee) {
   var getRoomsOnline = function() {
     return client.collection('rooms').find().toArray();
   };
-
-  ee.on("room created", function() {
+  var updateRoomsOnline = function() {
     getRoomsOnline().then(function(records) {
       io.sockets.in('lobby').emit('rooms update', records);
     });
-  });
+  };
+
+  ee.on("room created", updateRoomsOnline);
+  ee.on("room deleted", updateRoomsOnline);
 
   var validateRoomExists = function(id, cb) {
     client.collection('rooms').find({key: id}, function(err, records) {
@@ -63,6 +65,11 @@ function Sockets (app, server, ee) {
       emitUsersOnline = function() {
         client.collection('rooms').findOne({key: roomID})
           .then(function(record) {
+            ee.emit("room online update", {
+              key: roomID,
+              count: record.online.length
+            });
+
             io.sockets.in(roomID).emit('user update', record.online);
           });
       };
