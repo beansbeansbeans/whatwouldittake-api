@@ -37,6 +37,9 @@ function Routes (app, ee) {
       });
     }
     else {
+      var created = req.session.prattle && req.session.prattle.creator;
+
+      res.locals = { creator: created };
       res.render('room');
     }
   });

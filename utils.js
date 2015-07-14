@@ -28,9 +28,13 @@ exports.createRoom = function(req, res, client, ee) {
 
   if(req.session.prattle) {
     room.creator = req.session.prattle.user;
+  } else {
+    req.session.prattle = {};
   }
 
   return client.insert(room).then(function(record) {
+    res.locals = { creator: true };
+    req.session.prattle.creator = true;
     res.redirect("/rooms/" + roomKey);
     ee.emit("room created");
   }).catch(console.log.bind(console));

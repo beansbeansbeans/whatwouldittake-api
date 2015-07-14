@@ -202,6 +202,9 @@ html {
   display: inline-block;
   vertical-align: middle;
 }
+#virtual-dom-container #room-info .createdAt {
+  margin-left: 4px;
+}
 #virtual-dom-container #room-info .creator * {
   display: inline-block;
   vertical-align: middle;

@@ -248,6 +248,11 @@ module.exports.initialize = () => {
         return val;
       });
 
+    if(chatters.filter(online).length === 1 && d.gbID("session-id").textContent === true) {
+      // if you are the first to join, and the room only has one online user, then show the modal
+      
+    }
+
     chatters.filter(authenticated).forEach(getAvatar);
 
     gridHelpers.updateChattersCount(chatters.filter(online).length);

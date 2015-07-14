@@ -86,6 +86,8 @@ function Sockets (app, server, ee) {
       });
   
       validateRoomExists(roomID, function(record) {
+        user.joinedAt = Date.now();
+
         client.collection('rooms').update(
         { key: roomID },
         {
