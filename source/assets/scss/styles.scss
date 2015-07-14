@@ -7,6 +7,10 @@
 @import "views/index";
 @import "views/room";
 
+* {
+  box-sizing: border-box;
+}
+
 html {
   @extend %body-font;
   color: $black;

@@ -11,8 +11,10 @@ var patch = require('virtual-dom/patch');
 var createElement = require('virtual-dom/create-element');
 var room = {};
 var dimensions = {};
+var hasDismissedInviteCTA = false;
 var chatters = [];
 var messages = [];
+var userIsCreator = false;
 var tree;
 var rootNode;
 
@@ -60,13 +62,22 @@ var updateState = () => {
 };
 
 var render = () => {
-  var anonymousNamer, creator,
+  var anonymousNamer, creator, inviteCTA,
     currentUser, currentUserObj = sharedStorage.get('user'),
     squareSize = gridHelpers.getSquareSize(),
     coordinates = gridHelpers.getCoordinates(),
     onlineChatters = chatters.filter(online),
     minTop = Math.min.apply(Math, _.pluck(coordinates, 'top')) - squareSize / 2,
     minLeft = Math.min.apply(Math, _.pluck(coordinates, 'left')) - squareSize / 2;
+
+  if(userIsCreator && !hasDismissedInviteCTA) {
+    inviteCTA = h('div#invite-cta', [
+      h('div.contents', [
+        h('div.text', "You're the first one here! Invite some friends. Rooms disappear 30 minutes after the last chatter has left."),
+        h('div.dismiss', 'X')
+      ])
+    ]);
+  }
 
   if(!currentUserObj) {
     anonymousNamer = h('div#create-name', [
@@ -186,7 +197,8 @@ var render = () => {
       h('textarea#create-message-text', { type: "text" }),
       h('div#send-message-button.button', 'send')
     ]),
-    anonymousNamer]
+    anonymousNamer,
+    inviteCTA]
   );
 };
 
@@ -194,6 +206,8 @@ module.exports.initialize = () => {
   tree = render();
   rootNode = createElement(tree);
   d.gbID('virtual-dom-container').appendChild(rootNode);
+
+  if(d.gbID("session-id").textContent === "true") { userIsCreator = true; }
 
   window.addEventListener("resize", _.debounce(resizeHandler, 300));
 
@@ -248,11 +262,6 @@ module.exports.initialize = () => {
         return val;
       });
 
-    if(chatters.filter(online).length === 1 && d.gbID("session-id").textContent === true) {
-      // if you are the first to join, and the room only has one online user, then show the modal
-      
-    }
-
     chatters.filter(authenticated).forEach(getAvatar);
 
     gridHelpers.updateChattersCount(chatters.filter(online).length);
@@ -283,6 +292,8 @@ module.exports.initialize = () => {
   });
 
   window.addEventListener("click", (e) => {
+    hasDismissedInviteCTA = true;
+    updateState();
     if(e.target.getAttribute("id") === "send-message-button") {
       sendMsg();
     } else if(e.target.getAttribute("id") === "create-name") {

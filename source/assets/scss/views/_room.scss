@@ -18,112 +18,139 @@
   width: 80vw;
   left: 50%;
   margin-left: -40vw;
-  #room-info {
-    position: relative;
-    z-index: 1;
-    padding-bottom: 10px;
+}
+
+#invite-cta {
+  position: fixed;
+  background: rgba(white, 0.7);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  .contents {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    top: 50%;
+    height: 300px;
+    margin-top: -150px;
+    border-top: solid 2px $black;
     border-bottom: solid 2px $black;
-    font-size: 13px;
-    .name {
-      @extend %header-font;
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-    .creator, .createdAt, .onlineCount {
+    background: white;
+    padding: 30px;
+  }
+}
+
+#room-info {
+  position: relative;
+  z-index: 1;
+  padding-bottom: 10px;
+  border-bottom: solid 2px $black;
+  font-size: 13px;
+  .name {
+    @extend %header-font;
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  .creator, .createdAt, .onlineCount {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .createdAt {
+    margin-left: 4px;
+  }
+  .creator {
+    * {
       display: inline-block;
       vertical-align: middle;
     }
-    .createdAt {
-      margin-left: 4px;
+    span, .creator-name {
+      margin-right: 5px;
     }
-    .creator {
-      * {
-        display: inline-block;
-        vertical-align: middle;
-      }
-      span, .creator-name {
-        margin-right: 5px;
-      }
-      span {
-        margin-left: 10px;
-      }
-    }
-    .avatar {
-      @include square(30px);
-    }
-    .onlineCount {
-      position: relative;
-      margin-left: 20px;
-      @include delimitingCircle(darken(whitesmoke, 10%), 5px);
-      &:before {
-        left: -12px;
-        top: 6px;
-      }
-    }
-  }
-  .create-message-wrapper {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    #current-user, #create-message-text, #send-message-button {
-      display: inline-block;
-    }
-    #current-user {
-      .avatar {
-        @include square(30px);
-        margin-right: 5px;
-      }
-    }
-    #create-message-text {
-      width: calc(100% - 100px);
-    }
-    #send-message-button {
+    span {
       margin-left: 10px;
     }
   }
-  .messages {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    position: absolute;
-    z-index: 1;
-    overflow-y: scroll;
+  .avatar {
+    @include square(30px);
+  }
+  .onlineCount {
+    position: relative;
+    margin-left: 20px;
+    @include delimitingCircle(darken(whitesmoke, 10%), 5px);
+    &:before {
+      left: -12px;
+      top: 6px;
+    }
+  }
+}
+
+.create-message-wrapper {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  #current-user, #create-message-text, #send-message-button {
+    display: inline-block;
+  }
+  #current-user {
+    .avatar {
+      @include square(30px);
+      margin-right: 5px;
+    }
+  }
+  #create-message-text {
+    width: calc(100% - 100px);
+  }
+  #send-message-button {
+    margin-left: 10px;
+  }
+}
+
+.messages {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  position: absolute;
+  z-index: 1;
+  overflow-y: scroll;
+  width: 100%;
+  .message {
     width: 100%;
-    .message {
-      width: 100%;
-      margin-bottom: 20px;
-      .avatar, .contents, .attribution * {
-        display: inline-block;
-        vertical-align: top;
+    margin-bottom: 20px;
+    .avatar, .contents, .attribution * {
+      display: inline-block;
+      vertical-align: top;
+    }
+    .avatar {
+      @include square(30px);
+      margin-right: 5px;
+    }
+    .contents {
+      width: calc(100% - 36px);
+    }
+    .attribution {
+      .creator, .createdAt {
+        font-size: 12px;
       }
-      .avatar {
-        @include square(30px);
+      .creator {
         margin-right: 5px;
-      }
-      .contents {
-        width: calc(100% - 36px);
-      }
-      .attribution {
-        .creator, .createdAt {
-          font-size: 12px;
-        }
-        .creator {
-          margin-right: 5px;
-        }
       }
     }
   }
-  #create-name {
-    position: absolute;
-    top: 100%;
-    #name_change_launcher {
-      display: inline-block;
-      margin-left: 5px;
-    }
-    .modal {
-      display: none;
-    }
+}
+
+#create-name {
+  position: absolute;
+  top: 100%;
+  #name_change_launcher {
+    display: inline-block;
+    margin-left: 5px;
+  }
+  .modal {
+    display: none;
   }
 }
 
@@ -134,10 +161,8 @@
   right: 0;
   left: 0;
   bottom: 0;
-  
   @include transition(background-image $transition-duration);
   background-image: radial-gradient($gradient-color 0px, $gradient-color 1px, transparent 1px);
-
   .square {
     position: absolute;
     @include transition(all 250ms);
