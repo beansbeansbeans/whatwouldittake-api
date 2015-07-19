@@ -37,10 +37,6 @@ var sendMsg = () => {
   d.gbID("create-message-text").value = "";
 };
 
-var changeAnonymousName = () => {
-  sw.socket.emit('change name', d.qs('#create-name input').value);
-};
-
 var authenticated = x => x.facebookId;
 
 var online = x => x.online;
@@ -74,7 +70,7 @@ var render = () => {
   }
 
   if(!currentUserObj) {
-    anonymousNamerDOM = anonymousNamer();
+    anonymousNamerDOM = anonymousNamer.render();
   } else {
     currentUser = h('div#current-user', [
       h('div.avatar', {
@@ -154,6 +150,8 @@ module.exports.initialize = () => {
   tree = render();
   rootNode = createElement(tree);
   d.gbID('virtual-dom-container').appendChild(rootNode);
+
+  anonymousNamer.initialize();
 
   if(d.gbID("session-id").textContent === "true") { userIsCreator = true; }
 
@@ -240,12 +238,11 @@ module.exports.initialize = () => {
   });
 
   window.addEventListener("click", (e) => {
+    mediator.publish("window_click", e);
     hasDismissedInviteCTA = true;
     updateState();
     if(e.target.getAttribute("id") === "send-message-button") {
       sendMsg();
-    } else if(e.target.getAttribute("id") === "create-name") {
-      changeAnonymousName();
     }
   });
 };
