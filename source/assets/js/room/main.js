@@ -9,6 +9,7 @@ var h = require('virtual-dom/h');
 var diff = require('virtual-dom/diff');
 var patch = require('virtual-dom/patch');
 var createElement = require('virtual-dom/create-element');
+var createMessage = require('./createMessage');
 var anonymousNamer = require('./anonymousNamer');
 var inviteCTA = require('./inviteCTA');
 var squares = require('./squares');
@@ -60,18 +61,7 @@ var updateState = () => {
 
 var render = () => {
   var creator,
-    currentUser, currentUserObj = sharedStorage.get('user'),
     onlineChatters = chatters.filter(online);
-
-  if(currentUserObj) {
-    currentUser = h('div#current-user', [
-      h('div.avatar', {
-        style: {
-          backgroundImage: 'url(' + currentUserObj.avatarURL + ')'
-        }
-      })
-    ]);
-  }
 
   if(room.creator) {
     creator = h('div.creator', [
@@ -128,11 +118,7 @@ var render = () => {
         ])
       ]);
     })),
-    h('div.create-message-wrapper', [
-      currentUser,
-      h('textarea#create-message-text', { type: "text" }),
-      h('div#send-message-button.button', 'send')
-    ]),
+    createMessage.render(),
     anonymousNamer.render(),
     inviteCTA.render()]
   );
@@ -143,6 +129,7 @@ module.exports.initialize = () => {
   rootNode = createElement(tree);
   d.gbID('virtual-dom-container').appendChild(rootNode);
 
+  createMessage.initialize();
   inviteCTA.initialize();
   anonymousNamer.initialize();
 
