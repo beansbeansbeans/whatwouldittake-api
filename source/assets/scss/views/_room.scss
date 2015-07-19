@@ -142,15 +142,41 @@
   }
 }
 
-#create-name {
+#create-name-wrapper {
   position: absolute;
   top: 100%;
   #name_change_launcher {
     display: inline-block;
     margin-left: 5px;
   }
-  .modal {
+  #name_change_modal {
     display: none;
+    &[data-open="true"] {
+      display: block;
+      position: fixed;
+      z-index: 1;
+      &, #name_change_modal_mask {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+      #name_change_modal_mask {
+        position: absolute;
+        background: rgba(white, 0.5);
+      }
+      .contents {
+        position: absolute;
+        width: 60vw;
+        height: 30vh;
+        margin-left: -30vw;
+        margin-top: -15vh;
+        border: solid 1px $black;
+        background: white;
+        top: 50%;
+        left: 50%;
+      }
+    }
   }
 }
 

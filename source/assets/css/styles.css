@@ -316,16 +316,42 @@ html {
   margin-right: 5px;
 }
 
-#create-name {
+#create-name-wrapper {
   position: absolute;
   top: 100%;
 }
-#create-name #name_change_launcher {
+#create-name-wrapper #name_change_launcher {
   display: inline-block;
   margin-left: 5px;
 }
-#create-name .modal {
+#create-name-wrapper #name_change_modal {
   display: none;
+}
+#create-name-wrapper #name_change_modal[data-open="true"] {
+  display: block;
+  position: fixed;
+  z-index: 1;
+}
+#create-name-wrapper #name_change_modal[data-open="true"], #create-name-wrapper #name_change_modal[data-open="true"] #name_change_modal_mask {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+#create-name-wrapper #name_change_modal[data-open="true"] #name_change_modal_mask {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.5);
+}
+#create-name-wrapper #name_change_modal[data-open="true"] .contents {
+  position: absolute;
+  width: 60vw;
+  height: 30vh;
+  margin-left: -30vw;
+  margin-top: -15vh;
+  border: solid 1px #3d3d3d;
+  background: white;
+  top: 50%;
+  left: 50%;
 }
 
 .squares-container {
