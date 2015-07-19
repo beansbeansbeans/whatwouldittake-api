@@ -14,10 +14,8 @@ var inviteCTA = require('./inviteCTA');
 var squares = require('./squares');
 var room = {};
 var dimensions = {};
-var hasDismissedInviteCTA = false;
 var chatters = [];
 var messages = [];
-var userIsCreator = false;
 var tree;
 var rootNode;
 
@@ -61,13 +59,9 @@ var updateState = () => {
 };
 
 var render = () => {
-  var anonymousNamerDOM, creator, inviteCTADOM,
+  var anonymousNamerDOM, creator,
     currentUser, currentUserObj = sharedStorage.get('user'),
     onlineChatters = chatters.filter(online);
-
-  if(userIsCreator && !hasDismissedInviteCTA) {
-    inviteCTADOM = inviteCTA();
-  }
 
   if(!currentUserObj) {
     anonymousNamerDOM = anonymousNamer.render();
@@ -142,7 +136,7 @@ var render = () => {
       h('div#send-message-button.button', 'send')
     ]),
     anonymousNamerDOM,
-    inviteCTADOM]
+    inviteCTA.render()]
   );
 };
 
@@ -151,9 +145,8 @@ module.exports.initialize = () => {
   rootNode = createElement(tree);
   d.gbID('virtual-dom-container').appendChild(rootNode);
 
+  inviteCTA.initialize();
   anonymousNamer.initialize();
-
-  if(d.gbID("session-id").textContent === "true") { userIsCreator = true; }
 
   window.addEventListener("resize", _.debounce(resizeHandler, 300));
 
@@ -239,7 +232,6 @@ module.exports.initialize = () => {
 
   window.addEventListener("click", (e) => {
     mediator.publish("window_click", e);
-    hasDismissedInviteCTA = true;
     updateState();
     if(e.target.getAttribute("id") === "send-message-button") {
       sendMsg();

@@ -9,10 +9,10 @@ var changeAnonymousName = (e) => {
 };
 
 module.exports = {
-  initialize: function() {
+  initialize() {
     mediator.subscribe("window_click", changeAnonymousName)
   },
-  render: function() {
+  render() {
     return h('div#create-name', [
       h('div.info', [
         h('span', "You're chatting as anonymous."),
