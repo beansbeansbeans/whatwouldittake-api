@@ -28,14 +28,6 @@ var resizeHandler = () => {
   updateState();
 };
 
-var sendMsg = () => {
-  var msg = d.gbID("create-message-text").value;
-
-  sw.socket.emit('my msg', { msg: msg });
-
-  d.gbID("create-message-text").value = "";
-};
-
 var authenticated = x => x.facebookId;
 
 var online = x => x.online;
@@ -218,8 +210,5 @@ module.exports.initialize = () => {
   window.addEventListener("click", (e) => {
     mediator.publish("window_click", e);
     updateState();
-    if(e.target.getAttribute("id") === "send-message-button") {
-      sendMsg();
-    }
   });
 };
