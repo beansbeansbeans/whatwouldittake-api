@@ -9,6 +9,7 @@ var h = require('virtual-dom/h');
 var diff = require('virtual-dom/diff');
 var patch = require('virtual-dom/patch');
 var createElement = require('virtual-dom/create-element');
+var anonymousNamer = require('./anonymousNamer');
 var inviteCTA = require('./inviteCTA');
 var squares = require('./squares');
 var room = {};
@@ -64,7 +65,7 @@ var updateState = () => {
 };
 
 var render = () => {
-  var anonymousNamer, creator, inviteCTADOM,
+  var anonymousNamerDOM, creator, inviteCTADOM,
     currentUser, currentUserObj = sharedStorage.get('user'),
     onlineChatters = chatters.filter(online);
 
@@ -73,18 +74,7 @@ var render = () => {
   }
 
   if(!currentUserObj) {
-    anonymousNamer = h('div#create-name', [
-      h('div.info', [
-        h('span', "You're chatting as anonymous."),
-        h('button#login_button', 'Login with Facebook'),
-        h('span', ' or'),
-        h('div#name_change_launcher', ' change your name')
-      ]),
-      h('div.modal', [
-        h('input', { type: "text" }),
-        h('button', 'change name')
-      ])
-    ]);
+    anonymousNamerDOM = anonymousNamer();
   } else {
     currentUser = h('div#current-user', [
       h('div.avatar', {
@@ -155,7 +145,7 @@ var render = () => {
       h('textarea#create-message-text', { type: "text" }),
       h('div#send-message-button.button', 'send')
     ]),
-    anonymousNamer,
+    anonymousNamerDOM,
     inviteCTADOM]
   );
 };
