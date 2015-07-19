@@ -11,6 +11,7 @@ var patch = require('virtual-dom/patch');
 var createElement = require('virtual-dom/create-element');
 var createMessage = require('./createMessage');
 var anonymousNamer = require('./anonymousNamer');
+var roomInfo = require('./roomInfo');
 var inviteCTA = require('./inviteCTA');
 var squares = require('./squares');
 var room = {};
@@ -52,33 +53,11 @@ var updateState = () => {
 };
 
 var render = () => {
-  var creator,
-    onlineChatters = chatters.filter(online);
-
-  if(room.creator) {
-    creator = h('div.creator', [
-      h('div.avatar', { 
-        style: {
-          backgroundImage: 'url(' + room.creator.avatarURL + ')'
-        }
-      }),
-      h('span', 'created by '),
-      h('div.creator-name', room.creator.name)
-    ]);
-  } else {
-    creator = h('div.creator', 'Created anonymously ');
-  }
+  var onlineChatters = chatters.filter(online);
 
   return h('div.room',
     [squares(onlineChatters),
-    h('div#room-info', [
-      h('div.name', room.name),
-      h('div.attribution', [
-        creator,
-        h('div.createdAt', 'on ' + moment(room.createdAt).format('MM/D')),
-        h('div.onlineCount', onlineChatters.length + ' chatting now')
-      ])
-    ]),
+    roomInfo.render(room, onlineChatters),
     h('ul.messages', {
       style: {
         height: (dimensions.containerHeight - (dimensions.roomInfoHeight + dimensions.createMessageHeight)) + "px"
@@ -121,6 +100,7 @@ module.exports.initialize = () => {
   rootNode = createElement(tree);
   d.gbID('virtual-dom-container').appendChild(rootNode);
 
+  roomInfo.initialize();
   createMessage.initialize();
   inviteCTA.initialize();
   anonymousNamer.initialize();
