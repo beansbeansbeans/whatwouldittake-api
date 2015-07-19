@@ -10,6 +10,7 @@ var diff = require('virtual-dom/diff');
 var patch = require('virtual-dom/patch');
 var createElement = require('virtual-dom/create-element');
 var inviteCTA = require('./inviteCTA');
+var squares = require('./squares');
 var room = {};
 var dimensions = {};
 var hasDismissedInviteCTA = false;
@@ -65,11 +66,7 @@ var updateState = () => {
 var render = () => {
   var anonymousNamer, creator, inviteCTADOM,
     currentUser, currentUserObj = sharedStorage.get('user'),
-    squareSize = gridHelpers.getSquareSize(),
-    coordinates = gridHelpers.getCoordinates(),
-    onlineChatters = chatters.filter(online),
-    minTop = Math.min.apply(Math, _.pluck(coordinates, 'top')) - squareSize / 2,
-    minLeft = Math.min.apply(Math, _.pluck(coordinates, 'left')) - squareSize / 2;
+    onlineChatters = chatters.filter(online);
 
   if(userIsCreator && !hasDismissedInviteCTA) {
     inviteCTADOM = inviteCTA();
@@ -113,42 +110,7 @@ var render = () => {
   }
 
   return h('div.room',
-    [h('div.squares-container', {
-      style: {
-        backgroundSize: squareSize + "px " + squareSize + "px",
-        backgroundPosition: minLeft + 'px ' + minTop + "px"
-      }
-    },
-    coordinates.map((square, index) => {
-      var associatedChatter = _.findWhere(onlineChatters, {coordinateID: index});
-      var attributes = {
-        style: {
-          width: squareSize + "px",
-          height: squareSize + "px",
-          top: square.top + "px",
-          left: square.left + "px"
-        },
-        dataset: { occupied: false },
-        key: index
-      },
-      contents;
-
-      if(associatedChatter) {
-        attributes.dataset.occupied = true;
-        attributes.dataset.associatedChatterId = associatedChatter._id;
-        contents = associatedChatter._id;
-        contents = h('div.attribution', [
-          h('div.username', associatedChatter.name),
-          h('div.avatar', {
-            style: {
-              backgroundImage: 'url(' + associatedChatter.avatarURL + ')'
-            }
-          })
-        ]);
-      }
-
-      return h('div.square', attributes, contents)
-    })),
+    [squares(onlineChatters),
     h('div#room-info', [
       h('div.name', room.name),
       h('div.attribution', [
