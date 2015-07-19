@@ -9,6 +9,7 @@ var h = require('virtual-dom/h');
 var diff = require('virtual-dom/diff');
 var patch = require('virtual-dom/patch');
 var createElement = require('virtual-dom/create-element');
+var inviteCTA = require('./inviteCTA');
 var room = {};
 var dimensions = {};
 var hasDismissedInviteCTA = false;
@@ -62,7 +63,7 @@ var updateState = () => {
 };
 
 var render = () => {
-  var anonymousNamer, creator, inviteCTA,
+  var anonymousNamer, creator, inviteCTADOM,
     currentUser, currentUserObj = sharedStorage.get('user'),
     squareSize = gridHelpers.getSquareSize(),
     coordinates = gridHelpers.getCoordinates(),
@@ -71,12 +72,7 @@ var render = () => {
     minLeft = Math.min.apply(Math, _.pluck(coordinates, 'left')) - squareSize / 2;
 
   if(userIsCreator && !hasDismissedInviteCTA) {
-    inviteCTA = h('div#invite-cta', [
-      h('div.contents', [
-        h('div.text', "You're the first one here! Invite some friends. Rooms disappear 30 minutes after the last chatter has left."),
-        h('div.dismiss', 'X')
-      ])
-    ]);
+    inviteCTADOM = inviteCTA();
   }
 
   if(!currentUserObj) {
@@ -198,7 +194,7 @@ var render = () => {
       h('div#send-message-button.button', 'send')
     ]),
     anonymousNamer,
-    inviteCTA]
+    inviteCTADOM]
   );
 };
 
