@@ -13,6 +13,7 @@ var createMessage = require('./createMessage');
 var anonymousNamer = require('./anonymousNamer');
 var roomInfo = require('./roomInfo');
 var inviteCTA = require('./inviteCTA');
+var messagesContainer = require('./messagesContainer');
 var squares = require('./squares');
 var room = {};
 var dimensions = {};
@@ -58,37 +59,7 @@ var render = () => {
   return h('div.room',
     [squares(onlineChatters),
     roomInfo.render(room, onlineChatters),
-    h('ul.messages', {
-      style: {
-        height: (dimensions.containerHeight - (dimensions.roomInfoHeight + dimensions.createMessageHeight)) + "px"
-      }
-    } , messages.sort((a, b) => {
-      if(a.createdAt < b.createdAt) {
-        return -1;
-      } else if(a.createdAt > b.createdAt) {
-        return 1;
-      }
-      return 0;
-    }).map((msg) => {
-      var avatarURL, author = chatters.filter(x => x._id === msg.user._id)[0];
-
-      if(author) { avatarURL = author.avatarURL; }
-
-      return h('li.message', 
-        [h('div.avatar', {
-          style: {
-            backgroundImage: 'url(' + avatarURL + ')'
-          }
-        }),
-        h('div.contents', [
-          h('div.attribution', [
-            h('div.creator', msg.user.name),
-            h('div.createdAt', moment(msg.createdAt).format('MMM/DD'))
-          ]),
-          h('div.text', msg.message.msg)
-        ])
-      ]);
-    })),
+    messagesContainer.render(dimensions, messages, chatters),
     createMessage.render(),
     anonymousNamer.render(),
     inviteCTA.render()]
@@ -100,6 +71,7 @@ module.exports.initialize = () => {
   rootNode = createElement(tree);
   d.gbID('virtual-dom-container').appendChild(rootNode);
 
+  messagesContainer.initialize();
   roomInfo.initialize();
   createMessage.initialize();
   inviteCTA.initialize();
