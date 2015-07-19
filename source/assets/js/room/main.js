@@ -59,13 +59,11 @@ var updateState = () => {
 };
 
 var render = () => {
-  var anonymousNamerDOM, creator,
+  var creator,
     currentUser, currentUserObj = sharedStorage.get('user'),
     onlineChatters = chatters.filter(online);
 
-  if(!currentUserObj) {
-    anonymousNamerDOM = anonymousNamer.render();
-  } else {
+  if(currentUserObj) {
     currentUser = h('div#current-user', [
       h('div.avatar', {
         style: {
@@ -135,7 +133,7 @@ var render = () => {
       h('textarea#create-message-text', { type: "text" }),
       h('div#send-message-button.button', 'send')
     ]),
-    anonymousNamerDOM,
+    anonymousNamer.render(),
     inviteCTA.render()]
   );
 };
