@@ -51,6 +51,7 @@ var updateState = () => {
   rootNode = patch(rootNode, patches);
   tree = newTree;
   postRenderHook();
+  mediator.publish("DID_RENDER");
 };
 
 var render = () => {

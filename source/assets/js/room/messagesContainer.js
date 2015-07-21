@@ -1,8 +1,12 @@
 var h = require('virtual-dom/h');
+var mediator = require('../shared/mediator');
 
 module.exports = {
   initialize() {
-
+    mediator.subscribe("DID_RENDER", () => {
+      var elem = document.querySelector('.messages');
+      elem.scrollTop = elem.scrollHeight;
+    });
   },
   render(dimensions, messages, chatters) {
     return h('div.messages-container', {
