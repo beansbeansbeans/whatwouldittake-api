@@ -5,11 +5,15 @@ module.exports = {
 
   },
   render(dimensions, messages, chatters) {
-    return h('ul.messages', {
+    return h('div.messages-container', {
       style: {
         height: (dimensions.containerHeight - (dimensions.roomInfoHeight + dimensions.createMessageHeight)) + "px"
       }
-    } , messages.sort((a, b) => {
+    }, h('ul.messages', {
+      style: {
+        maxHeight: (dimensions.containerHeight - (dimensions.roomInfoHeight + dimensions.createMessageHeight)) + "px"
+      }
+    }, messages.sort((a, b) => {
       if(a.createdAt < b.createdAt) {
         return -1;
       } else if(a.createdAt > b.createdAt) {
@@ -35,6 +39,6 @@ module.exports = {
           h('div.text', msg.message.msg)
         ])
       ]);
-    }));
+    })));
   }
 };
