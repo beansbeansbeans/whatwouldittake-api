@@ -21,6 +21,7 @@ var chatters = [];
 var messages = [];
 var tree;
 var rootNode;
+var messageLimit = 5;
 
 var resizeHandler = () => {
   dimensions.containerHeight = d.gbID("virtual-dom-container").offsetHeight;
@@ -72,7 +73,7 @@ module.exports.initialize = () => {
   rootNode = createElement(tree);
   d.gbID('virtual-dom-container').appendChild(rootNode);
 
-  messagesContainer.initialize();
+  messagesContainer.initialize(messageLimit);
   roomInfo.initialize();
   createMessage.initialize();
   inviteCTA.initialize();

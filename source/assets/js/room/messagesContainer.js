@@ -1,8 +1,10 @@
 var h = require('virtual-dom/h');
 var mediator = require('../shared/mediator');
+var messageLimit;
 
 module.exports = {
-  initialize() {
+  initialize(limit) {
+    messageLimit = limit;
     mediator.subscribe("DID_RENDER", () => {
       var elem = document.querySelector('.messages');
       elem.scrollTop = elem.scrollHeight;
@@ -24,7 +26,7 @@ module.exports = {
         return 1;
       }
       return 0;
-    }).map((msg) => {
+    }).filter((d, i) => { return i > (messages.length - messageLimit)}).map((msg) => {
       var avatarURL, author = chatters.filter(x => x._id === msg.user._id)[0];
 
       if(author) { avatarURL = author.avatarURL; }
