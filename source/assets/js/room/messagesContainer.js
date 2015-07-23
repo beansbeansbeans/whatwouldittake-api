@@ -26,7 +26,7 @@ module.exports = {
         return 1;
       }
       return 0;
-    }).filter((d, i) => { return i > (messages.length - messageLimit)}).map((msg) => {
+    }).filter((d, i) => { return i >= (messages.length - messageLimit)}).map((msg) => {
       var avatarURL, author = chatters.filter(x => x._id === msg.user._id)[0];
 
       if(author) { avatarURL = author.avatarURL; }
