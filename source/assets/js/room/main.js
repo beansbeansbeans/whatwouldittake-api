@@ -59,7 +59,8 @@ var render = () => {
   var onlineChatters = chatters.filter(online);
 
   return h('div.room',
-    [squares(onlineChatters),
+    [h('button#get_message_history', 'get message history'),
+    squares(onlineChatters),
     roomInfo.render(room, onlineChatters),
     messagesContainer.render(dimensions, messages, chatters),
     createMessage.render(),
@@ -155,14 +156,24 @@ module.exports.initialize = () => {
       updateState();
     }
 
+    console.log(msgs);
+
     authors = _.uniq(msgs.map(val => val.user), val => val._id);
 
     gotSeedMessages = true;
     preload();
   });
 
+  sw.socket.on('message history', (msgs) => {
+    console.log("GOT MESSAGE HISTORY");
+    console.log(msgs);
+  });
+
   window.addEventListener("click", (e) => {
     mediator.publish("window_click", e);
     updateState();
+    if(e.target.getAttribute("id") === "get_message_history") {
+      sw.socket.emit('get message history', messages[0].createdAt);
+    }
   });
 };

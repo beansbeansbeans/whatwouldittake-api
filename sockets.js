@@ -1,7 +1,8 @@
 var sio = require('socket.io'),
   fs = require('fs'),
   cookie = require('cookie'),
-  cookieParser = require('cookie-parser');
+  cookieParser = require('cookie-parser'),
+  messagePageCount = 5;
 
 module.exports = Sockets;
 
@@ -81,7 +82,9 @@ function Sockets (app, server, ee) {
         io.sockets.connected[socket.id].emit('rooms update', records);
       });
     } else {
-      client.collection('messages').find({ room: roomID }).limit(50).toArray().then(function(messages) {
+      client.collection('messages').find({ room: roomID })
+        .sort({'$natural': -1})
+        .limit(messagePageCount).toArray().then(function(messages) {
         io.sockets.connected[socket.id].emit('seed messages', messages);
       });
   
@@ -95,6 +98,17 @@ function Sockets (app, server, ee) {
         }).then(emitUsersOnline);
       });
     }
+
+    socket.on('get message history', function(createdAt) {
+      client.collection('messages').find({
+        'room': roomID,
+        'createdAt': {'$lt': createdAt}
+      })
+      .sort({'$natural': -1})
+      .limit(messagePageCount).toArray().then(function(messages) {
+        io.sockets.connected[socket.id].emit('message history', messages);
+      });
+    });
 
     socket.on('my msg', function(data) {
       client.collection('messages').insert({
