@@ -17,6 +17,10 @@ exports.validRoomName = function(req, res, fn) {
   }
 };
 
+exports.createScenario = function(req, res, client, ee) {
+
+};
+
 exports.createRoom = function(req, res, client, ee) {
   var roomKey = exports.genRoomKey(),
     room = {
