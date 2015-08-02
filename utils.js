@@ -1,12 +1,23 @@
-exports.createScenario = function(req, res, client, ee) {
+var ObjectId = require('mongojs').ObjectId;
+
+exports.createScenario = function(req, res, client) {
   return client.insert({
     identifier: req.body.identifier,
     text: req.body.text
   });
 };
 
-exports.validateScenarioExists = function() {
+exports.createVote = function(req, res, client, cb) {
+  return client.insert({
+    value: req.body.data,
+    scenario_id: req.body.scenario_id
+  }).then(cb);
+};
 
+exports.validateScenarioExists = function(req, res, client, cb) {
+  return client.findOne({
+    _id: ObjectId(req.body.scenario_id)
+  }).then(cb);
 };
 
 exports.getScenarios = function(client, fn) {
