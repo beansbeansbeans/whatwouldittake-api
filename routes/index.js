@@ -18,7 +18,7 @@ function Routes (app, ee) {
   });
 
   app.post('/vote', function(req, res) {
-    console.log("VOTING");
+    //
   });
 
   app.post('/create', function(req, res) {
