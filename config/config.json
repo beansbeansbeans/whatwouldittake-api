@@ -1,5 +1,5 @@
 {
-  "mongoURL": "mongodb://annyuan:xrexworks7@apollo.modulusmongo.net:27017/Urujyg7y",
+  "mongoURL": "mongodb://annyuan:xrexworks7@apollo.modulusmongo.net:27017/ydos7osY",
   "session" : {
     "secret" : "yourbestsecret"
   }
