@@ -20,4 +20,10 @@ function Config(app, mongoStore) {
   var mongoClient = pmongo(app.get('mongoURL'));
 
   app.set('mongoClient', mongoClient);
+
+  app.use(bodyParser.urlencoded({
+    extended: true
+  }));
+
+  app.use(bodyParser.json());
 }
