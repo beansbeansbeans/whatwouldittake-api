@@ -2,7 +2,7 @@ var express = require('express');
 var app = exports.app = express();
 var path = require('path');
 var http = require('http').Server(app);
-var port = process.env.PORT || 4400;
+var port = process.env.PORT || 5500;
 var EventEmitter = require("events").EventEmitter;
 var session = require('express-session');
 var mongoStore = require('connect-mongo')(session);
@@ -14,7 +14,7 @@ require('./config')(app, mongoStore);
 require('./routes')(app, ee);
 
 exports.server = require('http').createServer(app).listen(port, function() {
-  console.log('Oughtness API started on port %d', port);
+  console.log('Storiesof API started on port %d', port);
 });
 
 process.on('uncaughtException', function(err){
