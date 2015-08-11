@@ -8,8 +8,7 @@ module.exports = Routes;
 function Routes (app, ee) {
   var config = app.get('config');
   var client = app.get('mongoClient');
-  var scenariosDB = client.collection('scenarios');
-  var votesDB = client.collection('votes');
+  var usersDB = client.collection('users');
 
   app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -18,19 +17,19 @@ function Routes (app, ee) {
     next();
   });
 
-  app.post('/vote', function(req, res) {
-    utils.validateScenarioExists(req, res, scenariosDB, function(record) {
-      if(record) {
-        utils.createVote(req, res, votesDB, function() {
-          res.sendStatus(200);
-        });
-      } else {
-        res.sendStatus(500);
-      }
+  app.post('/signup', function(req, res) {
+    utils.createUser(req, res, usersDB, function(data) {
+      console.log("SUCCESS???");
+      console.log(data);
+      res.sendStatus(200);
     });
   });
 
-  app.post('/create', function(req, res) {
-    utils.createScenario(req, res, scenariosDB, ee);
+  app.post('/login', function() {
+
+  });
+
+  app.post('/logout', function() {
+
   });
 }

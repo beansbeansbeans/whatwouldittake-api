@@ -1,51 +1,20 @@
 var ObjectId = require('mongojs').ObjectId;
 
-exports.createScenario = function(req, res, client) {
-  return client.insert({
-    identifier: req.body.identifier,
-    text: req.body.text
-  });
-};
+exports.createUser = function(req, res, client, cb) {
 
-exports.createVote = function(req, res, client, cb) {
-  return client.insert({
-    value: req.body.data,
-    scenario_id: req.body.scenario_id
-  }).then(cb);
-};
-
-exports.validateScenarioExists = function(req, res, client, cb) {
-  return client.findOne({
-    _id: ObjectId(req.body.scenario_id)
-  }).then(cb);
-};
-
-exports.getScenarios = function(client, fn) {
-  return client.find().toArray().then(fn);
-};
-
-// FOR REFERENCE ONLY
-
-exports.getRoomInfo = function(req, res, client, fn) { 
-  return client.findOne({key: req.params.id}).then(fn)
-    .catch(console.log.bind(console));
-};
-
-exports.getPublicRoomsInfo = function(client, fn) {
-  return client.find().toArray().then(fn);
-};
-
-exports.findOrCreateUser = function(req, client) {
-  return client.findOne({ facebookId: req.id }).then(function(user) {
-    if(user) {
-      return user;
-    } else {
-      var user = {
-        facebookId: req.id,
-        name: req.name
-      };
-
-      return client.insert(user);
+  client.find({ 
+    username: req.body.username, 
+    email: req.body.email
+  }).toArray().then(function(record) {
+    if(record.length) {
+      console.log("USER ALREADY EXISTS");
+      return;      
     }
+    client.insert({
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password
+    }).then(cb);    
   });
-};
+
+}
