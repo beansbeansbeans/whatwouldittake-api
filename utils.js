@@ -7,14 +7,21 @@ exports.createUser = function(req, res, client, cb) {
     email: req.body.email
   }).toArray().then(function(record) {
     if(record.length) {
-      console.log("USER ALREADY EXISTS");
-      return;      
+      return cb({
+        success: false,
+        error: "User already exists"
+      });      
     }
     client.insert({
       username: req.body.username,
       email: req.body.email,
       password: req.body.password
-    }).then(cb);    
+    }).then(function(record) {
+      cb({
+        success: true,
+        record: record
+      });
+    });    
   });
 
 }

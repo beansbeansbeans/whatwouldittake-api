@@ -17,11 +17,13 @@ function Routes (app, ee) {
     next();
   });
 
-  app.post('/signup', function(req, res) {
+  app.post('/signup', function(req, res, next) {
     utils.createUser(req, res, usersDB, function(data) {
-      console.log("SUCCESS???");
-      console.log(data);
-      res.sendStatus(200);
+      if(data.success) {
+        res.sendStatus(200);
+      } else {
+        res.status(400).send({ error: data.error });
+      }
     });
   });
 
