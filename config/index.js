@@ -4,7 +4,7 @@ var pmongo = require('promised-mongo');
 var path = require('path');
 var bodyParser  = require('body-parser');
 var cookieParser = require('cookie-parser');
-var session = require('express-session');
+var session = require('client-sessions');
 var hbs = require('hbs');
 var fs = require('fs');
 
@@ -21,9 +21,17 @@ function Config(app, mongoStore) {
 
   app.set('mongoClient', mongoClient);
 
+  app.use(session({
+    cookieName: 'session',
+    secret: app.get('config').session.secret,
+    duration: 30 * 60 * 1000,
+    activeDuration: 5 * 60 * 1000
+  }));
+
   app.use(bodyParser.urlencoded({
     extended: true
   }));
 
   app.use(bodyParser.json());
+
 }

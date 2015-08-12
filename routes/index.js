@@ -30,6 +30,7 @@ function Routes (app, ee) {
   app.post('/login', function(req, res) {
     utils.findUser(req, res, usersDB, function(data) {
       if(data.success) {
+        req.session.user = user;
         res.sendStatus(200);
       } else {
         res.status(400).send({ error: data.error });
@@ -37,7 +38,21 @@ function Routes (app, ee) {
     });
   });
 
-  app.post('/logout', function() {
+  // objective: to get sessions integrated with a request to add a story to a user
+  app.get('/dashboard', function(req, res) {
+    if(req.session && req.session.user) {
+      usersDB.findOne({ email: req.session.user.email }).then(function(user) {
+        if(!user) {
+          req.session.reset();
+          res.status(400).send({ error: 'invalid session' });
+        } else {
+          res.json(user);
+        }
+      })
+    }
+  })
 
+  app.post('/logout', function() {
+    req.session.reset();
   });
 }
