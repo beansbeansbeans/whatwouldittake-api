@@ -25,3 +25,30 @@ exports.createUser = function(req, res, client, cb) {
   });
 
 }
+
+exports.findUser = function(req, res, client, cb) {
+
+  client.findOne({
+    username: req.body.username
+  }).then(function(record) {
+    if(record) {
+      if(req.body.password === record.password) {
+        cb({
+          success: true,
+          record: record
+        });        
+      } else {
+        cb({
+          success: false,
+          error: "Invalid password."
+        });  
+      }
+    } else {
+      cb({
+        success: false,
+        error: "Cannot find user with that username."
+      });      
+    }
+  });
+
+}

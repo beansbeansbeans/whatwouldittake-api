@@ -27,8 +27,14 @@ function Routes (app, ee) {
     });
   });
 
-  app.post('/login', function() {
-
+  app.post('/login', function(req, res) {
+    utils.findUser(req, res, usersDB, function(data) {
+      if(data.success) {
+        res.sendStatus(200);
+      } else {
+        res.status(400).send({ error: data.error });
+      }
+    });
   });
 
   app.post('/logout', function() {
