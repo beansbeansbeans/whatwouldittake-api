@@ -22,7 +22,7 @@ function Config(app, mongoStore) {
   app.set('mongoClient', mongoClient);
 
   app.use(cookieParser(app.get("config").session.secret));
-  
+
   app.use(session({
     cookieName: 'session',
     secret: app.get('config').session.secret,
@@ -37,11 +37,14 @@ function Config(app, mongoStore) {
   app.use(bodyParser.json());
 
   app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "http://localhost:5000");
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Credentials', true);
-    res.header("Access-Control-Allow-Headers", "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version");
-    next();
+    var allowedOrigins = ['http://localhost:5000', 'http://storiesof.cc'];
+    if(allowedOrigins.indexOf(req.headers.origin) !== -1) {
+      res.header("Access-Control-Allow-Origin", req.headers.origin);
+      res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+      res.header('Access-Control-Allow-Credentials', true);
+      res.header("Access-Control-Allow-Headers", "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version");
+      next();
+    }
   });
 
 }
