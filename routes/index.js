@@ -57,8 +57,9 @@ function Routes (app, ee) {
     });
   });
 
-  app.post('/logout', function() {
+  app.post('/logout', function(req, res) {
     req.session.reset();
+    res.sendStatus(200);
   });
 
   app.get('/me', requireLogin, function(req, res) {
