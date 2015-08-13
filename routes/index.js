@@ -10,6 +10,29 @@ function Routes (app, ee) {
   var client = app.get('mongoClient');
   var usersDB = client.collection('users');
 
+  app.use(function(req, res, next) {
+    if(req.session && req.session.user) {
+      usersDB.findOne({ username: req.session.user.username }).then(function(user) {
+        if(user) {
+          req.user = user;
+          delete req.user.password;
+          req.session.user = req.user;
+        }
+        next();        
+      });
+    } else {
+      next();
+    }
+  });
+
+  function requireLogin(req, res, next) {
+    if(!req.user) {
+      res.status(400).send({ error: 'auth failed' });
+    } else {
+      next();
+    }
+  }
+
   app.post('/signup', function(req, res, next) {
     utils.createUser(req, res, usersDB, function(data) {
       if(data.success) {
@@ -34,8 +57,11 @@ function Routes (app, ee) {
     });
   });
 
-  // objective: to get sessions integrated with a request to add a story to a user
-  app.get('/dashboard', function(req, res) {
+  app.post('/logout', function() {
+    req.session.reset();
+  });
+
+  app.get('/me', requireLogin, function(req, res) {
     if(req.session && req.session.user) {
       usersDB.findOne({ email: req.session.user.email }).then(function(user) {
         if(!user) {
@@ -46,9 +72,5 @@ function Routes (app, ee) {
         }
       })
     }
-  })
-
-  app.post('/logout', function() {
-    req.session.reset();
   });
 }
