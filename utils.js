@@ -1,6 +1,8 @@
+var bcrypt = require('bcryptjs');
 var ObjectId = require('mongojs').ObjectId;
 
 exports.createUser = function(req, res, client, cb) {
+  var hash = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
 
   client.find({ 
     username: req.body.username, 
@@ -15,7 +17,7 @@ exports.createUser = function(req, res, client, cb) {
     client.insert({
       username: req.body.username,
       email: req.body.email,
-      password: req.body.password
+      password: hash
     }).then(function(record) {
       cb({
         success: true,
@@ -32,7 +34,7 @@ exports.findUser = function(req, res, client, cb) {
     username: req.body.username
   }).then(function(record) {
     if(record) {
-      if(req.body.password === record.password) {
+      if(bcrypt.compareSync(req.body.password, record.password)) {
         cb({
           success: true,
           record: record
