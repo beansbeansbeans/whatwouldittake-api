@@ -62,6 +62,14 @@ function Routes (app, ee) {
     res.sendStatus(200);
   });
 
+  app.get('/session', function(req, res){
+    if(req.session && req.session.user){
+      res.send({auth: true, id: req.session.id, user: req.session.user});
+    } else {
+      res.send({auth: false});
+    }
+  });
+
   app.get('/me', requireLogin, function(req, res) {
     if(req.session && req.session.user) {
       usersDB.findOne({ email: req.session.user.email }).then(function(user) {
