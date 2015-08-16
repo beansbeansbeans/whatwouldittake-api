@@ -17,7 +17,7 @@ function Config(app, mongoStore) {
 
   app.set('mongoURL', config.mongoURL);
 
-  var mongoClient = pmongo(app.get('mongoURL'));
+  var mongoClient = mongojs(app.get('mongoURL'), [], { authMechanism : 'ScramSHA1' });
 
   app.set('mongoClient', mongoClient);
 

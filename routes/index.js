@@ -12,7 +12,7 @@ function Routes (app, ee) {
 
   app.use(function(req, res, next) {
     if(req.session && req.session.user) {
-      usersDB.findOne({ username: req.session.user.username }).then(function(user) {
+      usersDB.findOne({ username: req.session.user.username }, function(user) {
         if(user) {
           req.user = user;
           delete req.user.password;
@@ -36,6 +36,7 @@ function Routes (app, ee) {
   app.post('/signup', function(req, res, next) {
     utils.createUser(req, res, usersDB, function(data) {
       if(data.success) {
+        req.session.user = data.record;
         res.sendStatus(200);
       } else {
         res.status(400).send({ error: data.error });
@@ -72,14 +73,14 @@ function Routes (app, ee) {
 
   app.get('/me', requireLogin, function(req, res) {
     if(req.session && req.session.user) {
-      usersDB.findOne({ email: req.session.user.email }).then(function(user) {
+      usersDB.findOne({ email: req.session.user.email }, function(err, user) {
         if(!user) {
           req.session.reset();
           res.status(400).send({ error: 'invalid session' });
         } else {
           res.json(user);
         }
-      })
+      });
     }
   });
 }
