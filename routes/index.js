@@ -84,8 +84,13 @@ function Routes (app, ee) {
   });
 
   app.get('/story/:id', function(req, res) {
-    console.log("IN STORY GET MIDDLEWARE");
-    console.log(req.params.id);
+    utils.findStory(req, res, storiesDB, function(data) {
+      if(data.success) {
+        res.json(data.record);
+      } else {
+        res.status(400).send({ error: 'nope' });
+      }
+    });
   });
 
   app.get('/me', requireLogin, function(req, res) {

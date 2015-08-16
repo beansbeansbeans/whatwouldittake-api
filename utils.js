@@ -14,6 +14,21 @@ var getNextSequence = function(db, name, cb) {
   );
 }
 
+exports.findStory = function(req, res, client, cb) {
+  client.findOne({
+    _id: +req.params.id
+  }, function(err, record) {
+    if(record) {
+      cb({
+        success: true,
+        record: record
+      });
+    } else {
+      cb({ success: false });
+    }
+  });
+}
+
 exports.createStory = function(req, res, counters, client, cb) {
   getNextSequence(counters, 'storyid', function(seq) {
     client.insert({
