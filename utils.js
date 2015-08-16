@@ -1,6 +1,20 @@
 var bcrypt = require('bcryptjs');
 var ObjectId = require('mongojs').ObjectId;
 
+exports.createStory = function(req, res, client, cb) {
+  client.insert({
+    user: req.user._id.valueOf(),
+    date: req.body.date,
+    feeling: req.body.feeling,
+    notes: req.body.notes
+  }, function(err, record) {
+    cb({
+      success: true,
+      record: record
+    });
+  });
+}
+
 exports.createUser = function(req, res, client, cb) {
   var hash = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
 

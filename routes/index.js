@@ -9,10 +9,11 @@ function Routes (app, ee) {
   var config = app.get('config');
   var client = app.get('mongoClient');
   var usersDB = client.collection('users');
+  var storiesDB = client.collection('stories');
 
   app.use(function(req, res, next) {
     if(req.session && req.session.user) {
-      usersDB.findOne({ username: req.session.user.username }, function(user) {
+      usersDB.findOne({ username: req.session.user.username }, function(err, user) {
         if(user) {
           req.user = user;
           delete req.user.password;
@@ -63,12 +64,22 @@ function Routes (app, ee) {
     res.sendStatus(200);
   });
 
-  app.get('/session', function(req, res){
+  app.get('/session', function(req, res) {
     if(req.session && req.session.user){
       res.send({auth: true, id: req.session.id, user: req.session.user});
     } else {
       res.send({auth: false});
     }
+  });
+
+  app.post('/create_story', requireLogin, function(req, res) {
+    utils.createStory(req, res, storiesDB, function(data) {
+      if(data.success) {
+        res.sendStatus(200);
+      } else {
+        res.status(400).send({ error: 'nope' });
+      }
+    });
   });
 
   app.get('/me', requireLogin, function(req, res) {
