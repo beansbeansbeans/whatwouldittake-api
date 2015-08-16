@@ -34,9 +34,9 @@ exports.createStory = function(req, res, counters, client, cb) {
     client.insert({
       _id: seq,
       hideIdentity: req.body.hideIdentity,
+      user: req.user._id.valueOf(),
       entries: [
         {
-          user: req.user._id.valueOf(),
           date: req.body.date,
           feeling: req.body.feeling,
           notes: req.body.notes          
