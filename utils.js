@@ -33,10 +33,14 @@ exports.createStory = function(req, res, counters, client, cb) {
   getNextSequence(counters, 'storyid', function(seq) {
     client.insert({
       _id: seq,
-      user: req.user._id.valueOf(),
-      date: req.body.date,
-      feeling: req.body.feeling,
-      notes: req.body.notes
+      entries: [
+        {
+          user: req.user._id.valueOf(),
+          date: req.body.date,
+          feeling: req.body.feeling,
+          notes: req.body.notes          
+        }
+      ]
     }, function(err, record) {
       cb({
         success: true,
