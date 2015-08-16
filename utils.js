@@ -1,16 +1,32 @@
 var bcrypt = require('bcryptjs');
 var ObjectId = require('mongojs').ObjectId;
 
-exports.createStory = function(req, res, client, cb) {
-  client.insert({
-    user: req.user._id.valueOf(),
-    date: req.body.date,
-    feeling: req.body.feeling,
-    notes: req.body.notes
-  }, function(err, record) {
-    cb({
-      success: true,
-      record: record
+var getNextSequence = function(db, name, cb) {
+  db.findAndModify(
+    {
+      query: { _id: name },
+      update: { $inc: { seq: 1 } },
+      new: true,
+      upsert: true
+    }, function(err, record) {
+      cb(record.seq);
+    }
+  );
+}
+
+exports.createStory = function(req, res, counters, client, cb) {
+  getNextSequence(counters, 'storyid', function(seq) {
+    client.insert({
+      _id: seq,
+      user: req.user._id.valueOf(),
+      date: req.body.date,
+      feeling: req.body.feeling,
+      notes: req.body.notes
+    }, function(err, record) {
+      cb({
+        success: true,
+        record: record
+      });
     });
   });
 }

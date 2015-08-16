@@ -10,6 +10,7 @@ function Routes (app, ee) {
   var client = app.get('mongoClient');
   var usersDB = client.collection('users');
   var storiesDB = client.collection('stories');
+  var countersDB = client.collection('counters');
 
   app.use(function(req, res, next) {
     if(req.session && req.session.user) {
@@ -73,13 +74,18 @@ function Routes (app, ee) {
   });
 
   app.post('/create_story', requireLogin, function(req, res) {
-    utils.createStory(req, res, storiesDB, function(data) {
+    utils.createStory(req, res, countersDB, storiesDB, function(data) {
       if(data.success) {
-        res.sendStatus(200);
+        res.json(data.record);
       } else {
         res.status(400).send({ error: 'nope' });
       }
     });
+  });
+
+  app.get('/story/:id', function(req, res) {
+    console.log("IN STORY GET MIDDLEWARE");
+    console.log(req.params.id);
   });
 
   app.get('/me', requireLogin, function(req, res) {
