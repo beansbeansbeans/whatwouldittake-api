@@ -33,6 +33,7 @@ exports.createStory = function(req, res, counters, client, cb) {
   getNextSequence(counters, 'storyid', function(seq) {
     client.insert({
       _id: seq,
+      hideIdentity: req.body.hideIdentity,
       entries: [
         {
           user: req.user._id.valueOf(),
