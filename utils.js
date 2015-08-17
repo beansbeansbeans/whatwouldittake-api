@@ -14,14 +14,23 @@ var getNextSequence = function(db, name, cb) {
   );
 }
 
-exports.findStory = function(req, res, client, cb) {
+exports.findStory = function(req, res, usersClient, client, cb) {
   client.findOne({
     _id: +req.params.id
   }, function(err, record) {
     if(record) {
-      cb({
-        success: true,
-        record: record
+      var user = usersClient.findOne({
+        _id: record.user
+      }, function(err, userRecord) {
+        record.user = {
+          _id: userRecord._id,
+          username: userRecord.username
+        };
+
+        cb({
+          success: true,
+          record: record
+        });
       });
     } else {
       cb({ success: false });
