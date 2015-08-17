@@ -29,6 +29,19 @@ exports.findStory = function(req, res, client, cb) {
   });
 }
 
+exports.findStories = function(req, res, client, cb) {
+  client.find().toArray(function(err, records) {
+    if(records) {
+      cb({ 
+        success: true,
+        records: records
+      });
+    } else {
+      cb({ success: false });
+    }
+  });
+}
+
 exports.createStory = function(req, res, users, counters, client, cb) {
   getNextSequence(counters, 'storyid', function(seq) {
 
