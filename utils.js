@@ -70,10 +70,17 @@ exports.createUser = function(req, res, client, cb) {
     ]
   }, function(err, record) {
     if(record) {
-      var error = "That username has been taken.";
+      var error = {
+        field: 'email',
+        message: "A user with that email address already exists."
+      };
       if(record.username === req.body.username) {
-        error = "A user with that email address already exists.";
+        error = {
+          field: 'username',
+          message: "That username has been taken."
+        };
       }
+      
       return cb({
         success: false,
         error: error
