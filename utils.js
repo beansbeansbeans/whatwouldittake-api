@@ -80,7 +80,7 @@ exports.createUser = function(req, res, client, cb) {
           message: "That username has been taken."
         };
       }
-      
+
       return cb({
         success: false,
         error: error
@@ -102,7 +102,10 @@ exports.createUser = function(req, res, client, cb) {
 
 exports.findUser = function(req, res, client, cb) {
   client.findOne({
-    username: req.body.username
+    $or: [
+      { username: req.body.username },
+      { email: req.body.username }
+    ]
   }, function(err, record) {
     if(record) {
       if(bcrypt.compareSync(req.body.password, record.password)) {
@@ -113,13 +116,19 @@ exports.findUser = function(req, res, client, cb) {
       } else {
         cb({
           success: false,
-          error: "Invalid password."
+          error: {
+            field: 'password',
+            message: 'Invalid password.'
+          }
         });  
       }
     } else {
       cb({
         success: false,
-        error: "Cannot find user with that username."
+        error: {
+          field: 'username',
+          message: "Sorry, we couldn't find anyone with that username or password."
+        }
       });      
     }
   });
