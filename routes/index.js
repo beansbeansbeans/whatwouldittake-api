@@ -94,7 +94,7 @@ function Routes (app, ee) {
   });
 
   app.get('/stories', function(req, res) {
-    utils.findStories(req, res, usersDB, storiesDB, function(data) {
+    utils.findStories(req, res, storiesDB, function(data) {
       if(data.success) {
         res.json(data.records);
       } else {
