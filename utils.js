@@ -63,15 +63,21 @@ exports.createStory = function(req, res, counters, client, cb) {
 exports.createUser = function(req, res, client, cb) {
   var hash = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
 
-  client.find({ 
-    username: req.body.username, 
-    email: req.body.email
-  }).toArray(function(err, record) {
-    if(record.length) {
+  client.findOne({
+    $or: [
+      { username: req.body.username },
+      { email: req.body.email }
+    ]
+  }, function(err, record) {
+    if(record) {
+      var error = "That username has been taken.";
+      if(record.username === req.body.username) {
+        error = "A user with that email address already exists.";
+      }
       return cb({
         success: false,
-        error: "User already exists"
-      });      
+        error: error
+      });              
     }
 
     client.insert({
