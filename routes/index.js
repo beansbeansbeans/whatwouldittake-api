@@ -74,7 +74,7 @@ function Routes (app, ee) {
   });
 
   app.post('/create_story', requireLogin, function(req, res) {
-    utils.createStory(req, res, countersDB, storiesDB, function(data) {
+    utils.createStory(req, res, usersDB, countersDB, storiesDB, function(data) {
       if(data.success) {
         res.json(data.record);
       } else {
@@ -84,12 +84,18 @@ function Routes (app, ee) {
   });
 
   app.get('/story/:id', function(req, res) {
-    utils.findStory(req, res, usersDB, storiesDB, function(data) {
+    utils.findStory(req, res, storiesDB, function(data) {
       if(data.success) {
         res.json(data.record);
       } else {
         res.status(400).send({ error: 'nope' });
       }
+    });
+  });
+
+  app.get('/stories', function(req, res) {
+    utils.findStories(req, res, usersDB, storiesDB, function(data) {
+
     });
   });
 

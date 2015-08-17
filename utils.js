@@ -14,23 +14,14 @@ var getNextSequence = function(db, name, cb) {
   );
 }
 
-exports.findStory = function(req, res, usersClient, client, cb) {
+exports.findStory = function(req, res, client, cb) {
   client.findOne({
     _id: +req.params.id
   }, function(err, record) {
     if(record) {
-      var user = usersClient.findOne({
-        _id: record.user
-      }, function(err, userRecord) {
-        record.user = {
-          _id: userRecord._id,
-          username: userRecord.username
-        };
-
-        cb({
-          success: true,
-          record: record
-        });
+      cb({
+        success: true,
+        record: record
       });
     } else {
       cb({ success: false });
@@ -38,23 +29,31 @@ exports.findStory = function(req, res, usersClient, client, cb) {
   });
 }
 
-exports.createStory = function(req, res, counters, client, cb) {
+exports.createStory = function(req, res, users, counters, client, cb) {
   getNextSequence(counters, 'storyid', function(seq) {
-    client.insert({
-      _id: seq,
-      hideIdentity: req.body.hideIdentity,
-      user: req.user._id.valueOf(),
-      entries: [
-        {
-          date: req.body.date,
-          feeling: req.body.feeling,
-          notes: req.body.notes          
-        }
-      ]
-    }, function(err, record) {
-      cb({
-        success: true,
-        record: record
+
+    users.findOne({
+      _id: req.user._id.valueOf()
+    }, function(err, userRecord) {
+      client.insert({
+        _id: seq,
+        hideIdentity: req.body.hideIdentity,
+        user: {
+          _id: userRecord._id,
+          username: userRecord.username
+        },
+        entries: [
+          {
+            date: req.body.date,
+            feeling: req.body.feeling,
+            notes: req.body.notes          
+          }
+        ]
+      }, function(err, record) {
+        cb({
+          success: true,
+          record: record
+        });
       });
     });
   });
