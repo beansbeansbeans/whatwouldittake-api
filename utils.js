@@ -72,6 +72,27 @@ exports.createStory = function(req, res, users, counters, client, cb) {
   });
 }
 
+exports.editStory = function(req, res, client, cb) {
+  client.findAndModify({
+    query: { _id: req.body.id },
+    update: { 
+      $push: { 
+        entries: {
+          date: req.body.date,
+          feeling: req.body.feeling,
+          notes: req.body.notes
+        } 
+      } 
+    },
+    new: true
+  }, function(err, storyRecord) {
+    cb({
+      success: true,
+      record: storyRecord
+    });
+  });
+}
+
 exports.createUser = function(req, res, client, cb) {
   var hash = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
 

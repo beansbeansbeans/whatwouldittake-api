@@ -83,6 +83,16 @@ function Routes (app, ee) {
     });
   });
 
+  app.post('/edit_story', requireLogin, function(req, res) {
+    utils.editStory(req, res, storiesDB, function(data) {
+      if(data.success) {
+        res.json(data.record);
+      } else {
+        res.status(400).send({ error: 'nope' });
+      }
+    });
+  });
+
   app.get('/story/:id', function(req, res) {
     utils.findStory(req, res, storiesDB, function(data) {
       if(data.success) {
