@@ -30,7 +30,7 @@ exports.findStory = function(req, res, client, cb) {
 }
 
 exports.findStories = function(req, res, client, cb) {
-  client.find().toArray(function(err, records) {
+  client.find().sort({ 'entries.date': -1 }).toArray(function(err, records) {
     if(records) {
       cb({ 
         success: true,
