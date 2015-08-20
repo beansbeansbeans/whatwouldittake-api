@@ -55,6 +55,7 @@ exports.createStory = function(req, res, users, counters, client, cb) {
           _id: userRecord._id,
           username: userRecord.username
         },
+        lastUpdated: Date.now(),
         entries: [
           {
             date: req.body.date,
@@ -78,9 +79,14 @@ exports.editStory = function(req, res, client, cb) {
     update: { 
       $push: { 
         entries: {
-          date: req.body.date,
-          feeling: req.body.feeling,
-          notes: req.body.notes
+          $each: [
+            {
+              date: req.body.date,
+              feeling: req.body.feeling,
+              notes: req.body.notes              
+            }
+          ],
+          $sort: { 'date': -1 }
         } 
       } 
     },
