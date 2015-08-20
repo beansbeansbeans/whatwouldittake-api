@@ -77,6 +77,7 @@ exports.editStory = function(req, res, client, cb) {
   client.findAndModify({
     query: { _id: req.body.id },
     update: { 
+      $set: { lastUpdated: Date.now() },
       $push: { 
         entries: {
           $each: [
