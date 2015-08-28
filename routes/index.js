@@ -103,7 +103,7 @@ function Routes (app, ee) {
     });
   });
 
-  app.get('/stories', function(req, res) {
+  app.get('/stories/:page', function(req, res) {
     utils.findStories(req, res, storiesDB, function(data) {
       if(data.success) {
         res.json(data.records);
