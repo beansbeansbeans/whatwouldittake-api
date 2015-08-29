@@ -61,7 +61,10 @@ exports.deleteEntry = function(req, res, client, cb) {
     },
     new: true
   }, function(err, record) {
-    cb({ success: true });
+    cb({ 
+      success: true,
+      record: record
+    });
   });
 }
 

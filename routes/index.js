@@ -109,7 +109,11 @@ function Routes (app, ee) {
 
   app.post('/delete_entry', requireLogin, function(req, res) {
     utils.deleteEntry(req, res, storiesDB, function(data) {
-      res.sendStatus(200);
+      if(data.success) {
+        res.json(data.record);
+      } else {
+        res.status(400).send({ error: 'nope' });
+      }
     });
   });
 
