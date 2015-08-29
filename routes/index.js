@@ -93,6 +93,24 @@ function Routes (app, ee) {
     });
   });
 
+  app.post('/delete_story', requireLogin, function(req, res) {
+    utils.deleteStory(req, res, storiesDB, function(data) {
+      res.sendStatus(200);
+    });
+  });
+
+  app.post('/change_story_visibility', requireLogin, function(req, res) {
+
+  });
+
+  app.post('/edit_entry', requireLogin, function(req, res) {
+
+  });
+
+  app.post('/delete_entry', requireLogin, function(req, res) {
+
+  });
+
   app.get('/story/:id', function(req, res) {
     utils.findStory(req, res, storiesDB, function(data) {
       if(data.success) {

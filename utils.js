@@ -45,6 +45,12 @@ exports.findStories = function(req, res, client, cb) {
   });
 }
 
+exports.deleteStory = function(req, res, client, cb) {
+  client.remove({_id: +req.body.id}, function(data) {
+    cb({ success: true });
+  });
+}
+
 exports.createStory = function(req, res, users, counters, client, cb) {
   getNextSequence(counters, 'storyid', function(seq) {
 
