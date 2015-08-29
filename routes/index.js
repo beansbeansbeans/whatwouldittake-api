@@ -109,10 +109,6 @@ function Routes (app, ee) {
     });
   });
 
-  app.post('/edit_entry', requireLogin, function(req, res) {
-
-  });
-
   app.post('/delete_entry', requireLogin, function(req, res) {
     utils.deleteEntry(req, res, storiesDB, function(data) {
       if(data.success) {
