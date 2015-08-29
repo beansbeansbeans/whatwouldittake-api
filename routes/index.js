@@ -108,7 +108,9 @@ function Routes (app, ee) {
   });
 
   app.post('/delete_entry', requireLogin, function(req, res) {
-
+    utils.deleteEntry(req, res, storiesDB, function(data) {
+      res.sendStatus(200);
+    });
   });
 
   app.get('/story/:id', function(req, res) {

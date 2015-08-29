@@ -51,6 +51,20 @@ exports.deleteStory = function(req, res, client, cb) {
   });
 }
 
+exports.deleteEntry = function(req, res, client, cb) {
+  client.findAndModify({
+    query: { _id: req.body.id },
+    update: {
+      $pull: {
+        entries: { date: req.body.date }
+      }
+    },
+    new: true
+  }, function(err, record) {
+    cb({ success: true });
+  });
+}
+
 exports.createStory = function(req, res, users, counters, client, cb) {
   getNextSequence(counters, 'storyid', function(seq) {
 
