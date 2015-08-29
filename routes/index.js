@@ -100,7 +100,13 @@ function Routes (app, ee) {
   });
 
   app.post('/change_story_visibility', requireLogin, function(req, res) {
-
+    utils.editStoryVisibility(req, res, storiesDB, function(data) {
+      if(data.success) {
+        res.json(data.record);
+      } else {
+        res.status(400).send({ error: 'nope' });
+      }
+    });
   });
 
   app.post('/edit_entry', requireLogin, function(req, res) {

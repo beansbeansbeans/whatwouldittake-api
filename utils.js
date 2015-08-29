@@ -55,6 +55,7 @@ exports.deleteEntry = function(req, res, client, cb) {
   client.findAndModify({
     query: { _id: req.body.id },
     update: {
+      $set: { lastUpdated: Date.now() },
       $pull: {
         entries: { date: req.body.date }
       }
@@ -95,6 +96,24 @@ exports.createStory = function(req, res, users, counters, client, cb) {
           record: record
         });
       });
+    });
+  });
+}
+
+exports.editStoryVisibility = function(req, res, client, cb) {
+  client.findAndModify({
+    query: { _id: req.body.id },
+    update: {
+      $set: { 
+        lastUpdated: Date.now(),
+        hideIdentity: !req.body.hideIdentity
+      }
+    },
+    new: true
+  }, function(err, record) {
+    cb({
+      success: true,
+      record: record
     });
   });
 }
