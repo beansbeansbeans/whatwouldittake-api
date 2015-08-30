@@ -106,7 +106,7 @@ exports.editStoryVisibility = function(req, res, client, cb) {
     update: {
       $set: { 
         lastUpdated: Date.now(),
-        hideIdentity: !req.body.hideIdentity
+        hideIdentity: req.body.hideIdentity
       }
     },
     new: true
