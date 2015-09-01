@@ -45,6 +45,35 @@ exports.findStories = function(req, res, client, cb) {
   });
 }
 
+exports.findStoriesByPath = function(req, res, client, cb) {
+  client.find({
+    $and: [
+      {
+        percentChange: {
+          $lt: req.body.percentChange + 10
+        }
+      },
+      {
+        percentChange: {
+          $gt: req.body.percentChange - 10
+        }
+      }
+    ],
+    inflectionPoints: {
+      $size: req.body.inflectionPoints.length
+    }
+  }).toArray(function(err, records) {
+    if(records) {
+      cb({
+        success: true,
+        records: records
+      });
+    } else {
+      cb({ success: false });
+    }
+  });
+}
+
 exports.deleteStory = function(req, res, client, cb) {
   client.remove({_id: +req.body.id}, function(data) {
     cb({ success: true });

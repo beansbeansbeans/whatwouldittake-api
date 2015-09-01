@@ -139,6 +139,16 @@ function Routes (app, ee) {
     });
   });
 
+  app.post('/search_stories_by_path', function(req, res) {
+    utils.findStoriesByPath(req, res, storiesDB, function(data) {
+      if(data.success) {
+        res.json(data.records);
+      } else {
+        res.status(400).send({ error: 'nope' });
+      }
+    });
+  });
+
   app.get('/me', requireLogin, function(req, res) {
     if(req.session && req.session.user) {
       usersDB.findOne({ email: req.session.user.email }, function(err, user) {
