@@ -50,12 +50,12 @@ exports.findStoriesByPath = function(req, res, client, cb) {
     $and: [
       {
         percentChange: {
-          $lt: req.body.percentChange + 10
+          $lt: req.body.percentChange + 15
         }
       },
       {
         percentChange: {
-          $gt: req.body.percentChange - 10
+          $gt: req.body.percentChange - 15
         }
       }
     ],
