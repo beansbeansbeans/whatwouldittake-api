@@ -45,6 +45,23 @@ exports.findStories = function(req, res, client, cb) {
   });
 }
 
+exports.findSampleStory = function(req, res, client, cb) {
+  client.findOne({
+    inflectionPoints: {
+      $size: 3
+    }
+  }, function(err, record) {
+    if(record) {
+      cb({
+        success: true,
+        record: record
+      });
+    } else {
+      cb({ success: false });
+    }
+  });
+}
+
 exports.findStoriesByPath = function(req, res, client, cb) {
   client.find({
     $and: [

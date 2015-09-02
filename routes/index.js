@@ -149,6 +149,16 @@ function Routes (app, ee) {
     });
   });
 
+  app.get('/sample_search', function(req, res) {
+    utils.findSampleStory(req, res, storiesDB, function(data) {
+      if(data.success) {
+        res.json(data.record);
+      } else {
+        res.status(400).send({ error: 'nope' });
+      }
+    });
+  });
+
   app.get('/me', requireLogin, function(req, res) {
     if(req.session && req.session.user) {
       usersDB.findOne({ email: req.session.user.email }, function(err, user) {
