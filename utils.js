@@ -47,7 +47,7 @@ exports.findStories = function(req, res, client, cb) {
 
 exports.findSampleStory = function(req, res, client, cb) {
   client.findOne({
-    inflectionPoints: {
+    'inflectionPoints.points': {
       $size: 3
     }
   }, function(err, record) {
@@ -76,9 +76,10 @@ exports.findStoriesByPath = function(req, res, client, cb) {
         }
       }
     ],
-    inflectionPoints: {
-      $size: req.body.inflectionPoints.length
-    }
+    'inflectionPoints.points': {
+      $size: req.body.inflectionPoints.points.length
+    },
+    'inflectionPoints.direction': req.body.inflectionPoints.direction
   }).toArray(function(err, records) {
     if(records) {
       cb({
