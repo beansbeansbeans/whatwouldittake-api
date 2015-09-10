@@ -171,7 +171,8 @@ exports.editStory = function(req, res, client, cb) {
       $set: { 
         lastUpdated: Date.now(),
         percentChange: req.body.percentChange,
-        inflectionPoints: req.body.inflectionPoints
+        inflectionPoints: req.body.inflectionPoints,
+        range: req.body.range
       },
       $push: { 
         entries: {
