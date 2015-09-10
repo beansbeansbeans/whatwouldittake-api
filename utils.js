@@ -105,7 +105,21 @@ exports.findStoriesByPath = function(req, res, client, cb) {
         records: records
       });
     } else {
-      cb({ success: false });
+      client.find({
+        'inflectionPoints.points': {
+          $size: req.body.inflectionPoints.points.length
+        },
+        'inflectionPoints.direction': req.body.inflectionPoints.direction
+      }).toArray(function(err, records) {
+        if(records) {
+          cb({
+            success: true,
+            records: records
+          });
+        } else {
+          cb({ success: false });
+        }
+      });
     }
   });
 }
