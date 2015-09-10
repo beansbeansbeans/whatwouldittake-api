@@ -64,16 +64,34 @@ exports.findSampleStory = function(req, res, client, cb) {
 
 exports.findStoriesByPath = function(req, res, client, cb) {
   client.find({
-    $and: [
+    $or: [
       {
-        percentChange: {
-          $lt: req.body.percentChange + 15
-        }
+        $and: [
+          {
+            percentChange: {
+              $lt: req.body.percentChange + 15
+            }
+          },
+          {
+            percentChange: {
+              $gt: req.body.percentChange - 15
+            }
+          }
+        ]        
       },
       {
-        percentChange: {
-          $gt: req.body.percentChange - 15
-        }
+        $and: [
+          {
+            'range.value': {
+              $lt: req.body.range.value + 15
+            }
+          },
+          {
+            'range.value': {
+              $gt: req.body.range.value - 15
+            }
+          }
+        ]        
       }
     ],
     'inflectionPoints.points': {
