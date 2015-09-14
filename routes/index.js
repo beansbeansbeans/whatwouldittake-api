@@ -139,6 +139,16 @@ function Routes (app, ee) {
     });
   });
 
+  app.post('/favorite_story', function(req, res) {
+    utils.likeStory(req, res, storiesDB, usersDB, function(data) {
+      if(data.success) {
+        res.json(data.record);
+      } else {
+        res.status(400).send({ error: 'nope' });
+      }
+    });
+  });
+
   app.post('/search_stories_by_path', function(req, res) {
     utils.findStoriesByPath(req, res, storiesDB, function(data) {
       if(data.success) {

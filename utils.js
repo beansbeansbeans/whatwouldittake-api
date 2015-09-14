@@ -14,6 +14,40 @@ var getNextSequence = function(db, name, cb) {
   );
 }
 
+exports.likeStory = function(req, res, stories, users, cb) {
+  stories.findAndModify({
+    query: { _id: req.body.id },
+    update: {
+      $push: { likes: req.body.user_id }
+    },
+    new: true
+  }, function(err, record) {
+    if(err) {
+      return cb({ success: false });
+    }
+
+    users.findAndModify({
+      query: { _id: req.user._id.valueOf() },
+      update: {
+        $push: { likes: req.body.id }
+      },
+      new: true
+    }, function(nestedErr, nestedRecord) {
+      if(nestedErr) {
+        return cb({ success: false });
+      }
+
+      cb({
+        success: true,
+        record: {
+          story: record,
+          user: nestedRecord
+        }
+      });      
+    });
+  });
+}
+
 exports.findStory = function(req, res, client, cb) {
   client.findOne({
     _id: +req.params.id
@@ -157,6 +191,7 @@ exports.createStory = function(req, res, users, counters, client, cb) {
       client.insert({
         _id: seq,
         hideIdentity: req.body.hideIdentity,
+        likes: [],
         user: {
           _id: userRecord._id,
           username: userRecord.username
