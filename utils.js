@@ -48,6 +48,40 @@ exports.likeStory = function(req, res, stories, users, cb) {
   });
 }
 
+exports.unlikeStory = function(req, res, stories, users, cb) {
+  stories.findAndModify({
+    query: { _id: req.body.id },
+    update: {
+      $pull: { likes: req.body.user_id }
+    },
+    new: true
+  }, function(err, record) {
+    if(err) {
+      return cb({ success: false });
+    }
+
+    users.findAndModify({
+      query: { _id: req.user._id.valueOf() },
+      update: {
+        $pull: { likes: req.body.id }
+      },
+      new: true
+    }, function(nestedErr, nestedRecord) {
+      if(nestedErr) {
+        return cb({ success: false });
+      }
+
+      cb({
+        success: true,
+        record: {
+          story: record,
+          user: nestedRecord
+        }
+      });      
+    });
+  });
+}
+
 exports.findStory = function(req, res, client, cb) {
   client.findOne({
     _id: +req.params.id
