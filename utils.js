@@ -328,7 +328,9 @@ exports.createUser = function(req, res, client, cb) {
     client.insert({
       username: req.body.username,
       email: req.body.email,
-      password: hash
+      password: hash,
+      likes: [],
+      stories: []
     }, function(err, record) {
       cb({
         success: true,
