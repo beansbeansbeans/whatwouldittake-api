@@ -219,8 +219,11 @@ exports.deleteEntry = function(req, res, client, cb) {
 exports.createStory = function(req, res, users, counters, client, cb) {
   getNextSequence(counters, 'storyid', function(seq) {
 
-    users.findOne({
-      _id: req.user._id.valueOf()
+    users.findAndModify({
+      query: { _id: req.user._id.valueOf() },
+      update: {
+        $push: { stories: seq }
+      }
     }, function(err, userRecord) {
       client.insert({
         _id: seq,
