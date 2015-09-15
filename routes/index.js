@@ -94,7 +94,7 @@ function Routes (app, ee) {
   });
 
   app.post('/delete_story', requireLogin, function(req, res) {
-    utils.deleteStory(req, res, storiesDB, function(data) {
+    utils.deleteStory(req, res, storiesDB, usersDB, function(data) {
       res.sendStatus(200);
     });
   });

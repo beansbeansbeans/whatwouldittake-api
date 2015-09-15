@@ -1,6 +1,21 @@
 var bcrypt = require('bcryptjs');
 var ObjectId = require('mongojs').ObjectId;
 
+var async = function(tasks, callback) {
+  var count = 0, n = tasks.length;
+
+  function complete() {
+    count += 1;
+    if (count === n) {
+      callback();
+    }
+  }
+
+  tasks.forEach(function (task) {
+    task(complete);
+  });
+};
+
 var getNextSequence = function(db, name, cb) {
   db.findAndModify(
     {
@@ -192,10 +207,20 @@ exports.findStoriesByPath = function(req, res, client, cb) {
   });
 }
 
-exports.deleteStory = function(req, res, client, cb) {
-  client.remove({_id: +req.body.id}, function(data) {
-    cb({ success: true });
-  });
+exports.deleteStory = function(req, res, stories, users, cb) {
+  async([
+    function(done) {
+      stories.remove({ _id: +req.body.id}, done)
+    },
+    function(done) {
+      users.findAndModify({
+        query: { _id: req.user._id.valueOf() },
+        update: {
+          $pull: { stories: +req.body.id }
+        }
+      }, done)      
+    }
+  ], function() { cb({ success: true }); });
 }
 
 exports.deleteEntry = function(req, res, client, cb) {
