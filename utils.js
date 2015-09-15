@@ -326,6 +326,39 @@ exports.editStory = function(req, res, client, cb) {
   });
 }
 
+exports.getUser = function(req, res, usersClient, storiesClient, cb) {
+  var stories = [], likes = [];
+
+  usersClient.findOne({
+    _id: req.user._id.valueOf()
+  }, function(err, user) {
+    async(user.likes.map(function(d) {
+      return function(done) {
+        storiesClient.findOne({ _id: d }, function(err, record) {
+          if(record) { likes.push(record); }
+          done();
+        });
+      }
+    }).concat(user.stories.map(function(d) {
+      return function(done) {
+        storiesClient.findOne({ _id: d }, function(err, record) {
+          if(record) { stories.push(record); }
+          done();
+        });
+      }
+    })), function() {
+      cb({
+        success: true,
+        record: {
+          stories: stories,
+          likes: likes
+        }
+      });
+    })
+  });
+
+}
+
 exports.createUser = function(req, res, client, cb) {
   var hash = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
 

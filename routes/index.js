@@ -181,12 +181,11 @@ function Routes (app, ee) {
 
   app.get('/me', requireLogin, function(req, res) {
     if(req.session && req.session.user) {
-      usersDB.findOne({ email: req.session.user.email }, function(err, user) {
-        if(!user) {
-          req.session.reset();
-          res.status(400).send({ error: 'invalid session' });
+      utils.getUser(req, res, usersDB, storiesDB, function(data) {
+        if(data.success) {
+          res.json(data.record);
         } else {
-          res.json(user);
+          res.status(400).send({ error: 'nope' });
         }
       });
     }
