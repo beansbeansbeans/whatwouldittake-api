@@ -113,7 +113,7 @@ exports.findStory = function(req, res, client, cb) {
 }
 
 exports.findStories = function(req, res, client, cb) {
-  var pageSize = 5,
+  var pageSize = 30,
     page = +req.params.page;
 
   client.find().skip(pageSize * page).limit(pageSize).sort({ 'entries.0.date': -1 }).toArray(function(err, records) {
