@@ -39,7 +39,7 @@ function Routes (app, ee) {
     utils.createUser(req, res, usersDB, function(data) {
       if(data.success) {
         req.session.user = data.record;
-        res.sendStatus(200);
+        res.send({ user: data.record });
       } else {
         res.status(400).send({ error: data.error });
       }
