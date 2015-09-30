@@ -182,7 +182,7 @@ exports.findStoriesByPath = function(req, res, client, cb) {
     },
     'inflectionPoints.direction': req.body.inflectionPoints.direction
   }).toArray(function(err, records) {
-    if(records) {
+    if(records.length) {
       cb({
         success: true,
         records: records
