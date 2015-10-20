@@ -29,6 +29,19 @@ var getNextSequence = function(db, name, cb) {
   );
 }
 
+exports.findIssues = function(req, res, client, cb) {
+  client.find().toArray(function(err, records) {
+    if(records) {
+      cb({ 
+        success: true,
+        records: records
+      });
+    } else {
+      cb({ success: false });
+    }
+  });
+}
+
 exports.getUser = function(req, res, usersClient, storiesClient, cb) {
   var stories = [], likes = [];
 

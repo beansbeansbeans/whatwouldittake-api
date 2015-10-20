@@ -9,8 +9,8 @@ function Routes (app, ee) {
   var config = app.get('config');
   var client = app.get('mongoClient');
   var usersDB = client.collection('users');
-  var storiesDB = client.collection('stories');
   var countersDB = client.collection('counters');
+  var issuesDB = client.collection('issues');
 
   app.use(function(req, res, next) {
     if(req.session && req.session.user) {
@@ -34,6 +34,16 @@ function Routes (app, ee) {
       next();
     }
   }
+
+  app.get('/issues', function(req, res) {
+    utils.findIssues(req, res, issuesDB, function(data) {
+      if(data.success) {
+        res.json(data.records);
+      } else {
+        res.status(400).send({ error: 'nope' });
+      }
+    });
+  });
 
   app.post('/signup', function(req, res, next) {
     utils.createUser(req, res, usersDB, function(data) {
