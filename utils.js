@@ -42,6 +42,25 @@ exports.findIssues = function(req, res, client, cb) {
   });
 }
 
+exports.vote = function(req, res, issues, users, cb) {
+  users.findAndModify({
+    query: { _id: req.user._id.valueOf() },
+    update: {
+      $push: { stands: req.body.id }
+    },
+    new: true
+  }, function(err, record) {
+    if(err) {
+      return cb({ success: false });
+    }
+
+    cb({
+      success: true,
+      record: record
+    });      
+  });
+}
+
 exports.getUser = function(req, res, usersClient, storiesClient, cb) {
   var stories = [], likes = [];
 
@@ -106,8 +125,7 @@ exports.createUser = function(req, res, client, cb) {
       username: req.body.username,
       email: req.body.email,
       password: hash,
-      likes: [],
-      stories: []
+      stands: []
     }, function(err, record) {
       cb({
         success: true,

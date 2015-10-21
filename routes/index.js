@@ -35,6 +35,16 @@ function Routes (app, ee) {
     }
   }
 
+  app.post('/vote', function(req, res) {
+    utils.vote(req, res, issuesDB, usersDB, function(data) {
+      if(data.success) {
+        res.json(data.record);
+      } else {
+        res.status(400).send({ error: 'nope' });
+      }
+    });
+  });
+
   app.get('/issues', function(req, res) {
     utils.findIssues(req, res, issuesDB, function(data) {
       if(data.success) {
