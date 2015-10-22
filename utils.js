@@ -46,23 +46,38 @@ exports.vote = function(req, res, issues, users, cb) {
   users.findAndModify({
     query: { _id: req.user._id.valueOf() },
     update: {
-      $push: { 
-        stands: {
+      $set: {
+        "stands.$": {
           id: req.body.id,
           stand: req.body.stand
-        } 
+        }
       }
     },
     new: true
   }, function(err, record) {
-    if(err) {
-      return cb({ success: false });
+    if(record) {
+      cb({
+        success: true,
+        record: record
+      });            
+    } else {
+      users.findAndModify({
+        query: { _id: req.user._id.valueOf() },
+        update: {
+          $push: {
+            stands: {
+              id: req.body.id,
+              stand: req.body.stand              
+            }
+          }
+        }
+      }, function(nestedErr, nestedRecord) {
+        cb({
+          success: true,
+          record: nestedRecord
+        });
+      });
     }
-
-    cb({
-      success: true,
-      record: record
-    });      
   });
 }
 
