@@ -44,13 +44,13 @@ exports.findIssues = function(req, res, client, cb) {
 
 exports.vote = function(req, res, issues, users, cb) {
   users.findAndModify({
-    query: { _id: req.user._id.valueOf() },
+    query: { 
+      _id: req.user._id.valueOf(),
+      "stands.id": req.body.id
+    },
     update: {
       $set: {
-        "stands.$": {
-          id: req.body.id,
-          stand: req.body.stand
-        }
+        "stands.$.stand": req.body.stand
       }
     },
     new: true
