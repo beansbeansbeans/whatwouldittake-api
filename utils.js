@@ -46,7 +46,12 @@ exports.vote = function(req, res, issues, users, cb) {
   users.findAndModify({
     query: { _id: req.user._id.valueOf() },
     update: {
-      $push: { stands: req.body.id }
+      $push: { 
+        stands: {
+          id: req.body.id,
+          stand: req.body.stand
+        } 
+      }
     },
     new: true
   }, function(err, record) {
@@ -61,37 +66,17 @@ exports.vote = function(req, res, issues, users, cb) {
   });
 }
 
-exports.getUser = function(req, res, usersClient, storiesClient, cb) {
+exports.getUser = function(req, res, usersClient, cb) {
   var stories = [], likes = [];
 
   usersClient.findOne({
     _id: req.user._id.valueOf()
   }, function(err, user) {
-    async(user.likes.map(function(d) {
-      return function(done) {
-        storiesClient.findOne({ _id: d }, function(err, record) {
-          if(record) { likes.push(record); }
-          done();
-        });
-      }
-    }).concat(user.stories.map(function(d) {
-      return function(done) {
-        storiesClient.findOne({ _id: d }, function(err, record) {
-          if(record) { stories.push(record); }
-          done();
-        });
-      }
-    })), function() {
-      cb({
-        success: true,
-        record: {
-          stories: stories,
-          likes: likes
-        }
-      });
-    })
+    cb({
+      success: true,
+      record: user
+    });
   });
-
 }
 
 exports.createUser = function(req, res, client, cb) {

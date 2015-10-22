@@ -95,7 +95,7 @@ function Routes (app, ee) {
 
   app.get('/me', requireLogin, function(req, res) {
     if(req.session && req.session.user) {
-      utils.getUser(req, res, usersDB, storiesDB, function(data) {
+      utils.getUser(req, res, usersDB, function(data) {
         if(data.success) {
           res.json(data.record);
         } else {
