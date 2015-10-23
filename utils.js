@@ -101,6 +101,27 @@ exports.contribute = function(req, res, client, cb) {
   });
 }
 
+exports.contributeProof = function(req, res, client, cb) {
+  var query = { _id: ObjectId(req.body.id) };
+  query["conditions." + req.body.stand + "._id"] = ObjectId(req.body.conditionID);
+  var push = {};
+  push['conditions.' + req.body.stand + '.$.proofs'] = {
+    _id: new ObjectId(),
+    description: req.body.description
+  };
+
+  client.findAndModify({
+    query: query,
+    update: { $push: push },
+    new: true
+  }, function(err, record) {
+    cb({
+      success: true,
+      record: record
+    });
+  });
+}
+
 exports.getUser = function(req, res, usersClient, cb) {
   var stories = [], likes = [];
 

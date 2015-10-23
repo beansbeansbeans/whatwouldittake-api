@@ -55,6 +55,16 @@ function Routes (app, ee) {
     });
   });
 
+  app.post('/contribute-proof', function(req, res) {
+    utils.contributeProof(req, res, issuesDB, function(data) {
+      if(data.success) {
+        res.json(data.record);
+      } else {
+        res.status(400).send({ error: 'nope' });
+      }
+    });
+  });
+
   app.get('/issues', function(req, res) {
     utils.findIssues(req, res, issuesDB, function(data) {
       if(data.success) {
