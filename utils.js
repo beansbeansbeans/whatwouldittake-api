@@ -122,6 +122,27 @@ exports.contributeProof = function(req, res, client, cb) {
   });
 }
 
+exports.voteOnCondition = function(req, res, client, cb) {
+  var query = { _id: ObjectId(req.body.id) };
+  query["conditions." + req.body.stand + "._id"] = ObjectId(req.body.conditionID);
+  var push = {};
+  push['conditions.' + req.body.stand + '.$.dependents'] = {
+    id: req.user._id.valueOf(),
+    status: "pending"
+  };
+
+  client.findAndModify({
+    query: query,
+    update: { $push: push },
+    new: true
+  }, function(err, record) {
+    cb({
+      success: true,
+      record: record
+    });
+  });
+}
+
 exports.getUser = function(req, res, usersClient, cb) {
   var stories = [], likes = [];
 
