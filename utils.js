@@ -90,7 +90,8 @@ exports.contribute = function(req, res, client, cb) {
 
   client.findAndModify({
     query: { _id: ObjectId(req.body.id) },
-    update: { $push: push }
+    update: { $push: push },
+    new: true
   }, function(err, record) {
     cb({
       success: true,
