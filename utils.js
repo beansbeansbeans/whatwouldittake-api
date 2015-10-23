@@ -81,6 +81,24 @@ exports.vote = function(req, res, issues, users, cb) {
   });
 }
 
+exports.contribute = function(req, res, client, cb) {
+  var push = {};
+  push['conditions.' + req.body.stand] = {
+    tagline: req.body.tagline,
+    moreInfo: req.body.moreInfo
+  };
+
+  client.findAndModify({
+    query: { _id: ObjectId(req.body.id) },
+    update: { $push: push }
+  }, function(err, record) {
+    cb({
+      success: true,
+      record: record
+    });
+  });
+}
+
 exports.getUser = function(req, res, usersClient, cb) {
   var stories = [], likes = [];
 

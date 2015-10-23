@@ -45,6 +45,16 @@ function Routes (app, ee) {
     });
   });
 
+  app.post('/contribute', function(req, res) {
+    utils.contribute(req, res, issuesDB, function(data) {
+      if(data.success) {
+        res.json(data.record);
+      } else {
+        res.status(400).send({ error: 'nope' });
+      }
+    });
+  });
+
   app.get('/issues', function(req, res) {
     utils.findIssues(req, res, issuesDB, function(data) {
       if(data.success) {
