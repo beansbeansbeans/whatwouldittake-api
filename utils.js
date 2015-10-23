@@ -84,6 +84,7 @@ exports.vote = function(req, res, issues, users, cb) {
 exports.contribute = function(req, res, client, cb) {
   var push = {};
   push['conditions.' + req.body.stand] = {
+    _id: new ObjectId(),
     tagline: req.body.tagline,
     moreInfo: req.body.moreInfo
   };
