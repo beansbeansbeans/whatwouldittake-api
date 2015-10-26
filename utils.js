@@ -180,15 +180,15 @@ exports.convincedByProof = function(req, res, issues, users, cb) {
     }, function(err, record) {
       var doc = record;
       doc.conditions[req.body.stand].forEach(function(condition) {
-        if(condition._id === ObjectID(req.body.conditionID)) {
+        if(condition._id == req.body.conditionID) {
           condition.dependents = condition.dependents.map(function(d) {
-            if(d.id === req.user._id.valueOf()) {
+            if(d.id == req.user._id.toString()) {
               d.status = "confirmed";
             }
             return d;
           });
           condition.proofs = condition.proofs.map(function(d) {
-            if(d._id === ObjectID(req.body.proofID)) {
+            if(d._id == req.body.proofID) {
               d.believers.push(req.user._id.valueOf());
             }
             return d;
