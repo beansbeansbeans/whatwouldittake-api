@@ -42,6 +42,35 @@ exports.findIssues = function(req, res, client, cb) {
   });
 }
 
+var cleanDependentsPostVote = function(req, res, issues, users, cb, record) {
+  var stand = 'aff';
+  if(req.body.stand === 'aff') { stand = 'neg'; }
+
+  issues.findOne(
+    { _id: ObjectId(req.body.id )}, function(err, issueRecord) {
+    var doc = issueRecord;
+    doc.conditions[stand].forEach(function(d) {
+      d.dependents = d.dependents.filter(function(dependent) {
+        return dependent.id === req.user._id.valueOf();
+      });
+    });
+
+    var set = {};
+    set['conditions.' + stand] = doc.conditions[stand];
+
+    issues.update(
+      { _id: ObjectId(req.body.id) },
+      { $set: set },
+      function(err, nestedRecord) {
+        cb({
+          success: true,
+          record: record
+        });     
+    });
+  });
+
+}
+
 exports.vote = function(req, res, issues, users, cb) {
   users.findAndModify({
     query: { 
@@ -56,10 +85,7 @@ exports.vote = function(req, res, issues, users, cb) {
     new: true
   }, function(err, record) {
     if(record) {
-      cb({
-        success: true,
-        record: record
-      });            
+      cleanDependentsPostVote(req, res, issues, users, cb, record);
     } else {
       users.findAndModify({
         query: { _id: req.user._id.valueOf() },
@@ -72,10 +98,7 @@ exports.vote = function(req, res, issues, users, cb) {
           }
         }
       }, function(nestedErr, nestedRecord) {
-        cb({
-          success: true,
-          record: nestedRecord
-        });
+        cleanDependentsPostVote(req, res, issues, users, cb, nestedRecord);
       });
     }
   });
@@ -86,7 +109,9 @@ exports.contribute = function(req, res, client, cb) {
   push['conditions.' + req.body.stand] = {
     _id: new ObjectId(),
     tagline: req.body.tagline,
-    moreInfo: req.body.moreInfo
+    moreInfo: req.body.moreInfo,
+    dependents: [],
+    proofs: []
   };
 
   client.findAndModify({
@@ -133,7 +158,7 @@ exports.voteOnCondition = function(req, res, client, cb) {
 
   client.findAndModify({
     query: query,
-    update: { $push: push },
+    update: { $addToSet: push },
     new: true
   }, function(err, record) {
     cb({
