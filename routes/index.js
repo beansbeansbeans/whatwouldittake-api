@@ -65,6 +65,16 @@ function Routes (app, ee) {
     });
   });
 
+  app.post('/convinced-by-proof', function(req, res) {
+    utils.convincedByProof(req, res, issuesDB, usersDB, function(data) {
+      if(data.success) {
+        res.json(data.record);
+      } else {
+        res.status(400).send({ error: 'nope' });
+      }
+    });
+  });
+
   app.post('/vote-on-condition', function(req, res) {
     utils.voteOnCondition(req, res, issuesDB, function(data) {
       if(data.success) {

@@ -1,5 +1,6 @@
 var bcrypt = require('bcryptjs');
 var ObjectId = require('mongojs').ObjectId;
+var _ = require('underscore');
 
 var async = function(tasks, callback) {
   var count = 0, n = tasks.length;
@@ -132,7 +133,8 @@ exports.contributeProof = function(req, res, client, cb) {
   var push = {};
   push['conditions.' + req.body.stand + '.$.proofs'] = {
     _id: new ObjectId(),
-    description: req.body.description
+    description: req.body.description,
+    believers: []
   };
 
   client.findAndModify({
@@ -143,6 +145,72 @@ exports.contributeProof = function(req, res, client, cb) {
     cb({
       success: true,
       record: record
+    });
+  });
+}
+
+exports.convincedByProof = function(req, res, issues, users, cb) {
+  async([function(done) {
+    var stand = 'aff';
+    if(req.body.stand === 'aff') {
+      stand = 'neg';
+    }
+
+    users.findAndModify({
+      query: { 
+        _id: req.user._id.valueOf(),
+        "stands.id": req.body.id
+      },
+      update: {
+        $set: {
+          "stands.$.stand": stand,
+          "stands.$.previous": {
+            conditionID: req.body.conditionID,
+            proofID: req.body.proofID
+          }
+        }
+      },
+      new: true
+    }, function() {
+      done();
+    });
+  }, function(done) {
+    issues.findOne({
+      _id: ObjectId(req.body.id)
+    }, function(err, record) {
+      var doc = record;
+      doc.conditions[req.body.stand].forEach(function(condition) {
+        if(condition._id === ObjectID(req.body.conditionID)) {
+          condition.dependents = condition.dependents.map(function(d) {
+            if(d.id === req.user._id.valueOf()) {
+              d.status = "confirmed";
+            }
+            return d;
+          });
+          condition.proofs = condition.proofs.map(function(d) {
+            if(d._id === ObjectID(req.body.proofID)) {
+              d.believers.push(req.user._id.valueOf());
+            }
+            return d;
+          });
+        }
+      });
+
+      var set = {};
+      set['conditions.' + req.body.stand] = doc.conditions[req.body.stand];
+
+      issues.update(
+        { _id: ObjectId(req.body.id) },
+        { $set: set },
+        function(err, nestedRecord) {
+          done();
+        }
+      );
+    });
+
+  }], function() {
+    cb({
+      success: true
     });
   });
 }
