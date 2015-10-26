@@ -43,6 +43,18 @@ exports.findIssues = function(req, res, client, cb) {
   });
 }
 
+var cleanPostVote = function(condition, req) {
+  condition.dependents = condition.dependents.filter(function(dependent) {
+    return dependent.id === req.user._id.valueOf();
+  });
+  condition.proofs = condition.proofs.map(function(proof) {
+    proof.believers = proof.believers.filter(function(believer) {
+      return believer === req.user._id.valueOf()
+    });
+    return proof;
+  });
+}
+
 var cleanDependentsPostVote = function(req, res, issues, users, cb, record) {
   var stand = 'aff';
   if(req.body.stand === 'aff') { stand = 'neg'; }
@@ -51,9 +63,7 @@ var cleanDependentsPostVote = function(req, res, issues, users, cb, record) {
     { _id: ObjectId(req.body.id )}, function(err, issueRecord) {
     var doc = issueRecord;
     doc.conditions[stand].forEach(function(d) {
-      d.dependents = d.dependents.filter(function(dependent) {
-        return dependent.id === req.user._id.valueOf();
-      });
+      cleanPostVote(d, req);
     });
 
     var set = {};
@@ -69,7 +79,6 @@ var cleanDependentsPostVote = function(req, res, issues, users, cb, record) {
         });     
     });
   });
-
 }
 
 exports.vote = function(req, res, issues, users, cb) {
@@ -179,6 +188,9 @@ exports.convincedByProof = function(req, res, issues, users, cb) {
       _id: ObjectId(req.body.id)
     }, function(err, record) {
       var doc = record;
+      var opposite = 'aff';
+      if(req.body.stand === 'aff') { opposite = 'neg'; }
+
       doc.conditions[req.body.stand].forEach(function(condition) {
         if(condition._id == req.body.conditionID) {
           condition.dependents = condition.dependents.map(function(d) {
@@ -196,8 +208,12 @@ exports.convincedByProof = function(req, res, issues, users, cb) {
         }
       });
 
+      doc.conditions[opposite].forEach(function(condition) {
+        cleanPostVote(condition, req);
+      });
+
       var set = {};
-      set['conditions.' + req.body.stand] = doc.conditions[req.body.stand];
+      set['conditions'] = doc.conditions;
 
       issues.update(
         { _id: ObjectId(req.body.id) },
@@ -207,7 +223,6 @@ exports.convincedByProof = function(req, res, issues, users, cb) {
         }
       );
     });
-
   }], function() {
     cb({
       success: true
