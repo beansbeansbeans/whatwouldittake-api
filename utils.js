@@ -161,13 +161,12 @@ exports.contributeProof = function(req, res, client, cb) {
 
 exports.convincedByProof = function(req, res, issues, users, cb) {
   var user, issue;
+  var stand = 'aff';
+  if(req.body.stand === 'aff') {
+    stand = 'neg';
+  }
 
   async([function(done) {
-    var stand = 'aff';
-    if(req.body.stand === 'aff') {
-      stand = 'neg';
-    }
-
     users.findAndModify({
       query: { 
         _id: req.user._id.valueOf(),
@@ -208,6 +207,10 @@ exports.convincedByProof = function(req, res, issues, users, cb) {
             return d;
           });
         }
+      });
+
+      doc.conditions[stand].forEach(function(d) {
+        cleanPostVote(d, req);
       });
 
       var set = {};
