@@ -162,7 +162,8 @@ exports.contributeProof = function(req, res, client, cb) {
 }
 
 exports.convincedByProof = function(req, res, issues, users, cb) {
-  var user;
+  var user, issue;
+
   async([function(done) {
     var stand = 'aff';
     if(req.body.stand === 'aff') {
@@ -214,17 +215,21 @@ exports.convincedByProof = function(req, res, issues, users, cb) {
       var set = {};
       set['conditions'] = doc.conditions;
 
-      issues.update(
-        { _id: ObjectId(req.body.id) },
-        { $set: set },
-        function(err, nestedRecord) {
-          done();
-        }
-      );
+      issues.findAndModify({
+        query: { _id: ObjectId(req.body.id) },
+        update: { $set: set },
+        new: true
+      }, function(err, nestedRecord) {
+        issue = nestedRecord;
+        done();
+      });
     });
   }], function() {
     cb({
-      record: user,
+      record: {
+        user: user,
+        issue: issue
+      },
       success: true
     });
   });
