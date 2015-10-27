@@ -65,9 +65,12 @@ var cleanDependentsPostVote = function(req, res, issues, users, cb, record) {
     doc.conditions[stand].forEach(function(d) {
       cleanPostVote(d, req);
     });
+    doc.conditions[req.body.stand].forEach(function(d) {
+      cleanPostVote(d, req);
+    });
 
     var set = {};
-    set['conditions.' + stand] = doc.conditions[stand];
+    set.conditions = doc.conditions;
 
     issues.update(
       { _id: ObjectId(req.body.id) },
