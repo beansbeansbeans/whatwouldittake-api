@@ -190,8 +190,6 @@ exports.convincedByProof = function(req, res, issues, users, cb) {
       _id: ObjectId(req.body.id)
     }, function(err, record) {
       var doc = record;
-      var opposite = 'aff';
-      if(req.body.stand === 'aff') { opposite = 'neg'; }
 
       doc.conditions[req.body.stand].forEach(function(condition) {
         if(condition._id == req.body.conditionID) {
@@ -208,10 +206,6 @@ exports.convincedByProof = function(req, res, issues, users, cb) {
             return d;
           });
         }
-      });
-
-      doc.conditions[opposite].forEach(function(condition) {
-        cleanPostVote(condition, req);
       });
 
       var set = {};
