@@ -72,14 +72,18 @@ var cleanDependentsPostVote = function(req, res, issues, users, cb, record) {
     var set = {};
     set.conditions = doc.conditions;
 
-    issues.update(
-      { _id: ObjectId(req.body.id) },
-      { $set: set },
-      function(err, nestedRecord) {
-        cb({
-          success: true,
-          record: record
-        });     
+    issues.findAndModify({
+      query: { _id: ObjectId(req.body.id) },
+      update: { $set: set },
+      new: true
+    }, function(err, nestedRecord) {
+      cb({
+        success: true,
+        record: {
+          user: record,
+          issue: nestedRecord
+        }
+      });  
     });
   });
 }
