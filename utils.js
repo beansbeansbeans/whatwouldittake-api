@@ -159,6 +159,7 @@ exports.contributeProof = function(req, res, client, cb) {
 }
 
 exports.convincedByProof = function(req, res, issues, users, cb) {
+  var user;
   async([function(done) {
     var stand = 'aff';
     if(req.body.stand === 'aff') {
@@ -180,7 +181,8 @@ exports.convincedByProof = function(req, res, issues, users, cb) {
         }
       },
       new: true
-    }, function() {
+    }, function(err, record) {
+      user = record;
       done();
     });
   }, function(done) {
@@ -225,6 +227,7 @@ exports.convincedByProof = function(req, res, issues, users, cb) {
     });
   }], function() {
     cb({
+      record: user,
       success: true
     });
   });
