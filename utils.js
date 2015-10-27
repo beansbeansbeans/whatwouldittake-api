@@ -49,22 +49,16 @@ var cleanPostVote = function(condition, req) {
   });
   condition.proofs = condition.proofs.map(function(proof) {
     proof.believers = proof.believers.filter(function(believer) {
-      return believer === req.user._id.valueOf()
+      return believer === req.user._id.valueOf();
     });
     return proof;
   });
 }
 
 var cleanDependentsPostVote = function(req, res, issues, users, cb, record) {
-  var stand = 'aff';
-  if(req.body.stand === 'aff') { stand = 'neg'; }
-
   issues.findOne(
     { _id: ObjectId(req.body.id )}, function(err, issueRecord) {
     var doc = issueRecord;
-    doc.conditions[stand].forEach(function(d) {
-      cleanPostVote(d, req);
-    });
     doc.conditions[req.body.stand].forEach(function(d) {
       cleanPostVote(d, req);
     });
