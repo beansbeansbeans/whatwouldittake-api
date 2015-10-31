@@ -56,10 +56,14 @@ var cleanPostVote = function(condition, req) {
 }
 
 var cleanDependentsPostVote = function(req, res, issues, users, cb, record) {
+  var stand = 'aff';
+  if(req.body.stand === 'aff') {
+    stand = 'neg';
+  }
   issues.findOne(
     { _id: ObjectId(req.body.id )}, function(err, issueRecord) {
     var doc = issueRecord;
-    doc.conditions[req.body.stand].forEach(function(d) {
+    doc.conditions[stand].forEach(function(d) {
       cleanPostVote(d, req);
     });
 
