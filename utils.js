@@ -205,7 +205,7 @@ exports.convincedByProof = function(req, res, issues, users, cb) {
             return d;
           });
           condition.proofs = condition.proofs.map(function(d) {
-            if(d._id == req.body.proofID) {
+            if(d._id == req.body.proofID && d.believers.indexOf(req.user._id.valueOf()) === -1) {
               d.believers.push(req.user._id.valueOf());
             }
             return d;
