@@ -124,6 +124,7 @@ exports.contribute = function(req, res, client, cb) {
   push['conditions.' + req.body.stand] = {
     _id: new ObjectId(),
     tagline: req.body.tagline,
+    sources: req.body.sources,
     moreInfo: req.body.moreInfo,
     dependents: [],
     proofs: []
