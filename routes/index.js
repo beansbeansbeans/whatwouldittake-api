@@ -13,6 +13,7 @@ function Routes (app, ee) {
   var issuesDB = client.collection('issues');
 
   app.use(function(req, res, next) {
+    console.log("middleware");
     if(req.session && req.session.user) {
       usersDB.findOne({ username: req.session.user.username }, function(err, user) {
         if(user) {
@@ -86,6 +87,7 @@ function Routes (app, ee) {
   });
 
   app.get('/issues', function(req, res) {
+    console.log("requesting issues");
     utils.findIssues(req, res, issuesDB, function(data) {
       if(data.success) {
         res.json(data.records);
