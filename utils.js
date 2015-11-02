@@ -119,25 +119,31 @@ exports.vote = function(req, res, issues, users, cb) {
   });
 }
 
-exports.contribute = function(req, res, client, cb) {
-  var push = {};
-  push['conditions.' + req.body.stand] = {
-    _id: new ObjectId(),
-    tagline: req.body.tagline,
-    sources: req.body.sources,
-    moreInfo: req.body.moreInfo,
-    dependents: [],
-    proofs: []
-  };
+exports.contribute = function(req, res, users, client, cb) {
+  users.findOne({ _id: req.user._id.valueOf() }, function(err, record) {
+    var push = {};
+    push['conditions.' + req.body.stand] = {
+      _id: new ObjectId(),
+      tagline: req.body.tagline,
+      author: {
+        userID: record._id,
+        name: record.username
+      },
+      sources: req.body.sources,
+      moreInfo: req.body.moreInfo,
+      dependents: [],
+      proofs: []
+    };
 
-  client.findAndModify({
-    query: { _id: ObjectId(req.body.id) },
-    update: { $push: push },
-    new: true
-  }, function(err, record) {
-    cb({
-      success: true,
-      record: record
+    client.findAndModify({
+      query: { _id: ObjectId(req.body.id) },
+      update: { $push: push },
+      new: true
+    }, function(err, record) {
+      cb({
+        success: true,
+        record: record
+      });
     });
   });
 }
@@ -149,6 +155,7 @@ exports.contributeProof = function(req, res, client, cb) {
   push['conditions.' + req.body.stand + '.$.proofs'] = {
     _id: new ObjectId(),
     description: req.body.description,
+    sources: req.body.sources,
     believers: []
   };
 

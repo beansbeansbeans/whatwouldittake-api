@@ -46,7 +46,7 @@ function Routes (app, ee) {
   });
 
   app.post('/contribute', function(req, res) {
-    utils.contribute(req, res, issuesDB, function(data) {
+    utils.contribute(req, res, usersDB, issuesDB, function(data) {
       if(data.success) {
         res.json(data.record);
       } else {
