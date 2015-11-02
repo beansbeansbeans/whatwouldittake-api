@@ -168,7 +168,7 @@ var saveNewProof = function(client, req, author, cb) {
     believers: []
   };
 
-  if(author) { push.author = author; }
+  if(author) { push['conditions.' + req.body.stand + '.$.proofs'].author = author; }
 
   client.findAndModify({
     query: query,
