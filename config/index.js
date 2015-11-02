@@ -37,7 +37,7 @@ function Config(app, mongoStore) {
   app.use(bodyParser.json());
 
   app.use(function (req, res, next) {
-    var allowedOrigins = ['http://localhost:5000', 'https://whatwouldittake.cc'];
+    var allowedOrigins = ['http://localhost:5000', 'https://whatwouldittake.cc', 'http://whatwouldittake.cc'];
     if(allowedOrigins.indexOf(req.headers.origin) !== -1) {
       res.header("Access-Control-Allow-Origin", req.headers.origin);
       res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
