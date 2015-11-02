@@ -17,11 +17,6 @@ exports.server = require('http').createServer(app).listen(port, function() {
   console.log('What would it take API started on port %d', port);
 });
 
-app.get('/', function(req, res){
-  console.log("Get index");
-  res.send('hello world');
-});
-
 process.on('uncaughtException', function(err){
   console.log('Exception: ' + err.stack);
 });
