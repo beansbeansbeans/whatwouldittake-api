@@ -119,33 +119,42 @@ exports.vote = function(req, res, issues, users, cb) {
   });
 }
 
-exports.contribute = function(req, res, users, client, cb) {
-  users.findOne({ _id: req.user._id.valueOf() }, function(err, record) {
-    var push = {};
-    push['conditions.' + req.body.stand] = {
-      _id: new ObjectId(),
-      tagline: req.body.tagline,
-      author: {
-        userID: record._id,
-        name: record.username
-      },
-      sources: req.body.sources,
-      moreInfo: req.body.moreInfo,
-      dependents: [],
-      proofs: []
-    };
+var saveNewCondition = function(client, req, author, cb) {
+  var push = {};
+  push['conditions.' + req.body.stand] = {
+    _id: new ObjectId(),
+    tagline: req.body.tagline,
+    sources: req.body.sources,
+    moreInfo: req.body.moreInfo,
+    dependents: [],
+    proofs: []
+  };
 
-    client.findAndModify({
-      query: { _id: ObjectId(req.body.id) },
-      update: { $push: push },
-      new: true
-    }, function(err, record) {
-      cb({
-        success: true,
-        record: record
-      });
+  if(author) { push.author = author; }
+
+  client.findAndModify({
+    query: { _id: ObjectId(req.body.id) },
+    update: { $push: push },
+    new: true
+  }, function(err, record) {
+    cb({
+      success: true,
+      record: record
     });
   });
+}
+
+exports.contribute = function(req, res, users, client, cb) {
+  if(req.user) {
+    users.findOne({ _id: req.user._id.valueOf() }, function(err, record) {
+      saveNewCondition(client, req, {
+        userID: record._id,
+        name: record.username
+      }, cb);
+    });    
+  } else {
+    saveNewCondition(client, req, null, cb);
+  }
 }
 
 exports.contributeProof = function(req, res, client, cb) {
