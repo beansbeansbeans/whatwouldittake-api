@@ -127,7 +127,8 @@ var saveNewCondition = function(client, req, author, cb) {
     sources: req.body.sources,
     moreInfo: req.body.moreInfo,
     dependents: [],
-    proofs: []
+    proofs: [],
+    createdAt: Date.now()
   };
 
   if(author) { push.author = author; }
@@ -165,7 +166,8 @@ var saveNewProof = function(client, req, author, cb) {
     _id: new ObjectId(),
     description: req.body.description,
     sources: req.body.sources,
-    believers: []
+    believers: [],
+    createdAt: Date.now()
   };
 
   if(author) { push['conditions.' + req.body.stand + '.$.proofs'].author = author; }
