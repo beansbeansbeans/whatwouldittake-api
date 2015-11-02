@@ -56,7 +56,7 @@ function Routes (app, ee) {
   });
 
   app.post('/contribute-proof', function(req, res) {
-    utils.contributeProof(req, res, issuesDB, function(data) {
+    utils.contributeProof(req, res, usersDB, issuesDB, function(data) {
       if(data.success) {
         res.json(data.record);
       } else {

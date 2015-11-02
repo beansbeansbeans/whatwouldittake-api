@@ -157,7 +157,7 @@ exports.contribute = function(req, res, users, client, cb) {
   }
 }
 
-exports.contributeProof = function(req, res, client, cb) {
+var saveNewProof = function(client, req, author, cb) {
   var query = { _id: ObjectId(req.body.id) };
   query["conditions." + req.body.stand + "._id"] = ObjectId(req.body.conditionID);
   var push = {};
@@ -167,6 +167,8 @@ exports.contributeProof = function(req, res, client, cb) {
     sources: req.body.sources,
     believers: []
   };
+
+  if(author) { push.author = author; }
 
   client.findAndModify({
     query: query,
@@ -178,6 +180,19 @@ exports.contributeProof = function(req, res, client, cb) {
       record: record
     });
   });
+}
+
+exports.contributeProof = function(req, res, users, client, cb) {
+  if(req.user) {
+    users.findOne({ _id: req.user._id.valueOf() }, function(err, record) {
+      saveNewProof(client, req, {
+        userID: record._id,
+        name: record.username
+      }, cb);
+    });
+  } else {
+    saveNewProof(client, req, null, cb);
+  }
 }
 
 exports.convincedByProof = function(req, res, issues, users, cb) {
