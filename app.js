@@ -14,7 +14,7 @@ require('./config')(app, mongoStore);
 require('./routes')(app, ee);
 
 exports.server = require('http').createServer(app).listen(port, function() {
-  console.log('Storiesof API started on port %d', port);
+  console.log('What would it take API started on port %d', port);
 });
 
 process.on('uncaughtException', function(err){
