@@ -131,7 +131,7 @@ var saveNewCondition = function(client, req, author, cb) {
     createdAt: Date.now()
   };
 
-  if(author) { push.author = author; }
+  if(author) { push['conditions.' + req.body.stand].author = author; }
 
   client.findAndModify({
     query: { _id: ObjectId(req.body.id) },
