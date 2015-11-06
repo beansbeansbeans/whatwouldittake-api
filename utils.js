@@ -125,7 +125,6 @@ var saveNewCondition = function(client, req, author, cb) {
     _id: new ObjectId(),
     tagline: req.body.tagline,
     sources: req.body.sources,
-    moreInfo: req.body.moreInfo,
     dependents: [],
     proofs: [],
     createdAt: Date.now()
