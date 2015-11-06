@@ -111,7 +111,8 @@ exports.vote = function(req, res, issues, users, cb) {
               stand: req.body.stand              
             }
           }
-        }
+        },
+        new: true
       }, function(nestedErr, nestedRecord) {
         cleanDependentsPostVote(req, res, issues, users, cb, nestedRecord);
       });
