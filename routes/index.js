@@ -89,6 +89,7 @@ function Routes (app, ee) {
   app.get('/issues', function(req, res) {
     console.log("requesting issues");
     utils.findIssues(req, res, issuesDB, function(data) {
+      console.log(data);
       if(data.success) {
         res.json(data.records);
       } else {
